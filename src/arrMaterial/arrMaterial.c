@@ -3,7 +3,7 @@
 #include "../boolean.h"
 #include "arrMaterial.h"
 
-Material createAction(int id,/*KATA nama,*/ int price)
+Material createMaterial(int id,/*KATA nama,*/ int price)
 /* Fungsi untuk membuat Material baru */
 {
     Material M;
