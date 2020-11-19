@@ -2,60 +2,129 @@
 
 #include <stdio.h>
 #include "jam.h"
+#include "../boolean.h"
 
-/* ***Konstruktor: Membuat jam mulai game*** */
+/*** Validasi ***/
+boolean IsJAMValid (int D, int H, int M)
+{
+   return ((D >= 0) && (H >= 0 && H <= 23) && (M >= 0 && M <= 59));
+}
+
+/*** Konstruktor ***/
 JAM MakeJAM (int DD, int HH, int MM)
-/* Membentuk sebuah JAM dari komponen-komponennya yang valid */
-/* Prekondisi : DD, HH, MM valid untuk membentuk JAM */
+{
+   JAM J;
+
+   Day(J) = DD;
+   Hour(J) = HH;
+   Minute(J) = MM;
+
+   return J;
+}
+
+void BacaJAM (JAM * J)
+{
+    int DD, HH, MM;
+
+    do{
+        printf("Masukkan day: "); scanf("%d", &DD);
+        printf("Masukkan jam: "); scanf("%d", &HH);
+        printf("Masukkan menit: "); scanf("%d", &MM);
+    } while (!IsJAMValid(DD, HH, MM));
+
+   *J = MakeJAM(DD, HH, MM);
+}
+
+void TulisJAM (JAM J)
+{
+    printf("Day %d - %d.%d", Day(J), Hour(J), Minute(J));
+}
+
+/*** Konversi ***/
+long JAMToMenit (JAM J)
+{
+    return(1440 * Day(J) + 60 * Hour(J) + Minute(J));  
+}
+
+JAM MenitToJAM (long N)
 {
     JAM J;
+    int remainder;
 
-    Day(J) = DD;
-    Hour(J) = HH;
-    Minute(J) = MM;
+    Day(J) = N / 1440;
+    remainder = N % 1440;
+    Hour(J) = remainder / 60;
+    Minute(J) = remainder % 60;
 
     return J;
 }
 
-void StartJAM (JAM *J)
-/* I.S. : J sembarang */
-/* F.S. : Jam terdefinisi sebagai waktu start game */
-/* Proses : Setiap komponen J didefinisikan menjadi 0 */
+/*** Operasi ***/
+/*** Operator Relasional ***/
+boolean JEQ (JAM J1, JAM J2)
 {
-    Day(*J) = 0;
-    Hour(*J) = 0;
-    Minute(*J) = 0;
+    return (JAMToMenit(J1) == JAMToMenit(J2));
 }
 
-/* ***Menuliskan jam*** */
-void TulisJAM (JAM J)
-/* I.S. : J sembarang */
-/* F.S. : Nilai J tertulis dalam format HH.MM */
-/* Proses : Menuliskan nilai komponen J ke layar dengan format HH.MM */
+boolean JNEQ (JAM J1, JAM J2)
 {
-    printf("%d.%d", Hour(J), Minute(J));
+    return (JAMToMenit(J1) != JAMToMenit(J2));
 }
 
-/* ***Memproses jam*** */
-void ProsesJAM (JAM *J, int N)
-/* I.S. : J sembarang */
-/* F.S. : J telah diproses */
-/* Proses : Menjumlahkan komponen menit (MM) dalam J sebanyak N
-            Jika MM > 59, MM diubah menjadi MM mod 60 dan HH bertambah 1
-            Jika HH > 23, HH diubah menjadi HH mod 24 dan DD bertambah 1
-*/
+boolean JLT (JAM J1, JAM J2)
 {
-    Minute(*J) += N;
+    return (JAMToMenit(J1) < JAMToMenit(J2));
+}
 
-    if (Minute(*J) > 59){
-        int addHour = Minute(*J) / 60;
-        Hour(*J) += addHour;
-        Minute(*J) %= 60;
+boolean JGT (JAM J1, JAM J2)
+{
+    return (JAMToMenit(J1) > JAMToMenit(J2));
+}
 
-        if (Hour(*J) > 23){
-            int addDay = Hour(*J) / 24;
-            Day(*J) += addDay;
-            Hour(*J) %= 24;
-        }
+/*** Operator Aritmatika ***/
+JAM NextMenit (JAM J)
+{
+    long time = JAMToMenit(J);
+
+    JAM res = MenitToJAM(time + 1);
+
+    return res; 
+}
+
+JAM NextNMenit (JAM J, int N)
+{
+    long time = JAMToMenit(J);
+
+    JAM res = MenitToJAM(time + N);
+
+    return res;
+}
+
+JAM PrevMenit (JAM J)
+{
+    long time = JAMToMenit(J);
+
+    JAM res = MenitToJAM(time - 1 + 1440);
+
+    return res;
+}
+
+JAM PrevNMenit (JAM J, int N)
+{
+    long time = JAMToMenit(J);
+
+    JAM res = MenitToJAM(time - N + 1440);
+
+    return res;
+}
+
+long Durasi (JAM JAw, JAM JAkh)
+{
+    long dif = JAMToMenit(JAkh) - JAMToMenit(JAw);
+
+    if (JAMToMenit(JAw) > JAMToMenit(JAkh)){
+        dif += 1440;
     }
+
+    return dif;
 }

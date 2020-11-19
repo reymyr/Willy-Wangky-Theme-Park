@@ -3,43 +3,43 @@
 #ifndef JAM_H
 #define JAM_H
 
-/* *** Definisi TYPE JAM <HH:MM  DD> *** */
+#include "../boolean.h"
+
+/* *** Definisi TYPE JAM <DD:HH:MM> *** */
 typedef struct {
-   int DD; /* hari, integer */
+   int DD; /* integer[0..] */
 	int HH; /* integer [0..23] */
 	int MM; /* integer [0..59] */
 } JAM;
 
-/* *** Notasi Akses: selektor JAM *** */
+/*** Selektor ***/
 #define Day(J) (J).DD
 #define Hour(J) (J).HH
 #define Minute(J) (J).MM
 
-/* ***************************************************************** */
-/* DEFINISI PRIMITIF                                                 */
-/* ***************************************************************** */
+/*** Validasi ***/
+boolean IsJAMValid (int D, int H, int M);
 
-/* *** Konstruktor: Membentuk sebuah JAM dari komponen-komponennya *** */
-JAM MakeJAM (int DD, int HH, int MM);
-/* Membentuk sebuah JAM dari komponen-komponennya yang valid */
-/* Prekondisi : HH, MM, DD valid untuk membentuk JAM */
-
-void StartJAM (JAM *J);
-/* I.S. : J sembarang */
-/* F.S. : Jam terdefinisi sebagai waktu start game */
-/* Proses : Setiap komponen J didefinisikan menjadi 0 */
-
+/*** Konstruktor ***/
+JAM MakeJAM (int HH, int MM);
+void BacaJAM (JAM * J);
 void TulisJAM (JAM J);
-/* I.S. : J sembarang */
-/* F.S. : Nilai J tertulis dalam format HH.MM */
-/* Proses : Menuliskan nilai komponen J ke layar dengan format HH.MM */
 
-void ProsesJAM (JAM *J, int N);
-/* I.S. : J sembarang */
-/* F.S. : J telah diproses */
-/* Proses : Menjumlahkan komponen menit (MM) dalam J sebanyak N
-            Jika MM > 59, MM diubah menjadi MM mod 60 dan HH bertambah 1
-            Jika HH > 23, HH diubah menjadi HH mod 24 dan DD bertambah 1
-*/
+/*** Konversi ***/
+long JAMToMenit (JAM J);
+JAM MenitToJAM (long N);
+
+/*** Operasi ***/
+/*** Operator Relasional ***/
+boolean JEQ (JAM J1, JAM J2);
+boolean JNEQ (JAM J1, JAM J2);
+boolean JLT (JAM J1, JAM J2); /* J1 < J2 */
+boolean JGT (JAM J1, JAM J2); /* J1 > J2 */
+/*** Operator Aritmatika ***/
+JAM NextMenit (JAM J);
+JAM NextNMenit (JAM J, int N);
+JAM PrevMenit (JAM J);
+JAM PrevNMenit (JAM J, int N);
+long Durasi (JAM JAw, JAM JAkh);
 
 #endif
