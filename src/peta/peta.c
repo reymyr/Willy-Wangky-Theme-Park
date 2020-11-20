@@ -45,4 +45,10 @@ void TulisPeta(Peta P, char *filename)
 
 void PrintAreai(Peta P, indeks i){
     PrintMATRIKS(Area(P,i));
+    printf("Legend:\n");
+    printf("A = Antrian\n");
+    printf("P = Player\n");
+    printf("W = Wahana\n");
+    printf("O = Office\n");
+    printf("<, ^, >, V = Gerbang\n\n");
 }
