@@ -11,7 +11,7 @@
 #define Ordinat(P) (P).Y
 
 /*Konstruktor point*/
-POINT MakePOINT(float X, float Y)
+POINT MakePOINT(int X, int Y)
 /*Membuat point*/
 {
 	/*KAMUS LOKAL*/
@@ -26,26 +26,26 @@ void TulisPOINT (POINT P)
 /* Nilai P ditulis ke layar dengan format "(X,Y)"
    tanpa spasi, enter, atau karakter lain di depan, belakang,
    atau di antaranya
-   Output X dan Y harus dituliskan dalam bilangan riil dengan 2 angka di belakang koma.
+   Output X dan Y harus dituliskan dalam bilangan bulat.
 */
 /* I.S. P terdefinisi */
 /* F.S. P tertulis di layar dengan format "(X,Y)" */
 {
 	/*KAMUS LOKAL*/
-	float X;
-	float Y;
+	int X;
+	int Y;
 	/*ALGORITMA*/
 	X = P.X;
 	Y = P.Y;
-	printf("(%.2f,%.2f)\n", &X, &Y);
+	printf("(%d,%d)\n", &X, &Y);
 }
 
-POINT PlusDelta (POINT P, float deltaX, float deltaY)
+POINT PlusDelta (POINT P, int deltaX, int deltaY)
 /* Mengirim salinan P yang absisnya adalah P.X + deltaX dan ordinatnya adalah P.Y + deltaY */
 {
 	/*KAMUS LOKAL*/
-	float X, NewX;
-	float Y, NewY;
+	int X, NewX;
+	int Y, NewY;
 	POINT PNew;
 	/*ALGORITMA*/
 	X = P.X;
@@ -56,13 +56,13 @@ POINT PlusDelta (POINT P, float deltaX, float deltaY)
 	return PNew;
 }
 
-float Panjang (POINT P1, POINT P2)
+int Panjang (POINT P1, POINT P2)
 /* Menghitung jarak dari titik P1 ke P2*/
 {
 	/*KAMUS LOKAL*/
-	float X1, X2, distX;
-	float Y1, Y2, distY;
-	float dist;
+	int X1, X2, distX;
+	int Y1, Y2, distY;
+	int dist;
 	/*ALGORITMA*/
 	X1 = P1.X;
 	Y1 = P1.Y;
@@ -74,13 +74,13 @@ float Panjang (POINT P1, POINT P2)
 	return dist;
 }
 
-void Geser (POINT *P, float deltaX, float deltaY)
+void Geser (POINT *P, int deltaX, int deltaY)
 /* I.S. P terdefinisi */
 /* F.S. P digeser, absisnya sebesar deltaX dan ordinatnya sebesar deltaY */
 {
 	/*KAMUS LOKAL*/
-	float X, NewX;
-	float Y, NewY;
+	int X, NewX;
+	int Y, NewY;
 	/*ALGORITMA*/
 	X = P->X;
 	Y = P->Y;
