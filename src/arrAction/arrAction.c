@@ -2,14 +2,16 @@
 #include <stdlib.h>
 #include "boolean.h"
 #include "arrAction.h"
+#include "../jam/jam.h"
+#include "../mesinkata/mesinkata.h"
 
-Action createAction(int id,/*KATA nama,*/ JAM durasi)
+Action createAction(int id, Kata nama, JAM durasi)
 /* Fungsi untuk membuat Action baru */
 {
     Action A;
 
     A_ActionID(A) = id;
-    // A_Name(A) = nama;
+    A_Name(A) = nama;
     A_Duration(A) = durasi;
 
     return A;
@@ -125,16 +127,12 @@ void AA_TulisIsiTab(ArrAction T)
 /* Jika tabel kosong : menulis [] */
 {
     IdxType i;
-    printf("[");
     for (i = AA_GetFirstIdx(T); i <= AA_GetLastIdx(T); i++)
     {
-        printf("%d", Elmt(T, i));
-        if (i != AA_GetLastIdx(T))
-        {
-            printf(",");
-        }
+        printKata(A_Name(AA_T(T)[i]));
+        printf(", Duration: ");
+        TulisJAM(A_Duration(AA_T(T)[i]));
     }
-    printf("]");
 }
 
 

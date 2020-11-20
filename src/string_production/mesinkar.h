@@ -11,6 +11,16 @@ typedef char* string;
 extern char MK_CC;
 extern boolean MK_EOP;
 
+/* Mesin karakter dari input */
+void MK_STARTINPUT();
+/* Mesin siap dioperasikan. Pita disiapkan untuk dibaca.
+   Karakter pertama yang ada pada pita posisinya adalah pada jendela.
+   I.S. : sembarang
+   F.S. : CC adalah karakter pertama pada pita
+          Jika CC != MARK maka EOP akan padam (false)
+          Jika CC = MARK maka EOP akan menyala (true) */
+
+/* Mesin Karakter dari file */
 void MK_START(string filename);
 /* Mesin siap dioperasikan. Pita disiapkan untuk dibaca.
    Karakter pertama yang ada pada pita posisinya adalah pada jendela.

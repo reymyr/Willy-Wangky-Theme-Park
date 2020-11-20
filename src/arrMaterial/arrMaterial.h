@@ -4,7 +4,8 @@
 #ifndef ARRMATERIAL_H
 #define ARRMATERIAL_H
 
-#include "boolean.h"
+#include "../boolean.h"
+#include "../string_production/mesinkata.h"
 
 #define IdxMax 50   // indeks maksimum array
 #define IdxMin 0    // indeks minimum array
@@ -13,7 +14,7 @@
 typedef int IdxType;
 typedef struct {
     int materialId;
-    // KATA name;
+    Kata name;
     int price;
 } Material;
 

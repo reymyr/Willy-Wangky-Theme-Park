@@ -9,6 +9,20 @@ boolean MK_EOP;
 static FILE * MK_pita;
 static int MK_retval;
 
+
+void MK_STARTINPUT() {
+/* Mesin siap dioperasikan. Pita disiapkan untuk dibaca.
+   Karakter pertama yang ada pada pita posisinya adalah pada jendela.
+   I.S. : sembarang
+   F.S. : CC adalah karakter pertama pada pita. Jika CC != MARK maka EOP akan padam (false).
+          Jika CC = MARK maka EOP akan menyala (true) */
+
+	/* Algoritma */
+	MK_pita = stdin;
+	MK_ADV();
+}
+
+
 void MK_START(string filename){
 /* Mesin siap dioperasikan. Pita disiapkan untuk dibaca.
    Karakter pertama yang ada pada pita posisinya adalah pada jendela.

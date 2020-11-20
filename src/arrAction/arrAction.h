@@ -6,6 +6,7 @@
 
 #include "../boolean.h"
 #include "../jam/jam.h"
+#include "../string_production/mesinkata.h"
 
 #define IdxMax 50   // indeks maksimum array
 #define IdxMin 0    // indeks minimum array
@@ -14,7 +15,7 @@
 typedef int IdxType;
 typedef struct {
     int actionId;
-    // KATA name;
+    Kata name;
     JAM duration;
 } Action;
 
@@ -34,7 +35,7 @@ typedef struct {
 #define AA_T(Arr) (Arr).T
 #define AA_Elmt(Arr, i) (Arr).T[(i)]
 
-Action createAction(int id,/*KATA nama,*/ JAM durasi);
+Action createAction(int id, Kata nama, JAM durasi);
 /* Fungsi untuk membuat Action baru */
 
 /* ********** KONSTRUKTOR ********** */
