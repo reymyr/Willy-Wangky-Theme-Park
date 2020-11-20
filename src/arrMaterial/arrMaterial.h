@@ -32,7 +32,7 @@ typedef struct {
 #define AM_T(Arr) (Arr).T
 #define AM_Elmt(Arr, i) (Arr).T[(i)]
 
-Material createMaterial(int id,/*KATA nama,*/ int price);
+Material createMaterial(int id, Kata nama, int price);
 /* Fungsi untuk membuat Material baru */
 
 /* ********** KONSTRUKTOR ********** */

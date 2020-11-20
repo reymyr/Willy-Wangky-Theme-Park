@@ -3,7 +3,7 @@
 #include "boolean.h"
 #include "arrAction.h"
 #include "../jam/jam.h"
-#include "../mesinkata/mesinkata.h"
+#include "../string_production/mesinkata.h"
 
 Action createAction(int id, Kata nama, JAM durasi)
 /* Fungsi untuk membuat Action baru */

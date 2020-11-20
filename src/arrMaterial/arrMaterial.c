@@ -2,14 +2,15 @@
 #include <stdlib.h>
 #include "../boolean.h"
 #include "arrMaterial.h"
+#include "string_production/mesinkata.h"
 
-Material createMaterial(int id,/*KATA nama,*/ int price)
+Material createMaterial(int id, Kata nama, int price)
 /* Fungsi untuk membuat Material baru */
 {
     Material M;
 
     M_MaterialID(M) = id;
-    // M_Name(M) = nama;
+    M_Name(M) = nama;
     M_Price(M) = price;
 
     return M;
