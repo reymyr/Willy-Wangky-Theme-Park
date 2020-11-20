@@ -163,7 +163,7 @@ boolean AA_IsEQ(ArrAction T1, ArrAction T2)
 
 /* ********** SEARCHING ********** */
 /* ***  Perhatian : Tabel boleh kosong!! *** */
-IdxType AA_SearchId(ArrAction T, int ID)
+IdxType AA_SearchI(ArrAction T, Kata K)
 /* Search apakah ada elemen tabel T yang dengan id ID */
 /* Jika ada, menghasilkan indeks i terkecil, dengan id = ID */
 /* Jika tidak ada, mengirimkan IdxUndef */
@@ -180,7 +180,7 @@ IdxType AA_SearchId(ArrAction T, int ID)
         IdxType i = AA_GetFirstIdx(T);
         while (!found && i <= AA_GetLastIdx(T))
         {
-            if (A_ActionID(AA_Elmt(T, i)) == ID)
+            if (MK_isKataSama(K, A_Name(AA_Elmt(T, i))))
             {
                 found = true;
             }
@@ -197,7 +197,7 @@ IdxType AA_SearchId(ArrAction T, int ID)
         }   
     }
 }
-boolean AA_SearchIdB(ArrAction T, int ID)
+boolean AA_SearchB(ArrAction T, Kata K)
 /* Search apakah ada elemen tabel T dengan id ID */
 /* Jika ada, menghasilkan true, jika tidak ada menghasilkan false */
 /* Skema searching yang digunakan bebas */
@@ -206,7 +206,7 @@ boolean AA_SearchIdB(ArrAction T, int ID)
     IdxType i = AA_GetFirstIdx(T);
     while (!found && i <= AA_GetLastIdx(T))
     {
-        if (A_ActionID(AA_Elmt(T, i)) == ID)
+        if (MK_isKataSama(K, A_Name(AA_Elmt(T, i))))
         {
             found = true;
         }

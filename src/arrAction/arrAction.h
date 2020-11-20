@@ -106,13 +106,13 @@ boolean AA_IsEQ(ArrAction T1, ArrAction T2);
 
 /* ********** SEARCHING ********** */
 /* ***  Perhatian : Tabel boleh kosong!! *** */
-IdxType AA_SearchId(ArrAction T, int ID);
+IdxType AA_SearchI(ArrAction T, Kata K);
 /* Search apakah ada elemen tabel T yang dengan id ID */
 /* Jika ada, menghasilkan indeks i terkecil, dengan id = ID */
 /* Jika tidak ada, mengirimkan IdxUndef */
 /* Menghasilkan indeks tak terdefinisi (IdxUndef) jika tabel T kosong */
 /* Skema Searching yang digunakan bebas */
-boolean AA_SearchIdB(ArrAction T, int ID);
+boolean AA_SearchB(ArrAction T, Kata K);
 /* Search apakah ada elemen tabel T dengan id ID */
 /* Jika ada, menghasilkan true, jika tidak ada menghasilkan false */
 /* Skema searching yang digunakan bebas */
