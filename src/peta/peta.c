@@ -8,7 +8,7 @@ void BacaPeta(Peta *P, char *filename)
 /* I.S. Peta sembaarang */
 /* F.S. Array Mem terisi dengan elemen elemen bertipe Area yang dibaca dari File */
 {
-    STARTMATRIKS("map.txt");
+    STARTMATRIKS(filename);
     int i = 0;
     while (!ENDMATRIKS)
     {

@@ -156,7 +156,7 @@ void SalinMatriks(){
         MK_ADV();
     }
     NBrsEff(CMatriks) = NB+1;
-    NKolEff(CMatriks) = NK+1;
+    NKolEff(CMatriks) = NK;
 }
 
 /* ********** Operasi lain ********** */
