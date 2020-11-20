@@ -83,5 +83,11 @@ Kata MK_MakeKata(char* string, int len);
 boolean MK_isKataSama(Kata K1, Kata K2);
 /* Mengembalikan true jika K1 = K2, false jika tidak */
 
+int MK_CToI(char c);
+/* Mengubah karakter ke integer */
+
+int MK_KataToInt(Kata K);
+/* Mengubah kata ke integer */
+
 #endif
 

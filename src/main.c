@@ -3,7 +3,6 @@
 
 int main()
 {
-    boolean started = false;
     Kata NEW = MK_MakeKata("new", 3);
     Kata LOAD = MK_MakeKata("load", 4);
     Kata EXIT = MK_MakeKata("exit", 4);
@@ -50,9 +49,15 @@ int main()
             MK_STARTKATAINPUT();
             do
             {
-                /* GANTI JADI GAME LOGIC */
                 MK_printKata(MK_CKata); printf("\n");
                 MK_ADVKATAINPUT();
+                /* GANTI JADI GAME LOGIC */
+                /* Preparation Phase */
+
+
+                /* Main Phase */
+
+
             } while (!lose && !MK_EndKata);
             
         }        

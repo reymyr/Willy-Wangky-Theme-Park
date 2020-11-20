@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "../boolean.h"
 #include "arrMaterial.h"
-#include "string_production/mesinkata.h"
+#include "../string_production/mesinkata.h"
 
 Material createMaterial(int id, Kata nama, int price)
 /* Fungsi untuk membuat Material baru */
@@ -83,7 +83,7 @@ boolean AM_IsFull(TabMaterial T)
 
 /* ********** BACA dan TULIS dengan INPUT/OUTPUT device ********** */
 /* *** Mendefinisikan isi tabel dari pembacaan *** */
-void AM_BacaIsi(TabMaterial *T)
+void AM_BacaFile(TabMaterial *T, char* filename)
 /* I.S. T sembarang dan sudah dialokasikan sebelumnya */
 /* F.S. Tabel T terdefinisi */
 /* Proses : membaca banyaknya elemen T dan mengisi nilainya */
@@ -94,27 +94,19 @@ void AM_BacaIsi(TabMaterial *T)
       IdxMin satu per satu diakhiri enter */
 /*    Jika N = 0; hanya terbentuk T kosong */
 {
-    int i, N;
-    
-    do
-    {
-        scanf("%d", &N);
-    } while (N < 0 || N > AM_MaxElement(*T));
-    
-    if (N == 0)
-    {
-        AM_NEff(*T) = 0;
+    AM_MakeEmpty(T);
+    int i = 0;
+    MK_STARTKATA(filename);
+    while (!MK_EndKata)
+    { 
+        Kata nama = MK_CKata;
+        MK_ADVKATA();
+        int harga = MK_KataToInt(MK_CKata);
+        AM_AddAsLastEl(T, createMaterial(i, nama, harga));
+        i++;
+        MK_ADVKATA();
     }
-    else
-    {
-        for (i = IdxMin; i < N; i++)
-        {
-            Material x;
-            scanf("%d", &x);
-            AM_Elmt(*T, i) = x;
-            AM_NEff(*T)++;
-        }
-    }
+    
 }
 void AM_TulisIsiTab(TabMaterial T)
 /* Proses : Menuliskan isi tabel dengan traversal, tabel ditulis di antara kurung siku;
@@ -126,47 +118,16 @@ void AM_TulisIsiTab(TabMaterial T)
 /* Jika tabel kosong : menulis [] */
 {
     IdxType i;
-    printf("[");
     for (i = AM_GetFirstIdx(T); i <= AM_GetLastIdx(T); i++)
     {
-        printf("%d", AM_Elmt(T, i));
-        if (i != AM_GetLastIdx(T))
-        {
-            printf(",");
-        }
-    }
-    printf("]");
-}
-
-
-/* ********** OPERATOR RELASIONAL ********** */
-/* *** Operasi pembandingan tabel : < =, > *** */
-boolean AM_IsEQ(TabMaterial T1, TabMaterial T2)
-/* Mengirimkan true jika T1 sama dengan T2 yaitu jika AM_NEff T1 = T2 dan semua elemennya sama */
-{
-    if (AM_NbElmt(T1) != AM_NbElmt(T2))
-    {
-        return false;
-    }
-    else
-    {
-        boolean equal = true;
-        IdxType i = AM_GetFirstIdx(T1);
-        while (equal && i <= AM_GetLastIdx(T1))
-        {
-            if (Elmt(T1, i) != Elmt(T2, i))
-            {
-                equal = false;
-            }
-            i++;
-        }  
-        return equal;
+        MK_printKata(M_Name(AM_T(T)[i]));
+        printf(", Harga: %d\n", M_Price(AM_T(T)[i]));
     }
 }
 
 /* ********** SEARCHING ********** */
 /* ***  Perhatian : Tabel boleh kosong!! *** */
-IdxType AM_Search1(TabMaterial T, int ID)
+IdxType AM_SearchI(TabMaterial T, Kata K)
 /* Search apakah ada elemen tabel T yang bernilai X */
 /* Jika ada, menghasilkan indeks i terkecil, dengan elemen ke-i = X */
 /* Jika tidak ada, mengirimkan IdxUndef */
@@ -183,7 +144,7 @@ IdxType AM_Search1(TabMaterial T, int ID)
         IdxType i = AM_GetFirstIdx(T);
         while (!found && i <= AM_GetLastIdx(T))
         {
-            if (M_MaterialID(AM_Elmt(T, i)) == ID)
+            if (MK_isKataSama(K, M_Name(AM_Elmt(T, i))))
             {
                 found = true;
             }
@@ -200,8 +161,8 @@ IdxType AM_Search1(TabMaterial T, int ID)
         }   
     }
 }
-boolean AM_SearchIdB(TabMaterial T, int ID)
-/* Search apakah ada elemen tabel T yang bernilai X */
+boolean AM_SearchB(TabMaterial T, Kata K)
+/* Search apakah ada elemen tabel T dengan nama K */
 /* Jika ada, menghasilkan true, jika tidak ada menghasilkan false */
 /* Skema searching yang digunakan bebas */
 {
@@ -209,7 +170,7 @@ boolean AM_SearchIdB(TabMaterial T, int ID)
     IdxType i = AM_GetFirstIdx(T);
     while (!found && i <= AM_GetLastIdx(T))
     {
-        if (M_MaterialID(AM_Elmt(T, i)) == ID)
+        if (MK_isKataSama(K, M_Name(AM_Elmt(T, i))))
         {
             found = true;
         }

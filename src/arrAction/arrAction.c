@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "boolean.h"
+#include "../boolean.h"
 #include "arrAction.h"
 #include "../jam/jam.h"
 #include "../string_production/mesinkata.h"

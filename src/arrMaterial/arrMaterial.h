@@ -19,8 +19,8 @@ typedef struct {
 } Material;
 
 typedef struct {
-    Material T[IdxMax+1]; // Memori tempat penyimpanan aksi
-    int NEff;           // Banyak elemen efektif
+    Material T[IdxMax+1];  // Memori tempat penyimpanan material
+    int NEff;              // Banyak elemen efektif
 } TabMaterial;
 
 /* SELEKTOR */
@@ -76,7 +76,7 @@ boolean AM_IsFull(TabMaterial T);
 
 /* ********** BACA dan TULIS dengan INPUT/OUTPUT device ********** */
 /* *** Mendefinisikan isi tabel dari pembacaan *** */
-void AM_BacaIsi(TabMaterial *T);
+void AM_BacaFile(TabMaterial *T, char* filename);
 /* I.S. T sembarang dan sudah dialokasikan sebelumnya */
 /* F.S. Tabel T terdefinisi */
 /* Proses : membaca banyaknya elemen T dan mengisi nilainya */
@@ -96,21 +96,16 @@ void AM_TulisIsiTab(TabMaterial T);
 /* Jika tabel kosong : menulis [] */
 
 
-/* ********** OPERATOR RELASIONAL ********** */
-/* *** Operasi pembandingan tabel : < =, > *** */
-boolean AM_IsEQ(TabMaterial T1, TabMaterial T2);
-/* Mengirimkan true jika T1 sama dengan T2 yaitu jika Neff T1 = T2 dan semua elemennya sama */
-
 /* ********** SEARCHING ********** */
 /* ***  Perhatian : Tabel boleh kosong!! *** */
-IdxType AM_SearchId(TabMaterial T, int ID);
-/* Search apakah ada elemen tabel T dengan id ID */
+IdxType AM_SearchI(TabMaterial T, Kata K);
+/* Search apakah ada elemen tabel T dengan nama K */
 /* Jika ada, menghasilkan indeks i terkecil, dengan id = ID */
 /* Jika tidak ada, mengirimkan IdxUndef */
 /* Menghasilkan indeks tak terdefinisi (IdxUndef) jika tabel T kosong */
 /* Skema Searching yang digunakan bebas */
-boolean AM_SearchIdB(TabMaterial T, int ID);
-/* Search apakah ada elemen tabel T dengan id ID */
+boolean AM_SearchB(TabMaterial T, Kata K);
+/* Search apakah ada elemen tabel T dengan nama K */
 /* Jika ada, menghasilkan true, jika tidak ada menghasilkan false */
 /* Skema searching yang digunakan bebas */
 
