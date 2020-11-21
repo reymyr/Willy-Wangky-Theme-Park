@@ -10,9 +10,9 @@ Kata MK_CKata;
 
 /* Mesin Kata input */
 void MK_IgnoreNewline(){
-/* Mengabaikan satu atau beberapa BLANK
+/* Mengabaikan satu atau beberapa NEWLINE
    I.S. : MK_CC sembarang 
-   F.S. : MK_CC ≠ BLANK atau MK_CC = MARK */
+   F.S. : MK_CC ≠ NEWLINE atau MK_CC = MARK */
     while(MK_CC==MK_NEWLINE){
         MK_ADV();
     }

@@ -34,6 +34,9 @@ void TulisJAM (JAM J);
 /* F.S. : Nilai J ditulis dg format HH:MM:SS */
 /* Proses : menulis nilai setiap komponen J ke layar dalam format Day DD - HH.MM
    tanpa karakter apa pun di depan atau belakangnya, termasuk spasi, enter, dll. */
+void TulisJamMenit (JAM J);
+/* I.S : J terdefinisi */
+/* Menulis Jam dan Menit dari J */
 
 /*** Konversi ***/
 long JAMToMenit (JAM J);

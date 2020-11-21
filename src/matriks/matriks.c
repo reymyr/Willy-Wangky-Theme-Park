@@ -58,13 +58,13 @@ void TulisMATRIKS(MATRIKS M, FILE *f){
     for (int i = 0; i <= GetLastIdxBrs(M); i++){
         for (int j = 0; j < GetLastIdxKol(M); j++)
         {
-            fprintf(f,"%c",Elmt(M,i,j));
+            fprintf(f,"%c",T_Type(Elmt(M,i,j)));
         }
         if (i!=GetLastIdxBrs(M)){
-            fprintf(f,"%c\n",Elmt(M,i,GetLastIdxKol(M))); 
+            fprintf(f,"%c\n",T_Type(Elmt(M,i,GetLastIdxKol(M)))); 
         } else
         {
-            fprintf(f,"%c",Elmt(M,i,GetLastIdxKol(M)));
+            fprintf(f,"%c",T_Type(Elmt(M,i,GetLastIdxKol(M))));
         }        
     }
 }
@@ -85,18 +85,18 @@ void PrintMATRIKS (MATRIKS M)
     {
         for (j=GetFirstIdxKol(M);j<GetLastIdxKol(M);j++)
         {
-            printf("%c ",Elmt(M,i,j));
+            printf("%c ",T_Type(Elmt(M,i,j)));
         }
         //j = last id kolom 
-        printf("%c",Elmt(M,i,GetLastIdxKol(M)));
+        printf("%c",T_Type(Elmt(M,i,GetLastIdxKol(M))));
         printf("\n");
     }
     // i==id terakhir baris matriks
     for (j=GetFirstIdxKol(M);j<GetLastIdxKol(M);j++)
     {
-        printf("%c ",Elmt(M,GetLastIdxBrs(M),j));
+        printf("%c ",T_Type(Elmt(M,GetLastIdxBrs(M),j)));
     }
-    printf("%c\n",Elmt(M,GetLastIdxBrs(M),GetLastIdxKol(M)));
+    printf("%c\n",T_Type(Elmt(M,GetLastIdxBrs(M),GetLastIdxKol(M))));
 }
 
 
@@ -150,7 +150,8 @@ void SalinMatriks(){
             NK=0;
         } else
         {
-            Elmt(CMatriks,NB,NK) = MK_CC;
+            T_Type(Elmt(CMatriks,NB,NK)) = MK_CC;
+            T_ID(Elmt(CMatriks,NB,NK)) = -1;
             NK++;
         }
         MK_ADV();

@@ -15,7 +15,13 @@
 #define SEPARATOR '-'
 
 typedef int indeks; /* indeks baris, kolom */
-typedef char ElType; 
+
+typedef struct { 
+	char type;
+   int id; /* berisi id wahana jika type='W', -1 jiak bukan */
+} Tile;
+
+typedef Tile ElType; 
 typedef struct { 
 	ElType Mem[BrsMax+1][KolMax+1];
    int NBrsEff; /* banyaknya/ukuran baris yg terdefinisi */
@@ -36,6 +42,9 @@ void MakeMATRIKS (int NB, int NK, MATRIKS * M);
 /* F.S. Matriks M sesuai dengan definisi di atas terbentuk */
 
 /* *** Selektor *** */
+#define T_Type(T) (T).type
+#define T_ID(T) (T).id
+
 #define NBrsEff(M) (M).NBrsEff
 #define NKolEff(M) (M).NKolEff
 #define Elmt(M,i,j) (M).Mem[(i)][(j)]

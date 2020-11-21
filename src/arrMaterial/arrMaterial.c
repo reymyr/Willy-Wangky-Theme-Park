@@ -179,6 +179,20 @@ boolean AM_SearchB(TabMaterial T, Kata K)
     return found;    
 }
 
+int AM_GetPrice(TabMaterial T, Kata K)
+/* Mengembalikan harga dari material K */
+/* Jika tidak ada mengembalikan -1 */
+{
+    int idx = AM_SearchI(T, K);
+    if (idx == IdxUndef)
+    {
+        return -1;
+    }
+    else
+    {
+        return M_Price(AM_Elmt(T, idx));
+    }
+}
 
 /* ********** OPERASI LAIN ********** */
 void AM_CopyTab(TabMaterial Tin, TabMaterial *Tout)

@@ -11,7 +11,6 @@
 
 typedef int indeks;
 typedef MATRIKS area;
-typedef char ElType; 
 typedef struct { 
     area Mem[NArea];
 } Peta;

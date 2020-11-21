@@ -108,7 +108,9 @@ boolean AM_SearchB(TabMaterial T, Kata K);
 /* Search apakah ada elemen tabel T dengan nama K */
 /* Jika ada, menghasilkan true, jika tidak ada menghasilkan false */
 /* Skema searching yang digunakan bebas */
-
+int AM_GetPrice(TabMaterial T, Kata K);
+/* Mengembalikan harga dari material K */
+/* Jika tidak ada mengembalikan -1 */
 
 /* ********** OPERASI LAIN ********** */
 void AM_CopyTab(TabMaterial Tin, TabMaterial *Tout);

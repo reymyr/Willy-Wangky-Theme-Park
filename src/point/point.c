@@ -2,7 +2,7 @@
 /* Body ADT point */
 
 #include "point.h"
-#include "boolean.h"
+#include "../boolean.h"
 #include <math.h>
 #include <stdio.h>
 

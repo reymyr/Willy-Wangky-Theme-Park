@@ -50,6 +50,17 @@ void TulisJAM (JAM J)
     printf("Day %d - %d.%d", Day(J), Hour(J), Minute(J));
 }
 
+void TulisJamMenit (JAM J)
+/* I.S : J terdefinisi */
+/* Menulis Jam dan Menit dari J */
+{
+    printf("%d hour(s)", Hour(J));
+    if (Minute(J) != 0)
+    {
+        printf(" and %d minute(s)", Minute(J));
+    }
+}
+
 /*** Konversi ***/
 long JAMToMenit (JAM J)
 /* Diberikan sebuah JAM, mengkonversi menjadi jumlah menit dari pukul 0:0:0 */
