@@ -107,8 +107,8 @@ int main()
                     printf("Opening Time: "); TulisJAM(OpeningTime); printf("\n");
                     printf("Time Remaining: "); TulisJamMenit(DurasiJam(CurrentTime, OpeningTime)); printf("\n");
                     printf("Total aksi yang akan dilakukan: \n"); /* diisi data dr stack (NBelmtStack) */
-                    printf("Total waktu yang dilakukan: \n"); /* diisi data dr stack (build, buy, upgrade) */
-                    printf("Total uang yang dilakukan: \n\n"); /* diisi data dr stack (build, buy, upgrade) */
+                    printf("Total waktu yang dibutuhkan: \n"); /* diisi data dr stack (build, buy, upgrade) */
+                    printf("Total uang yang dibutuhkan: \n\n"); /* diisi data dr stack (build, buy, upgrade) */
 
                     printf("Masukkan perintah: \n");
 
