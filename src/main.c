@@ -12,12 +12,10 @@ void initMainActionArray(ArrAction * AA);
 int main()
 {
     int moveStatus;
+    boolean prepPhase;
     ArrAction ActionDatabase;
-    initActionDatabase(&ActionDatabase);
     ArrAction PrepActionArray;
-    initPrepActionArray(&PrepActionArray);
     ArrAction MainActionArray;
-    initMainActionArray(&MainActionArray);
     TabMaterial MaterialDatabase;
     JAM CurrentTime;
     JAM OpeningTime = MakeJAM(0, 9, 0);
@@ -27,8 +25,12 @@ int main()
     Kata KATAEXIT = MK_MakeKata("exit", 4);
     Graph Map;
     Player P;
-    boolean prepPhase;
+    PrioQueuePengunjung Antrian;
 
+    initActionDatabase(&ActionDatabase);
+    initPrepActionArray(&PrepActionArray);
+    initMainActionArray(&MainActionArray);
+    PQ_MakeEmpty(&Antrian);
     AM_BacaFile(&MaterialDatabase, "../files/material.txt");
 
     printf("Welcome to Willy Wangky's\n");
@@ -92,8 +94,6 @@ int main()
                 InsertLastGraph(&Map, P3);
                 InsertLastGraph(&Map, P4);
             }
-
-            boolean lose = false;
  
             do
             {
@@ -151,21 +151,71 @@ int main()
                         prepPhase = false;
                         break;
                     case 9:
+                        /* MAIN */
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
                         prepPhase = false;
                         break;
                     default:
                         break;
                     }
-                    
                 }
                 else /* Main Phase */
                 {
                     printf("Main Phase Day %d\n", Day(CurrentTime)); 
                     printCurrentMap(Map, P);
-                }
+                    printf("Name: "); MK_printKata(Nama(P)); printf("\n");
+                    printf("Money: %d\n", Money(P));
+                    printf("Current Time: "); TulisJAM(CurrentTime); printf("\n");
+                    printf("Closing Time: "); TulisJAM(ClosingTime); printf("\n");
+                    printf("Time Remaining: "); TulisJamMenit(DurasiJam(CurrentTime, ClosingTime)); printf("\n");
+                    PQ_PrintQueuePengunjung(Antrian); printf("\n");
 
-            } while (!lose && !MK_EndKata);
+                    printf("Masukkan perintah: \n");
+
+                    MK_STARTKATAINPUT();
+                    while (!AA_SearchB(MainActionArray, MK_CKata))
+                    {
+                        printf("Input tidak valid\n");
+                        MK_ADVKATAINPUT();
+                    }
+                    int ActionID = AA_SearchID(MainActionArray, MK_CKata);
+                    switch (ActionID)
+                    {
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        /* MOVE (W, A, S, D) */
+                        move(&Map, &P, ActionID, &moveStatus);
+                        if (moveStatus == 1)
+                        {
+                            CurrentTime = NextNMenit(CurrentTime, JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, ActionID))));
+                        }
+                        printf("\n");
+                        break;
+                    case 10:
+                        /* SERVE */
+                        break;
+                    case 11:
+                        /* REPAIR */
+                        break;
+                    case 12:
+                        /* DETAIL */
+                        break;
+                    case 13:
+                        /* OFFICE */
+                        break;
+                    case 14:
+                        /* PREPARE */
+                        PQ_MakeEmpty(&Antrian);
+                        CurrentTime = MakeJAM(Day(CurrentTime)+1, 21, 0);
+                        prepPhase = true;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            } while (!MK_EndKata);
             
         }        
         else

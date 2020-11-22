@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "boolean.h"
+#include "../boolean.h"
 #include "prioQueuePengunjung.h"
 
 /* ********* Prototype ********* */
 boolean PQ_IsEmpty (PrioQueuePengunjung Q)
 /* Mengirim true jika Q kosong: lihat definisi di atas */
 {
-    return (PQ_Head(Q) == Nil && Tail(Q) == Nil);
+    return (PQ_Head(Q) == Nil && PQ_Tail(Q) == Nil);
 }
 boolean PQ_IsFull (PrioQueuePengunjung Q)
 /* Mengirim true jika tabel penampung elemen Q sudah penuh */
@@ -23,13 +23,13 @@ int PQ_NBElmt (PrioQueuePengunjung Q)
     {
         return 0;
     }
-    else if (PQ_Head(Q) > Tail(Q))
+    else if (PQ_Head(Q) > PQ_Tail(Q))
     {
-        return (PQ_MaxEl - PQ_Head(Q) + Tail(Q) + 1);
+        return (PQ_MaxEl - PQ_Head(Q) + PQ_Tail(Q) + 1);
     }   
     else
     {
-        return (Tail(Q) - PQ_Head(Q) + 1);
+        return (PQ_Tail(Q) - PQ_Head(Q) + 1);
     }   
 }
 
@@ -58,9 +58,9 @@ void PQ_Enqueue (PrioQueuePengunjung * Q, Pengunjung X)
     }
     else
     {
-        int i = Tail(*Q);
-        PQ_Tail(*Q) = (Tail(*Q) + 1) % PQ_MaxEl;
-        while (Prio(Elmt(*Q, i)) > Prio(X) && i != (Head(*Q)-1+PQ_MaxEl) % PQ_MaxEl)
+        int i = PQ_Tail(*Q);
+        PQ_Tail(*Q) = (PQ_Tail(*Q) + 1) % PQ_MaxEl;
+        while (P_Prio(PQ_Elmt(*Q, i)) > P_Prio(X) && i != (PQ_Head(*Q)-1+PQ_MaxEl) % PQ_MaxEl)
         {
             PQ_Elmt(*Q, (i+1) % PQ_MaxEl) = PQ_Elmt(*Q, i);
             i = (i-1+PQ_MaxEl) % PQ_MaxEl;
@@ -87,7 +87,7 @@ void PQ_Dequeue (PrioQueuePengunjung * Q, Pengunjung * X)
 }
 
 /* Operasi Tambahan */
-void PrintPrioQueuePengunjung (PrioQueuePengunjung Q)
+void PQ_PrintQueuePengunjung (PrioQueuePengunjung Q)
 /* Mencetak isi queue Q ke layar */
 /* I.S. Q terdefinisi, mungkin kosong */
 /* F.S. Q tercetak ke layar dengan format:
