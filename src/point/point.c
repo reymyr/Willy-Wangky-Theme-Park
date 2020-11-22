@@ -37,7 +37,7 @@ void TulisPOINT (POINT P)
 	/*ALGORITMA*/
 	X = P.X;
 	Y = P.Y;
-	printf("(%d,%d)\n", &X, &Y);
+	printf("(%d,%d)", &X, &Y);
 }
 
 POINT PlusDelta (POINT P, int deltaX, int deltaY)
