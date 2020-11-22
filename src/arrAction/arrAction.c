@@ -129,43 +129,17 @@ void AA_TulisIsiTab(ArrAction T)
     IdxType i;
     for (i = AA_GetFirstIdx(T); i <= AA_GetLastIdx(T); i++)
     {
-        printKata(A_Name(AA_T(T)[i]));
+        MK_printKata(A_Name(AA_T(T)[i]));
         printf(", Duration: ");
         TulisJAM(A_Duration(AA_T(T)[i]));
-    }
-}
-
-
-/* ********** OPERATOR RELASIONAL ********** */
-/* *** Operasi pembandingan tabel : < =, > *** */
-boolean AA_IsEQ(ArrAction T1, ArrAction T2)
-/* Mengirimkan true jika T1 sama dengan T2 yaitu jika NEff T1 = T2 dan semua elemennya sama */
-{
-    if (AA_NbElmt(T1) != AA_NbElmt(T2))
-    {
-        return false;
-    }
-    else
-    {
-        boolean equal = true;
-        IdxType i = AA_GetFirstIdx(T1);
-        while (equal && i <= AA_GetLastIdx(T1))
-        {
-            if (Elmt(T1, i) != Elmt(T2, i))
-            {
-                equal = false;
-            }
-            i++;
-        }  
-        return equal;
     }
 }
 
 /* ********** SEARCHING ********** */
 /* ***  Perhatian : Tabel boleh kosong!! *** */
 IdxType AA_SearchI(ArrAction T, Kata K)
-/* Search apakah ada elemen tabel T yang dengan id ID */
-/* Jika ada, menghasilkan indeks i terkecil, dengan id = ID */
+/* Search apakah ada elemen tabel T yang dengan nama K*/
+/* Jika ada, menghasilkan indeks i terkecil, dengan nama K */
 /* Jika tidak ada, mengirimkan IdxUndef */
 /* Menghasilkan indeks tak terdefinisi (IdxUndef) jika tabel T kosong */
 /* Skema Searching yang digunakan bebas */
@@ -198,7 +172,7 @@ IdxType AA_SearchI(ArrAction T, Kata K)
     }
 }
 boolean AA_SearchB(ArrAction T, Kata K)
-/* Search apakah ada elemen tabel T dengan id ID */
+/* Search apakah ada elemen tabel T dengan nama K */
 /* Jika ada, menghasilkan true, jika tidak ada menghasilkan false */
 /* Skema searching yang digunakan bebas */
 {
@@ -214,7 +188,21 @@ boolean AA_SearchB(ArrAction T, Kata K)
     }  
     return found;    
 }
-
+int AA_SearchID(ArrAction T, Kata K)
+/* Search apakah ada elemen tabel T yang dengan nama K*/
+/* Jika ada, menghasilkan id action, dengan nama K */
+/* Jika tidak ada, mengirimkan -1 */
+{
+    IdxType i = AA_SearchI(T, K);
+    if (i == IdxUndef)
+    {
+        return -1;
+    }
+    else
+    {
+        return A_ActionID(AA_Elmt(T, i));
+    }   
+}
 
 /* ********** OPERASI LAIN ********** */
 void AA_CopyTab(ArrAction Tin, ArrAction *Tout)

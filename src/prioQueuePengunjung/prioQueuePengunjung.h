@@ -21,13 +21,13 @@ typedef struct {
     int kesabaran; /* 10-0 (kesabaran 0 berarti sudah habis) */
 } Pengunjung; 
 
-typedef int address;   /* indeks tabel */
+typedef int PQaddress;   /* indeks tabel */
 
 /* Contoh deklarasi variabel bertype PrioQueuePengunjung : */
 typedef struct {
     Pengunjung T[PQ_MaxEl+1];   /* tabel penyimpan elemen */
-    address HEAD;               /* alamat penghapusan */
-    address TAIL;               /* alamat penambahan */
+    PQaddress HEAD;               /* alamat penghapusan */
+    PQaddress TAIL;               /* alamat penambahan */
 } PrioQueuePengunjung;
 /* Definisi PrioQueuePengunjung kosong: HEAD=Nil; TAIL=Nil. */
 

@@ -10,25 +10,25 @@
 
 #define G_Nil NULL
 
-typedef struct tNodeGraph *address;
-typedef struct tNodeGate *Gaddress;
+typedef struct tNodeGraph *Gaddress;
+typedef struct tNodeGate *GTaddress;
 
 typedef struct tNodeGate {
     int destArea;
     POINT from;
     POINT to;
-    Gaddress next;
+    GTaddress next;
 } Gate;
 typedef struct tNodeGraph {
     int area;
     MATRIKS map;
-    address next;
-    Gaddress gates;
+    Gaddress next;
+    GTaddress gates;
 } NodeGraph;
 
 typedef struct {
     int currentArea;
-    address First;
+    Gaddress First;
 } Graph;
 
 /*** Selektor, Note: masi belom bener kayanya ***/
@@ -54,34 +54,34 @@ boolean IsEmptyGraph (Graph *G);
 /* mengecek apakah G adalah graph kosong atau bukan */
 /* Definisi graph kosong adalah First(G) = Nil */
 
-address AlokasiNodeGraph(char *filename);
+Gaddress AlokasiNodeGraph(char *filename);
 /* Mengalokasikan address hasil alokasi elemen NodeGraph dari file map */
 
-void DealokasiNodeGraph (address P);
+void DealokasiNodeGraph (Gaddress P);
 /* I.S. P terdefinisi */
 /* F.S. P dikembalikan ke sistem */
 /* Melakukan dealokasi/pengembalian address P */
 
-Gaddress AlokasiGate (int destArea, POINT from, POINT to);
+GTaddress AlokasiGate (int destArea, POINT from, POINT to);
 /* Mengirimkan address hasil alokasi elemen Gate */
 /* Jika alokasi berhasil, maka address tidak nil, dan misalnya */
 /* menghasilkan GP, maka GT_DestArea(GP) = destArea, GT_From(GP) = from, GT_To(GP) = to, GT_Next(GP) = G_Nil */
 /* Jika alokasi gagal, mengirimkan Nil */
 
-void DealokasiGate (Gaddress GP);
+void DealokasiGate (GTaddress GP);
 /* I.S. GP terdefinisi */
 /* F.S. GP dikembalikan ke sistem */
-/* Melakukan dealokasi/pengembalian Gaddress GP */
+/* Melakukan dealokasi/pengembalian GTaddress GP */
 
-void InsertFirstGraph (Graph *G, address P);
+void InsertFirstGraph (Graph *G, Gaddress P);
 /* I.S. Sembarang, P sudah dialokasi  */
 /* F.S. Menambahkan elemen ber-address P sebagai elemen pertama */
 
-void InsertLastGraph (Graph *G, address P);
+void InsertLastGraph (Graph *G, Gaddress P);
 /* I.S. Sembarang, P sudah dialokasi  */
 /* F.S. P ditambahkan sebagai elemen terakhir yang baru */
 
-address GetAreaAddress(Graph G, int area);
+Gaddress GetAreaAddress(Graph G, int area);
 /* Mengembalikan address dari node dengan area=area pada G */
 
 void EnterDoor(Graph G, int area, POINT door, POINT * exit, int * newArea);
@@ -99,7 +99,9 @@ void printCurrentMap(Graph G, Player P);
 void setPlayer(MATRIKS M, Player * P, int x, int y);
 /* Menempatkan player pada posisi (x,y) */
 
-void move(Graph *G, Player * P, int move_code);
+void move(Graph *G, Player * P, int move_code, int * status);
 /* Prosedur bergerak untuk player */
+/* Jika tidak bergerak karena menabrak pagar/wahana, status = 0 */
+/* Jika berhasil bergerak, status = 1 */
 
 #endif

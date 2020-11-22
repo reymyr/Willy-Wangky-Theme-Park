@@ -47,14 +47,14 @@ void TulisJAM (JAM J)
 /* Proses : menulis nilai setiap komponen J ke layar dalam format Day DD - HH.MM
    tanpa karakter apa pun di depan atau belakangnya, termasuk spasi, enter, dll. */
 {
-    printf("Day %d - %d.%d", Day(J), Hour(J), Minute(J));
+    printf("%02d.%02d", Hour(J), Minute(J));
 }
 
 void TulisJamMenit (JAM J)
 /* I.S : J terdefinisi */
 /* Menulis Jam dan Menit dari J */
 {
-    if (Jam(J) != 0)
+    if (Hour(J) != 0)
     {
         printf("%d hour(s) ", Hour(J));
     }
@@ -164,4 +164,22 @@ long Durasi (JAM JAw, JAM JAkh)
     }
 
     return dif;
+}
+
+JAM DurasiJam(JAM JAw, JAM JAkh)
+/* Mengirim JAkh-JAw tanpa memperhatikan komponen Hari */
+{
+    int HAw = Hour(JAw);
+    long MAw = Minute(JAw) + 60*HAw;
+    int HAkh = Hour(JAkh);
+    long MAkh = Minute(JAkh) + 60*HAkh;
+
+    if (MAw > MAkh)
+    {
+        return MenitToJAM(1440-MAw+MAkh);
+    }
+    else
+    {
+        return MenitToJAM(MAkh-MAw);
+    }
 }

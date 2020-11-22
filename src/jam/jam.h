@@ -67,5 +67,7 @@ JAM PrevNMenit (JAM J, int N);
 long Durasi (JAM JAw, JAM JAkh);
 /* Mengirim JAkh-JAw dlm menit, dengan kalkulasi */
 /* Jika JAw > JAkh, maka JAkh adalah 1 hari setelah JAw */
+JAM DurasiJam(JAM JAw, JAM JAkh);
+/* Mengirim JAkh-JAw tanpa memperhatikan komponen Hari */
 
 #endif

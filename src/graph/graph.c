@@ -21,11 +21,10 @@ boolean IsEmptyGraph (Graph *G)
     return G_First(*G) == G_Nil;
 }
 
-address AlokasiNodeGraph(char *filename)
+Gaddress AlokasiNodeGraph(char *filename)
 /* Mengalokasikan address hasil alokasi elemen NodeGraph dari file map */
 {
-    address P = (address) malloc(sizeof(NodeGraph));
-    
+    Gaddress P = (Gaddress) malloc(sizeof(NodeGraph));
     if (P != G_Nil)
     {
         MK_START(filename);
@@ -52,7 +51,7 @@ address AlokasiNodeGraph(char *filename)
             YTo = MK_KataToInt(MK_CKata);
             MK_ADVKATA();
             dest = MK_KataToInt(MK_CKata);
-            Gaddress Gt = AlokasiGate(dest, MakePOINT(XFrom, YFrom), MakePOINT(XTo, YTo));
+            GTaddress Gt = AlokasiGate(dest, MakePOINT(XFrom, YFrom), MakePOINT(XTo, YTo));
             GT_Next(Gt) = G_Gates(P);
             G_Gates(P) = Gt;
             MK_ADV();
@@ -62,7 +61,7 @@ address AlokasiNodeGraph(char *filename)
     return P;
 }
 
-void DealokasiNodeGraph (address P)
+void DealokasiNodeGraph (Gaddress P)
 /* I.S. P terdefinisi */
 /* F.S. P dikembalikan ke sistem */
 /* Melakukan dealokasi/pengembalian address P */
@@ -70,13 +69,13 @@ void DealokasiNodeGraph (address P)
     free(P);
 }
 
-Gaddress AlokasiGate (int destArea, POINT from, POINT to)
+GTaddress AlokasiGate (int destArea, POINT from, POINT to)
 /* Mengirimkan address hasil alokasi elemen Gate */
 /* Jika alokasi berhasil, maka address tidak nil, dan misalnya */
 /* menghasilkan GP, maka GT_DestArea(GP) = destArea, GT_From(GP) = from, GT_To(GP) = to, GT_Next(GP) = G_Nil */
 /* Jika alokasi gagal, mengirimkan Nil */
 {
-    Gaddress GP = (Gaddress) malloc(sizeof(Gate));
+    GTaddress GP = (GTaddress) malloc(sizeof(Gate));
 
     if (GP != G_Nil){
         GT_DestArea(GP) = destArea;
@@ -88,15 +87,15 @@ Gaddress AlokasiGate (int destArea, POINT from, POINT to)
     return GP;
 }
 
-void DealokasiGate (Gaddress GP)
+void DealokasiGate (GTaddress GP)
 /* I.S. GP terdefinisi */
 /* F.S. GP dikembalikan ke sistem */
-/* Melakukan dealokasi/pengembalian Gaddress GP */
+/* Melakukan dealokasi/pengembalian GTaddress GP */
 {
     free(GP);
 }
 
-void InsertFirstGraph (Graph *G, address P)
+void InsertFirstGraph (Graph *G, Gaddress P)
 /* I.S. Sembarang, P sudah dialokasi  */
 /* F.S. Menambahkan elemen ber-address P sebagai elemen pertama */
 {
@@ -104,7 +103,7 @@ void InsertFirstGraph (Graph *G, address P)
     G_First(*G) = P;
 }
 
-void InsertLastGraph (Graph *G, address P)
+void InsertLastGraph (Graph *G, Gaddress P)
 /* I.S. Sembarang, P sudah dialokasi  */
 /* F.S. P ditambahkan sebagai elemen terakhir yang baru */
 {
@@ -114,7 +113,7 @@ void InsertLastGraph (Graph *G, address P)
     }
     else
     {
-        address last = G_First(*G);
+        Gaddress last = G_First(*G);
         while (G_Next(last) != G_Nil)
         {
             last = G_Next(last);
@@ -123,10 +122,10 @@ void InsertLastGraph (Graph *G, address P)
     }
 }
 
-address GetAreaAddress(Graph G, int area)
+Gaddress GetAreaAddress(Graph G, int area)
 /* Mengembalikan address dari node dengan area=area pada G */
 {
-    address P = G_First(G);
+    Gaddress P = G_First(G);
     boolean found = false;
     while (!found && P != G_Nil)
     {
@@ -147,7 +146,7 @@ void EnterDoor(Graph G, int area, POINT door, POINT * exit, int * newArea)
 /* I.S. G, area, door valid, exit dan newArea bebas */
 /* F.S. exit terisi lokasi baru setelah memasuki gerbang, newArea terisi area baru setelah memasuki gerbang */
 {
-    Gaddress GP = G_Gates(GetAreaAddress(G, area));
+    GTaddress GP = G_Gates(GetAreaAddress(G, area));
     boolean found = false;
     while (!found && GP != G_Nil)
     {
@@ -169,7 +168,7 @@ MATRIKS GetMap(Graph G, int area)
 /* Mengembalikan matriks peta pada area */
 /* Asumsi area valid */
 {
-    address P = G_First(G);
+    Gaddress P = G_First(G);
     boolean found = false;
     while (!found && P != G_Nil)
     {
@@ -225,8 +224,10 @@ void setPlayer(MATRIKS M, Player * P, int x, int y)
     
 }
 
-void move(Graph *G, Player * P, int move_code)
+void move(Graph *G, Player * P, int move_code, int * status)
 /* Prosedur bergerak untuk player */
+/* Jika tidak bergerak karena menabrak pagar/wahana, status = 0 */
+/* Jika berhasil bergerak, status = 1 */
 {
     MATRIKS M = GetMap(*G, G_CurrentArea(*G));
     int x = Baris(Pos(*P));
@@ -255,6 +256,7 @@ void move(Graph *G, Player * P, int move_code)
         default:
             break;
         }
+        *status = 1;
     }
     else if (nextChar == '<' || nextChar == 'V' || nextChar == '^' || nextChar == '>')
     {
@@ -285,7 +287,12 @@ void move(Graph *G, Player * P, int move_code)
         default:
             break;
         }
+        *status = 1;
         G_CurrentArea(*G) = newArea;
     }
-    printCurrentMap(*G, *P);
+    else
+    {
+        *status = 0;
+    }
+    
 }

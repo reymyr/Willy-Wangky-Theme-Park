@@ -9,10 +9,10 @@ int main()
     Player P;
     int input;
     CreateEmptyGraph(&G);
-    address P1 = AlokasiNodeGraph("../../files/map1.txt");
-    address P2 = AlokasiNodeGraph("../../files/map2.txt");
-    address P3 = AlokasiNodeGraph("../../files/map3.txt");
-    address P4 = AlokasiNodeGraph("../../files/map4.txt");
+    Gaddress P1 = AlokasiNodeGraph("../../files/map1.txt");
+    Gaddress P2 = AlokasiNodeGraph("../../files/map2.txt");
+    Gaddress P3 = AlokasiNodeGraph("../../files/map3.txt");
+    Gaddress P4 = AlokasiNodeGraph("../../files/map4.txt");
     InsertLastGraph(&G, P1);
     InsertLastGraph(&G, P2);
     InsertLastGraph(&G, P3);
@@ -22,6 +22,7 @@ int main()
     printCurrentMap(G, P);
 
     char moveInput;
+    int status;
     int moveCode = -1;
     do
     {
@@ -47,7 +48,7 @@ int main()
         default:
             break;
         }
-        move(&G, &P, moveCode);
+        move(&G, &P, moveCode, &status);
         printf("\n");
         printCurrentMap(G, P);
 

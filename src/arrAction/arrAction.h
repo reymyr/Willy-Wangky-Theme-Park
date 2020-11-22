@@ -98,12 +98,6 @@ void AA_TulisIsiTab(ArrAction T);
 /* Contoh : jika ada tiga elemen bernilai 1, 20, 30 akan dicetak: [1,20,30] */
 /* Jika tabel kosong : menulis [] */
 
-
-/* ********** OPERATOR RELASIONAL ********** */
-/* *** Operasi pembandingan tabel : < =, > *** */
-boolean AA_IsEQ(ArrAction T1, ArrAction T2);
-/* Mengirimkan true jika T1 sama dengan T2 yaitu jika Neff T1 = T2 dan semua elemennya sama */
-
 /* ********** SEARCHING ********** */
 /* ***  Perhatian : Tabel boleh kosong!! *** */
 IdxType AA_SearchI(ArrAction T, Kata K);
@@ -116,6 +110,10 @@ boolean AA_SearchB(ArrAction T, Kata K);
 /* Search apakah ada elemen tabel T dengan id ID */
 /* Jika ada, menghasilkan true, jika tidak ada menghasilkan false */
 /* Skema searching yang digunakan bebas */
+int AA_SearchID(ArrAction T, Kata K);
+/* Search apakah ada elemen tabel T yang dengan nama K*/
+/* Jika ada, menghasilkan id action, dengan nama K */
+/* Jika tidak ada, mengirimkan -1 */
 
 
 /* ********** OPERASI LAIN ********** */
