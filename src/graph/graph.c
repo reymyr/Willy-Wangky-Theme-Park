@@ -20,8 +20,10 @@ boolean IsEmptyGraph (Graph *G)
 }
 
 address AlokasiNodeGraph (int area, MATRIKS M)
-/* I.S. */
-/* F.S. */
+/* Mengirimkan address hasil alokasi elemen NodeGraph */
+/* Jika alokasi berhasil, maka address tidak nil, dan misalnya */
+/* menghasilkan P, maka  G_Area(P) = area, G_Map(P) = M, G_Next(P) = G_Nil, G_Gates(P) = G_Nil */
+/* Jika alokasi gagal, mengirimkan Nil */
 {
     address P = (address) malloc(sizeof(NodeGraph));
 
@@ -37,19 +39,35 @@ address AlokasiNodeGraph (int area, MATRIKS M)
 }
 
 void DealokasiNodeGraph (address P)
-/* I.S. */
-/* F.S. */
+/* I.S. P terdefinisi */
+/* F.S. P dikembalikan ke sistem */
+/* Melakukan dealokasi/pengembalian address P */
 {
     free(P);
 }
 
-Gaddress AlokasiGate ();
-/* I.S. */
-/* F.S. */
+Gaddress AlokasiGate (int destArea, POINT from, POINT to)
+/* Mengirimkan address hasil alokasi elemen Gate */
+/* Jika alokasi berhasil, maka address tidak nil, dan misalnya */
+/* menghasilkan GP, maka GT_DestArea(GP) = destArea, GT_From(GP) = from, GT_To(GP) = to, GT_Next(GP) = G_Nil */
+/* Jika alokasi gagal, mengirimkan Nil */
+{
+    Gaddress GP = (Gaddress) malloc(sizeof(Gate));
+
+    if (GP != G_Nil){
+        GT_DestArea(GP) = destArea;
+        GT_From(GP) = from;
+        GT_To(GP) = to;
+        GT_Next(GP) = G_Nil;
+    }
+
+    return GP;
+}
 
 void DealokasiGate (Gaddress GP)
-/* I.S. */
-/* F.S. */
+/* I.S. GP terdefinisi */
+/* F.S. GP dikembalikan ke sistem */
+/* Melakukan dealokasi/pengembalian Gaddress GP */
 {
     free(GP);
 }
