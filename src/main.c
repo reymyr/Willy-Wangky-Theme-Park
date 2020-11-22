@@ -3,7 +3,7 @@
 #include "adt.h"
 
 void initActionDatabase(ArrAction * AA);
-/* Menginisialisasi array action yang dapat diisi semua action */
+/* Menginisialisasi array action yang diisi semua action */
 void initPrepActionArray(ArrAction * AA);
 /* Menginisialisasi array action yang dapat dilakukan saat preparation phase */
 void initMainActionArray(ArrAction * AA);
@@ -79,7 +79,7 @@ int main()
                 prepPhase = true;
                 CurrentTime = MakeJAM(1, 21, 0);
             }
-            else if (MK_isKataSama(MK_CKata, KATALOAD))
+            else /* (MK_isKataSama(MK_CKata, KATALOAD)) */
             {
                 printf("Load game\n");
                 /* Baca state dari file */
@@ -243,8 +243,8 @@ void initActionDatabase(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(9, MK_MakeKata("main", 4), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(10, MK_MakeKata("serve", 5), MakeJAM(0,0,10)));
     AA_AddAsLastEl(AA, createAction(11, MK_MakeKata("repair", 6), MakeJAM(0,0,30)));
-    AA_AddAsLastEl(AA, createAction(12, MK_MakeKata("detail", 3), MakeJAM(0,0,0)));
-    AA_AddAsLastEl(AA, createAction(13, MK_MakeKata("office", 4), MakeJAM(0,0,0)));
+    AA_AddAsLastEl(AA, createAction(12, MK_MakeKata("detail", 6), MakeJAM(0,0,0)));
+    AA_AddAsLastEl(AA, createAction(13, MK_MakeKata("office", 6), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(14, MK_MakeKata("prepare", 7), MakeJAM(0,0,0)));
 }
 
@@ -274,7 +274,7 @@ void initMainActionArray(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(3, MK_MakeKata("a", 1), MakeJAM(0,0,1)));
     AA_AddAsLastEl(AA, createAction(10, MK_MakeKata("serve", 5), MakeJAM(0,0,10)));
     AA_AddAsLastEl(AA, createAction(11, MK_MakeKata("repair", 6), MakeJAM(0,0,30)));
-    AA_AddAsLastEl(AA, createAction(12, MK_MakeKata("detail", 3), MakeJAM(0,0,0)));
-    AA_AddAsLastEl(AA, createAction(13, MK_MakeKata("office", 4), MakeJAM(0,0,0)));
+    AA_AddAsLastEl(AA, createAction(12, MK_MakeKata("detail", 6), MakeJAM(0,0,0)));
+    AA_AddAsLastEl(AA, createAction(13, MK_MakeKata("office", 6), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(14, MK_MakeKata("prepare", 7), MakeJAM(0,0,0)));
 }
