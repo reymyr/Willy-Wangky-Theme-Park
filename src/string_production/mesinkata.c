@@ -125,12 +125,12 @@ void MK_SalinKata(){
           Jika panjang kata melebihi NMax, maka sisa kata "dipotong" */
     int i;
     i = 0;
-    while((MK_CC!=MK_MARK)&&(MK_CC!=MK_BLANK)&&(i<MK_NMax)){
+    while((MK_CC!=MK_MARK)&&(MK_CC!=MK_BLANK)&& (MK_CC != MK_NEWLINE) &&(i<MK_NMax)){
         MK_CKata.TabKata[i]=MK_CC;
         MK_ADV();
         i++;
     }
-    while((MK_CC!=MK_MARK)&&(MK_CC!=MK_BLANK)){
+    while((MK_CC!=MK_MARK)&&(MK_CC!=MK_BLANK)&& (MK_CC != MK_NEWLINE)){
         MK_ADV();
     }
     MK_IgnoreBlank();

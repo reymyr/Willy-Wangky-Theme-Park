@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "graph.h"
+#include "../string_production/mesinkata.h"
+#include "../matriks/matriks.h"
 
 void CreateEmptyGraph (Graph *G)
 /* I.S. G sembarang */
@@ -19,22 +21,44 @@ boolean IsEmptyGraph (Graph *G)
     return G_First(*G) == G_Nil;
 }
 
-address AlokasiNodeGraph (int area, MATRIKS M)
-/* Mengirimkan address hasil alokasi elemen NodeGraph */
-/* Jika alokasi berhasil, maka address tidak nil, dan misalnya */
-/* menghasilkan P, maka  G_Area(P) = area, G_Map(P) = M, G_Next(P) = G_Nil, G_Gates(P) = G_Nil */
-/* Jika alokasi gagal, mengirimkan Nil */
+address AlokasiNodeGraph(char *filename)
+/* Mengalokasikan address hasil alokasi elemen NodeGraph dari file map */
 {
     address P = (address) malloc(sizeof(NodeGraph));
-
+    
     if (P != G_Nil)
     {
-        G_Area(P) = area;
-        G_Map(P) = M;
+        MK_START(filename);
+        G_Area(P) = MK_CToI(MK_CC);
+        ADVMATRIKS();
+        G_Map(P) = CMatriks;
         G_Next(P) = G_Nil;
+        MK_ADV();
+        MK_ADV();
+        MK_ADVKATA();
+        int loop = MK_KataToInt(MK_CKata);
         G_Gates(P) = G_Nil;
+        MK_ADV();
+        MK_ADVKATA();
+        for (size_t i = 0; i < loop; i++)
+        {
+            int XTo, YTo, XFrom, YFrom, dest;
+            XFrom = MK_KataToInt(MK_CKata);
+            MK_ADVKATA();
+            YFrom = MK_KataToInt(MK_CKata);
+            MK_ADVKATA();
+            XTo = MK_KataToInt(MK_CKata);
+            MK_ADVKATA();
+            YTo = MK_KataToInt(MK_CKata);
+            MK_ADVKATA();
+            dest = MK_KataToInt(MK_CKata);
+            Gaddress Gt = AlokasiGate(dest, MakePOINT(XFrom, YFrom), MakePOINT(XTo, YTo));
+            GT_Next(Gt) = G_Gates(P);
+            G_Gates(P) = Gt;
+            MK_ADV();
+            MK_ADVKATA();
+        }
     }
-
     return P;
 }
 
@@ -99,6 +123,48 @@ void InsertLastGraph (Graph *G, address P)
     }
 }
 
+address GetAreaAddress(Graph G, int area)
+/* Mengembalikan address dari node dengan area=area pada G */
+{
+    address P = G_First(G);
+    boolean found = false;
+    while (!found && P != G_Nil)
+    {
+        if (G_Area(P) == area)
+        {
+            found = true;
+        }
+        else
+        {
+            P = G_Next(P);
+        }
+    }
+    
+    return P;
+}
+
+void EnterDoor(Graph G, int area, POINT door, POINT * exit, int * newArea)
+/* I.S. G, area, door valid, exit dan newArea bebas */
+/* F.S. exit terisi lokasi baru setelah memasuki gerbang, newArea terisi area baru setelah memasuki gerbang */
+{
+    Gaddress GP = G_Gates(GetAreaAddress(G, area));
+    boolean found = false;
+    while (!found && GP != G_Nil)
+    {
+        if (PointEQ(GT_From(GP), door))
+        {
+            found = true;
+        }
+        else
+        {
+            GP = GT_Next(GP);
+        }
+    }
+
+    *exit = GT_To(GP);
+    *newArea = GT_DestArea(GP);
+}
+
 MATRIKS GetMap(Graph G, int area)
 /* Mengembalikan matriks peta pada area */
 /* Asumsi area valid */
@@ -120,32 +186,106 @@ MATRIKS GetMap(Graph G, int area)
     return G_Map(P);
 }
 
-void BacaGraph(Graph *G, char *filename)
-/* Membaca File bernama 'filename' yang menyimpan Matriks-matriks yang menyusun area-area pada Peta */
-/* I.S. Graph sembarang */
-/* F.S. Terbentuk graph sebagai representasi map dari file */
-{
-    CreateEmptyGraph(G);
-    STARTMATRIKS(filename);
-    int i = 0;
-    while (!ENDMATRIKS)
-    {
-        address P = AlokasiNodeGraph(i, CMatriks);
-        InsertLastGraph(G, P);
-        i++;
-        ADVMATRIKS();
-    }
-}
-
-void printCurrentMap(Graph G)
+void printCurrentMap(Graph G, Player P)
 /* I.S. Graph terdefinisi */
 /* F.S. Map di area sekarang tertulis di layar */
 {
-    PrintMATRIKS(GetMap(G, G_CurrentArea(G)));
+    PrintMATRIKS(GetMap(G, G_CurrentArea(G)), P);
     printf("Legend:\n");
     printf("A = Antrian\n");
     printf("P = Player\n");
     printf("W = Wahana\n");
     printf("O = Office\n");
     printf("<, ^, >, V = Gerbang\n\n");
+}
+
+void setPlayer(MATRIKS M, Player * P, int x, int y)
+/* Menempatkan player pada posisi (x,y) */
+{
+    if (IsIdxMatriksEff(M, x, y))
+    {
+        if (T_Type(Elmt(M, x, y)) == '-')
+        {
+            Baris(Pos(*P)) = x;
+            Kolom(Pos(*P)) = y;
+            Surround(*P)[0] = Elmt(M, x-1, y);
+            Surround(*P)[1] = Elmt(M, x, y+1);
+            Surround(*P)[2] = Elmt(M, x+1, y);
+            Surround(*P)[3] = Elmt(M, x, y-1);
+        }
+        else
+        {
+            printf("Tidak bisa menempatkan player di situ\n");
+        }
+    }
+    else
+    {
+        printf("Koordinat player tidak valid\n");
+    }
+    
+}
+
+void move(Graph *G, Player * P, int move_code)
+/* Prosedur bergerak untuk player */
+{
+    MATRIKS M = GetMap(*G, G_CurrentArea(*G));
+    int x = Baris(Pos(*P));
+    int y = Kolom(Pos(*P));
+    char nextChar = T_Type(Surround(*P)[move_code]);
+    if (nextChar == '-')
+    {
+        switch (move_code)
+        {
+        case 0:
+            x--;
+            setPlayer(M, P, x, y);
+            break;
+        case 1:
+            y++;
+            setPlayer(M, P, x, y);
+            break;
+        case 2:
+            x++;
+            setPlayer(M, P, x, y);
+            break;
+        case 3:
+            y--;
+            setPlayer(M, P, x, y);
+            break;
+        default:
+            break;
+        }
+    }
+    else if (nextChar == '<' || nextChar == 'V' || nextChar == '^' || nextChar == '>')
+    {
+        POINT exit;
+        int newArea;
+        switch (move_code)
+        {
+        case 0:
+            x--;
+            EnterDoor(*G, G_CurrentArea(*G), MakePOINT(x, y), &exit, &newArea);
+            setPlayer(GetMap(*G, newArea), P, --Baris(exit), Kolom(exit));
+            break;
+        case 1:
+            y++;
+            EnterDoor(*G, G_CurrentArea(*G), MakePOINT(x, y), &exit, &newArea);
+            setPlayer(GetMap(*G, newArea), P, Baris(exit), ++Kolom(exit));
+            break;
+        case 2:
+            x++;
+            EnterDoor(*G, G_CurrentArea(*G), MakePOINT(x, y), &exit, &newArea);
+            setPlayer(GetMap(*G, newArea), P, ++Baris(exit), Kolom(exit));
+            break;
+        case 3:
+            y--;
+            EnterDoor(*G, G_CurrentArea(*G), MakePOINT(x, y), &exit, &newArea);
+            setPlayer(GetMap(*G, newArea), P, Baris(exit), --Kolom(exit));
+            break;
+        default:
+            break;
+        }
+        G_CurrentArea(*G) = newArea;
+    }
+    printCurrentMap(*G, *P);
 }

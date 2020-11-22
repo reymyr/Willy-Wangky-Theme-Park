@@ -12,8 +12,8 @@ typedef struct {
 } POINT;
 
 /* *** Notasi Akses: Selektor POINT *** */
-#define Absis(P) (P).X
-#define Ordinat(P) (P).Y
+#define Baris(P) (P).X
+#define Kolom(P) (P).Y
 
 /* *** DEFINISI PROTOTIPE PRIMITIF *** */
 /* *** Konstruktor membentuk POINT *** */
@@ -31,9 +31,12 @@ void TulisPOINT (POINT P);
 /* I.S. P terdefinisi */
 /* F.S. P tertulis di layar dengan format "(X,Y)" */
 
+boolean PointEQ (POINT P1, POINT P2);
+/* Mengirimkan true jika P1 = P2 : absis dan ordinatnya sama */
+
 /* *** KELOMPOK OPERASI LAIN TERHADAP TYPE *** */
 POINT PlusDelta (POINT P, int deltaX, int deltaY);
-/* Mengirim salinan P yang absisnya adalah Absis(P) + deltaX dan ordinatnya adalah Ordinat(P) + deltaY */
+/* Mengirim salinan P yang absisnya adalah Baris(P) + deltaX dan ordinatnya adalah Kolom(P) + deltaY */
 
 int Panjang (POINT P1, POINT P2);
 /* Menghitung panjang garis yang dibentuk P1 dan P2 */

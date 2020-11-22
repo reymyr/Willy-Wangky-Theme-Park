@@ -1,6 +1,7 @@
+#include <stdio.h>
 #include "matriks.h"
 #include "../boolean.h"
-#include <stdio.h>
+#include "../graph/player.h"
 
 MATRIKS CMatriks;
 boolean ENDMATRIKS;
@@ -69,7 +70,7 @@ void TulisMATRIKS(MATRIKS M, FILE *f){
     }
 }
 
-void PrintMATRIKS (MATRIKS M)
+void PrintMATRIKS (MATRIKS M, Player P)
 /* I.S. M terdefinisi */
 /* F.S. Nilai M(i,j) ditulis ke layar per baris per kolom, masing-masing elemen per baris 
    dipisahkan sebuah spasi */
@@ -80,23 +81,26 @@ void PrintMATRIKS (MATRIKS M)
 * * *
 */
 {
-    indeks i,j;
-    for (i=GetFirstIdxBrs(M);i<GetLastIdxBrs(M);i++)
+    indeks i, j;
+    for (i = GetFirstIdxBrs(M); i <= GetLastIdxBrs(M); i++)
     {
-        for (j=GetFirstIdxKol(M);j<GetLastIdxKol(M);j++)
+        for (j = GetFirstIdxKol(M); j <= GetLastIdxKol(M); j++)
         {
-            printf("%c ",T_Type(Elmt(M,i,j)));
+            if (i == Baris(Pos(P)) && j == Kolom(Pos(P)))
+            {
+                printf("P");
+            }
+            else
+            {
+                printf("%c", T_Type(Elmt(M, i, j)));
+            }
+            if (j != GetLastIdxKol(M))
+            {
+                printf(" ");
+            }
         }
-        //j = last id kolom 
-        printf("%c",T_Type(Elmt(M,i,GetLastIdxKol(M))));
         printf("\n");
-    }
-    // i==id terakhir baris matriks
-    for (j=GetFirstIdxKol(M);j<GetLastIdxKol(M);j++)
-    {
-        printf("%c ",T_Type(Elmt(M,GetLastIdxBrs(M),j)));
-    }
-    printf("%c\n",T_Type(Elmt(M,GetLastIdxBrs(M),GetLastIdxKol(M))));
+    }    
 }
 
 

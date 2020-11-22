@@ -4,9 +4,9 @@
 #define graph_H
 
 #include "../boolean.h"
-#include "../peta/peta.h"
 #include "../matriks/matriks.h"
 #include "../point/point.h"
+#include "player.h"
 
 #define G_Nil NULL
 
@@ -54,11 +54,8 @@ boolean IsEmptyGraph (Graph *G);
 /* mengecek apakah G adalah graph kosong atau bukan */
 /* Definisi graph kosong adalah First(G) = Nil */
 
-address AlokasiNodeGraph (int area, MATRIKS M);
-/* Mengirimkan address hasil alokasi elemen NodeGraph */
-/* Jika alokasi berhasil, maka address tidak nil, dan misalnya */
-/* menghasilkan P, maka  G_Area(P) = area, G_Map(P) = M, G_Next(P) = G_Nil, G_Gates(P) = G_Nil */
-/* Jika alokasi gagal, mengirimkan Nil */
+address AlokasiNodeGraph(char *filename);
+/* Mengalokasikan address hasil alokasi elemen NodeGraph dari file map */
 
 void DealokasiNodeGraph (address P);
 /* I.S. P terdefinisi */
@@ -84,17 +81,25 @@ void InsertLastGraph (Graph *G, address P);
 /* I.S. Sembarang, P sudah dialokasi  */
 /* F.S. P ditambahkan sebagai elemen terakhir yang baru */
 
+address GetAreaAddress(Graph G, int area);
+/* Mengembalikan address dari node dengan area=area pada G */
+
+void EnterDoor(Graph G, int area, POINT door, POINT * exit, int * newArea);
+/* I.S. G, area, door valid, exit dan newArea bebas */
+/* F.S. exit terisi lokasi baru setelah memasuki gerbang, newArea terisi area baru setelah memasuki gerbang */
+
 MATRIKS GetMap(Graph G, int area);
 /* Mengembalikan matriks peta pada area */
 /* Asumsi area valid */
 
-void BacaGraph(Graph *G,char *filename);
-/* Membaca File bernama 'filename' yang menyimpan Matriks-matriks yang menyusun area-area pada Peta */
-/* I.S. Graph sembarang */
-/* F.S. Terbentuk graph sebagai representasi map dari file */
-
-void printCurrentMap(Graph G);
+void printCurrentMap(Graph G, Player P);
 /* I.S. Graph terdefinisi */
 /* F.S. Map di area sekarang tertulis di layar */
+
+void setPlayer(MATRIKS M, Player * P, int x, int y);
+/* Menempatkan player pada posisi (x,y) */
+
+void move(Graph *G, Player * P, int move_code);
+/* Prosedur bergerak untuk player */
 
 #endif

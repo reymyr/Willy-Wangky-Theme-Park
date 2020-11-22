@@ -4,7 +4,7 @@
 #include "../point/point.h"
 #include "../string_production/mesinkata.h"
 #include "../arrMaterial/arrMaterial.h"
-#include "../matriks/matriks.h"
+#include "../matriks/tile.h"
 
 typedef struct { 
     Kata nama;

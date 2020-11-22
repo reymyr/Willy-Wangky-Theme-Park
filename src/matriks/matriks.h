@@ -4,7 +4,8 @@
 #define MATRIKS_H
 #include "../string_production/mesinkar.h"
 #include "stdio.h"
-
+#include "tile.h"
+#include "../graph/player.h"
 #include "../boolean.h"
 
 /* Ukuran minimum dan maksimum baris dan kolom */
@@ -12,14 +13,9 @@
 #define BrsMax 19
 #define KolMin 0
 #define KolMax 19
-#define SEPARATOR '-'
+#define SEPARATOR '_'
 
 typedef int indeks; /* indeks baris, kolom */
-
-typedef struct { 
-	char type;
-   int id; /* berisi id wahana jika type='W', -1 jiak bukan */
-} Tile;
 
 typedef Tile ElType; 
 typedef struct { 
@@ -42,9 +38,6 @@ void MakeMATRIKS (int NB, int NK, MATRIKS * M);
 /* F.S. Matriks M sesuai dengan definisi di atas terbentuk */
 
 /* *** Selektor *** */
-#define T_Type(T) (T).type
-#define T_ID(T) (T).id
-
 #define NBrsEff(M) (M).NBrsEff
 #define NKolEff(M) (M).NKolEff
 #define Elmt(M,i,j) (M).Mem[(i)][(j)]
@@ -71,7 +64,7 @@ boolean IsIdxMatriksEff (MATRIKS M, indeks i, indeks j);
 void TulisMATRIKS(MATRIKS M, FILE *f);
 /* Menuliskan matriks M ke dalam sebuah file bernama <filename>*/
 
-void PrintMATRIKS (MATRIKS M);
+void PrintMATRIKS (MATRIKS M, Player P);
 /* I.S. M terdefinisi */
 /* F.S. Nilai M(i,j) ditulis ke layar per baris per kolom, masing-masing elemen per baris 
    dipisahkan sebuah spasi */

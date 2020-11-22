@@ -37,7 +37,13 @@ void TulisPOINT (POINT P)
 	/*ALGORITMA*/
 	X = P.X;
 	Y = P.Y;
-	printf("(%d,%d)", &X, &Y);
+	printf("(%d,%d)", X, Y);
+}
+
+boolean PointEQ (POINT P1, POINT P2)
+/* Mengirimkan true jika P1 = P2 : absis dan ordinatnya sama */
+{
+   return ((Baris(P1) == Baris(P2)) && (Kolom(P1) == Kolom(P2)));
 }
 
 POINT PlusDelta (POINT P, int deltaX, int deltaY)
@@ -66,8 +72,8 @@ int Panjang (POINT P1, POINT P2)
 	/*ALGORITMA*/
 	X1 = P1.X;
 	Y1 = P1.Y;
-	X2 = Absis(P2);
-	Y2 = Ordinat(P2);
+	X2 = Baris(P2);
+	Y2 = Kolom(P2);
 	distX = X1 - X2;
 	distY = Y1 - Y2;
 	dist = sqrt(distX*distX + distY*distY);
