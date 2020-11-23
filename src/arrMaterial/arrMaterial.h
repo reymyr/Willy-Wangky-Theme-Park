@@ -13,8 +13,8 @@
 
 typedef int IdxType;
 typedef struct {
-    int materialId;
     Kata name;
+    int count;
     int price;
 } Material;
 
@@ -24,15 +24,15 @@ typedef struct {
 } TabMaterial;
 
 /* SELEKTOR */
-#define M_MaterialID(M) (M).materialId
 #define M_Price(M) (M).price
 #define M_Name(M) (M).name
+#define M_Count(M) (M).count
 
 #define AM_NEff(Arr) (Arr).NEff
 #define AM_T(Arr) (Arr).T
 #define AM_Elmt(Arr, i) (Arr).T[(i)]
 
-Material createMaterial(int id, Kata nama, int price);
+Material createMaterial(Kata nama, int count, int price);
 /* Fungsi untuk membuat Material baru */
 
 /* ********** KONSTRUKTOR ********** */
@@ -132,5 +132,16 @@ void AM_DelLastEl(TabMaterial *T, Material *X);
 /* F.S. X adalah nilai elemen terakhir T sebelum penghapusan, */
 /*      Banyaknya elemen tabel berkurang satu */
 /*      Tabel T mungkin menjadi kosong */
+
+void AM_AddCount(TabMaterial *T, Kata MatName, int count, int price);
+/* Proses : Menambah material bernama MatName sebanyak count dari T */
+/* I.S. Tabel terdefinisi dan boleh kosong, MatName merupakan material yang valid, count > 0 */
+/* F.S. material bernama MatName bertambah sebanyak count dari T, jika sudah ada, count bertambah */
+/*      Jika belum, terbentuk Material baru dalam tabel */
+
+void AM_DelCount(TabMaterial *T, Kata MatName, int count);
+/* Proses : Membuang material bernama MatName sebanyak count dari T */
+/* I.S. Tabel tidak kosong, MatName terdapat dalam T, count tidak melebihi jumlah material dalam T */
+/* F.S. material bernama MatName berkurang sebanyak count dari T, jika menjadi 0 dihilangkan */
 
 #endif

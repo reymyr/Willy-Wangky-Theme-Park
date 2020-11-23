@@ -11,7 +11,7 @@
 #define Nil -1
 /* Konstanta untuk mendefinisikan address tak terdefinisi */
 
-#define PQ_MaxEl 5
+#define PQ_MaxEl 7
 /* Konstanta untuk mendefinisikan elemen maksimal queue */
 
 /* Definisi elemen dan address */

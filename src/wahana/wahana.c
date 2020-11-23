@@ -94,31 +94,36 @@ boolean AW_IsFull(ArrWahana T)
 
 /* ********** BACA dan TULIS dengan INPUT/OUTPUT device ********** */
 /* *** Mendefinisikan isi tabel dari pembacaan *** */
-// void AW_BacaFile(ArrWahana *T, char* filename)
-// /* I.S. T sembarang dan sudah dialokasikan sebelumnya */
-// /* F.S. Tabel T terdefinisi */
-// /* Proses : membaca banyaknya elemen T dan mengisi nilainya */
-// /* 1. Baca banyaknya elemen diakhiri enter, misalnya N */
-// /*    Pembacaan diulangi sampai didapat N yang benar yaitu 0 <= N <= AW_MaxElement(T) */
-// /*    Jika N tidak valid, tidak diberikan pesan kesalahan */
-// /* 2. Jika 0 < N <= AW_MaxElement(T); Lakukan N kali: Baca elemen mulai dari indeks
-//       IdxMin satu per satu diakhiri enter */
-// /*    Jika N = 0; hanya terbentuk T kosong */
-// {
-//     AW_MakeEmpty(T);
-//     int i = 0;
-//     MK_STARTKATA(filename);
-//     while (!MK_EndKata)
-//     { 
-//         Kata nama = MK_CKata;
-//         MK_ADVKATA();
-//         int harga = MK_KataToInt(MK_CKata);
-//         AW_AddAsLastEl(T, createWahana(i, nama, harga));
-//         i++;
-//         MK_ADVKATA();
-//     }
-    
-// }
+void AW_BacaFile(ArrWahana *T, char* filename)
+/* I.S. T sembarang dan sudah dialokasikan sebelumnya */
+/* F.S. Tabel T terdefinisi */
+{
+    int id, harga, kapasitas, durasi;
+    Kata nama, tipe, deskripsi;
+    Wahana W;
+    AW_MakeEmpty(T);
+    MK_STARTKATA(filename);
+    while (!MK_EndKata)
+    {
+        id = MK_KataToInt(MK_CKata);
+        MK_ADVKATAINPUT();
+        nama = MK_CKata;
+        MK_ADVKATAINPUT();
+        tipe = MK_CKata;
+        MK_ADVKATAINPUT();
+        harga = MK_KataToInt(MK_CKata);
+        MK_ADVKATAINPUT();
+        kapasitas = MK_KataToInt(MK_CKata);
+        MK_ADVKATAINPUT();
+        durasi = MK_KataToInt(MK_CKata);
+        MK_ADVKATAINPUT();
+        deskripsi = MK_CKata;
+        W = createWahana(id, nama, tipe, harga, deskripsi, kapasitas, durasi);
+        AW_AddAsLastEl(T, W);
+        MK_ADV();
+        MK_ADVKATA();
+    }    
+}
 void AW_ListNamaWahana(ArrWahana T)
 /* Proses : Menuliskan isi tabel dengan traversal, tabel ditulis di antara kurung siku;
    antara dua elemen dipisahkan dengan separator "koma", tanpa tambahan karakter di depan,
@@ -131,7 +136,7 @@ void AW_ListNamaWahana(ArrWahana T)
     IdxType i;
     for (i = AW_GetFirstIdx(T); i <= AW_GetLastIdx(T); i++)
     {
-        printf("- "); MK_printKata(W_Name(AW_Elmt(T,i))); printf("\n");
+        printf(" - "); MK_printKata(W_Name(AW_Elmt(T,i))); printf("\n");
     }
 }
 
@@ -189,6 +194,30 @@ boolean AW_SearchB(ArrWahana T, Kata K)
     return found;    
 }
 
+Wahana AW_GetWahana(ArrWahana T, Kata K)
+/* Mengembalikan wahana yang bernama K dari TabWahana */
+/* Prekondisi wahana dengan nama K ada di dalam Tabel */
+{
+    return AW_Elmt(T, AW_SearchI(T, K));
+}
+
+Wahana AW_GetWahanaId(ArrWahana T, int id)
+/* Mengembalikan wahana dengan id tertentu */
+/* Prekondisi wahana dengan id 'id' ada di dalam Tabel */
+{
+    boolean found = false;
+    IdxType i = AW_GetFirstIdx(T);
+    while (!found && i <= AW_GetLastIdx(T))
+    {
+        if (W_WahanaId(AW_Elmt(T, i)) == id)
+        {
+            found = true;
+        }
+        i++;
+    }  
+    return AW_Elmt(T, i-1);
+}
+
 int AW_GetPrice(ArrWahana T, Kata K)
 /* Mengembalikan harga dari Wahana K */
 /* Jika tidak ada mengembalikan -1 */
@@ -201,6 +230,21 @@ int AW_GetPrice(ArrWahana T, Kata K)
     else
     {
         return W_Price(AW_Elmt(T, idx));
+    }
+}
+
+int AW_GetId(ArrWahana T, Kata K)
+/* Mengembalikan id dari Wahana K */
+/* Jika tidak ada mengembalikan -1 */
+{
+    int idx = AW_SearchI(T, K);
+    if (idx == IdxUndef)
+    {
+        return -1;
+    }
+    else
+    {
+        return W_WahanaId(AW_Elmt(T, idx));
     }
 }
 
@@ -266,6 +310,8 @@ void AW_detailWahana(Wahana W)
 }
 
 void AW_reportWahana(Wahana W)
+/* I.S. sembarang */
+/* F.S. laporan wahana tertulis di layar */
 {
     printf("Laporan wahana "); MK_printKata(W_Name(W)); printf("\n");
     printf("Total wahana dinaiki : %d kali\n", W_UseCount(W));

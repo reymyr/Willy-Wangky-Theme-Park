@@ -13,7 +13,7 @@ void MK_IgnoreNewline(){
 /* Mengabaikan satu atau beberapa NEWLINE
    I.S. : MK_CC sembarang 
    F.S. : MK_CC ≠ NEWLINE atau MK_CC = MARK */
-    while(MK_CC==MK_NEWLINE){
+    while(MK_CC==MK_NEWLINE || MK_CC=='_'){
         MK_ADV();
     }
     return;
@@ -65,7 +65,7 @@ void MK_SalinKataInput()
           Jika panjang kata melebihi NMax, maka sisa kata "dipotong" */
 {
     int i = 0;
-    while (MK_CC != MK_MARK && MK_CC != MK_NEWLINE && i < MK_NMax)
+    while (MK_CC != MK_MARK && MK_CC != MK_NEWLINE && MK_CC != '_' && i < MK_NMax)
     {
         MK_CKata.TabKata[i] = MK_CC;
         i++;

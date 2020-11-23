@@ -198,12 +198,21 @@ void printCurrentMap(Graph G, Player P)
     printf("<, ^, >, V = Gerbang\n\n");
 }
 
+void setTile(Graph * G, int area, POINT pos, char type, int id)
+/* I.S. Graph terdefinisi */
+/* F.S. Tile pada posisi pos di area 'area' berubah */
+{
+    Gaddress P = GetAreaAddress(*G, area);
+    T_Type(Elmt(G_Map(P), Baris(pos), Kolom(pos))) = type;
+    T_ID(Elmt(G_Map(P), Baris(pos), Kolom(pos))) = id;
+}
+
 void setPlayer(MATRIKS M, Player * P, int x, int y)
 /* Menempatkan player pada posisi (x,y) */
 {
     if (IsIdxMatriksEff(M, x, y))
     {
-        if (T_Type(Elmt(M, x, y)) == '-')
+        if (T_Type(Elmt(M, x, y)) == '-' || T_Type(Elmt(M, x, y)) == 'O')
         {
             Baris(Pos(*P)) = x;
             Kolom(Pos(*P)) = y;
@@ -233,7 +242,7 @@ void move(Graph *G, Player * P, int move_code, int * status)
     int x = Baris(Pos(*P));
     int y = Kolom(Pos(*P));
     char nextChar = T_Type(Surround(*P)[move_code]);
-    if (nextChar == '-')
+    if (nextChar == '-' || nextChar == 'O')
     {
         switch (move_code)
         {

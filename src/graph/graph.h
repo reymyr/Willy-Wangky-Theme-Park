@@ -96,6 +96,10 @@ void printCurrentMap(Graph G, Player P);
 /* I.S. Graph terdefinisi */
 /* F.S. Map di area sekarang tertulis di layar */
 
+void setTile(Graph * G, int area, POINT pos, char type, int id);
+/* I.S. Graph terdefinisi */
+/* F.S. Tile pada posisi pos di area 'area' berubah */
+
 void setPlayer(MATRIKS M, Player * P, int x, int y);
 /* Menempatkan player pada posisi (x,y) */
 

@@ -1,7 +1,7 @@
 #ifndef WAHANA_H
 #define WAHANA_H
 
-#include "../mesinkata/mesinkata.h"
+#include "../string_production/mesinkata.h"
 #include "../jam/jam.h"
 #include "../point/point.h"
 
@@ -129,8 +129,17 @@ boolean AW_SearchB(ArrWahana T, Kata K);
 /* Search apakah ada elemen tabel T dengan nama K */
 /* Jika ada, menghasilkan true, jika tidak ada menghasilkan false */
 /* Skema searching yang digunakan bebas */
+Wahana AW_GetWahana(ArrWahana T, Kata K);
+/* Mengembalikan wahana yang bernama K dari TabWahana */
+/* Prekondisi wahana dengan nama K ada di dalam Tabel */
+Wahana AW_GetWahanaId(ArrWahana T, int id);
+/* Mengembalikan wahana dengan id tertentu */
+/* Prekondisi wahana dengan id 'id' ada di dalam Tabel */
 int AW_GetPrice(ArrWahana T, Kata K);
 /* Mengembalikan harga dari Wahana K */
+/* Jika tidak ada mengembalikan -1 */
+int AW_GetId(ArrWahana T, Kata K);
+/* Mengembalikan id dari Wahana K */
 /* Jika tidak ada mengembalikan -1 */
 
 /* ********** OPERASI LAIN ********** */
@@ -157,6 +166,8 @@ void AW_DelLastEl(ArrWahana *T, Wahana *X);
 void AW_detailWahana(Wahana W);
 /* I.S. sembarang */
 /* F.S. detail wahana tertulis di layar */
-
+void AW_reportWahana(Wahana W);
+/* I.S. sembarang */
+/* F.S. laporan wahana tertulis di layar */
 
 #endif

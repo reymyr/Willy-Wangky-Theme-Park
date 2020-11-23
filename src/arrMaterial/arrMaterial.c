@@ -4,13 +4,13 @@
 #include "arrMaterial.h"
 #include "../string_production/mesinkata.h"
 
-Material createMaterial(int id, Kata nama, int price)
+Material createMaterial(Kata nama, int count, int price)
 /* Fungsi untuk membuat Material baru */
 {
     Material M;
 
-    M_MaterialID(M) = id;
     M_Name(M) = nama;
+    M_Count(M) = count;
     M_Price(M) = price;
 
     return M;
@@ -95,15 +95,13 @@ void AM_BacaFile(TabMaterial *T, char* filename)
 /*    Jika N = 0; hanya terbentuk T kosong */
 {
     AM_MakeEmpty(T);
-    int i = 0;
     MK_STARTKATA(filename);
     while (!MK_EndKata)
     { 
         Kata nama = MK_CKata;
         MK_ADVKATA();
         int harga = MK_KataToInt(MK_CKata);
-        AM_AddAsLastEl(T, createMaterial(i, nama, harga));
-        i++;
+        AM_AddAsLastEl(T, createMaterial(nama, 1, harga));
         MK_ADVKATA();
     }
     
@@ -120,6 +118,7 @@ void AM_TulisIsiTab(TabMaterial T)
     IdxType i;
     for (i = AM_GetFirstIdx(T); i <= AM_GetLastIdx(T); i++)
     {
+        printf(" - ");
         MK_printKata(M_Name(AM_T(T)[i]));
         printf(", Harga: %d\n", M_Price(AM_T(T)[i]));
     }
@@ -237,4 +236,40 @@ void AM_DelLastEl(TabMaterial *T, Material *X)
 {
     *X = AM_Elmt(*T, AM_GetLastIdx(*T));
     AM_NEff(*T)--;
+}
+
+void AM_AddCount(TabMaterial *T, Kata MatName, int count, int price)
+/* Proses : Menambah material bernama MatName sebanyak count dari T */
+/* I.S. Tabel terdefinisi dan boleh kosong, MatName merupakan material yang valid, count > 0 */
+/* F.S. material bernama MatName bertambah sebanyak count dari T, jika sudah ada, count bertambah */
+/*      Jika belum, terbentuk Material baru dalam tabel */
+{
+    int idx = AM_SearchI(*T, MatName);
+    if (idx == -1)
+    {
+        AM_AddAsLastEl(T, createMaterial(MatName, count, price));
+    }
+    else
+    {
+        M_Count(AM_Elmt(*T, idx)) += count;
+    }   
+}
+
+void AM_DelCount(TabMaterial *T, Kata MatName, int count)
+/* Proses : Membuang material bernama MatName sebanyak count dari T */
+/* I.S. Tabel tidak kosong, MatName terdapat dalam T, count tidak melebihi jumlah material dalam T */
+/* F.S. material bernama MatName berkurang sebanyak count dari T, jika menjadi 0 dihilangkan */
+{
+    int idx = AM_SearchI(*T, MatName);
+    M_Count(AM_Elmt(*T, idx)) -= count;
+    if (M_Count(AM_Elmt(*T, idx)) == 0)
+    {
+        for (size_t i = idx+1; i <= AM_GetLastIdx(*T) ; i++)
+        {
+            AM_Elmt(*T, idx) = AM_Elmt(*T, i);
+            i++;
+            idx++;
+        }
+        AM_NEff(*T)--;
+    }
 }
