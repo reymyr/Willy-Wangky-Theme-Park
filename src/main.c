@@ -147,14 +147,17 @@ int main()
                         AW_ListNamaWahana(WahanaDatabase); /* Harusnya BaseWahana */
 
                         MK_ADVKATAINPUT();
-                        if (!AW_SearchB(WahanaDatabase, MK_CKata)) /* Harusnya BaseWahana */
+                        if (AW_SearchB(BuiltWahana, MK_CKata)) /* Nanti ada bug klo bisa dua wahana yg sama jdi fix sementara ini dlu */
+                        {
+                            printf("Anda sudah membangun wahana tersbeut\n");
+                        }
+                        else if (!AW_SearchB(WahanaDatabase, MK_CKata)) /* Harusnya BaseWahana */
                         {
                             printf("Input tidak valid\n");
                         }
                         else
                         {
                             int pushCode = 0;
-                            int moveStatus;
                             while (T_Type(Surround(P)[pushCode]) != '-' && pushCode <= 3)
                             {
                                 pushCode++;
@@ -378,7 +381,7 @@ int main()
 
 // void randomPengunjung(PrioQueuePengunjung * PQ)
 // /* I.S. PQ sembarang */
-// /* F.S. PQ terisis pengunjung secara acak */
+// /* F.S. PQ terisi pengunjung secara acak */
 // {
 //     srand(time(0));
 //     for (size_t i = 0; i < 7; i++)
