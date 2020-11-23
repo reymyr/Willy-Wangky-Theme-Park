@@ -1,0 +1,2 @@
+0 wahana satu_tipe 1_500_3_15_tes deskripsi
+1 wahana dua_tipe 2_300_2_10_ini wahana 2.
