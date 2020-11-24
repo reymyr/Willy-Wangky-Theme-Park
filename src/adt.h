@@ -8,6 +8,7 @@
 #include "jam/jam.h"
 #include "matriks/matriks.h"
 #include "prioQueuePengunjung/prioQueuePengunjung.h"
+#include "stack/stackt.h"
 #include "string_production/mesinkata.h"
 #include "string_production/mesinkar.h"
 #include "wahana/wahana.h"

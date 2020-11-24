@@ -17,9 +17,9 @@ int main()
     ArrAction ActionDatabase; /* Seluruh aksi yang bisa dilakukan dalam game */
     ArrAction PrepActionArray; /* Aksi yang dapat dilakukan saat preparation phase */
     ArrAction MainActionArray; /* Aksi yang dapat dilakukan saat main phase */
-    ArrWahana WahanaDatabase; /* Semua wahan dalam game */
+    ArrWahana WahanaDatabase; /* Semua wahana dalam game */
     ArrWahana BuiltWahana; /* List Wahana yang sudah dibangun */
-    ArrWahana BaseWahana; /* List wahana yang dapat dibangun di awal */
+    ArrWahana BaseWahana; /* List wahana dasar yang dapat dibangun di awal */
     TabMaterial MaterialDatabase; /* Seluruh material yang ada di dalam game */
     JAM CurrentTime; /* Waktu sekarang */
     JAM OpeningTime = MakeJAM(0, 9, 0); /* Waktu buka */
@@ -27,6 +27,9 @@ int main()
     Graph Map; /* Map */
     Player P; /* Player */
     PrioQueuePengunjung Antrian; /* Antrian pengunjung */
+    Stack ActionStack; /* Stack pada preparation phase */
+    Stack ExecuteStack;
+    S_infotype StackElmt;
     Kata KATANEW = MK_MakeKata("new", 3);
     Kata KATALOAD = MK_MakeKata("load", 4);
     Kata KATAEXIT = MK_MakeKata("exit", 4);
@@ -42,7 +45,7 @@ int main()
     printf("Welcome to Willy Wangky's\n");
     printf("Commands:\n");
     printf("new - New game\n");
-    printf("load - Load game\n");
+    printf("load - Load game (blm ada)\n");
     printf("exit - Exit game\n\n");
 
     MK_STARTKATAINPUT();
@@ -83,6 +86,7 @@ int main()
         
                 /* Inisialisasi data game lain */
                 AW_MakeEmpty(&BuiltWahana);
+                CreateEmptyStack(&ActionStack);
                 prepPhase = true;
                 CurrentTime = MakeJAM(1, 21, 0);
             }
@@ -113,9 +117,9 @@ int main()
                     printf("Current Time: "); TulisJAM(CurrentTime); printf("\n");
                     printf("Opening Time: "); TulisJAM(OpeningTime); printf("\n");
                     printf("Time Remaining: "); TulisJamMenit(DurasiJam(CurrentTime, OpeningTime)); printf("\n");
-                    printf("Total aksi yang akan dilakukan: \n"); /* diisi data dr stack (NBelmtStack) */
-                    printf("Total waktu yang dibutuhkan: \n"); /* diisi data dr stack (build, buy, upgrade) */
-                    printf("Total uang yang dibutuhkan: \n\n"); /* diisi data dr stack (build, buy, upgrade) */
+                    printf("Total aksi yang akan dilakukan: %d\n", NbElmtStack(ActionStack));
+                    printf("Total waktu yang dibutuhkan: "); (JAMToMenit(TotalTime(ActionStack)) == 0 ? printf("0") : TulisJamMenit(TotalTime(ActionStack))); printf("\n");
+                    printf("Total uang yang dibutuhkan: %d\n\n", TotalMoney(ActionStack));
 
                     printf("Masukkan perintah: \n");
 
@@ -134,10 +138,11 @@ int main()
                     case 3:
                         /* MOVE (W, A, S, D) */
                         move(&Map, &P, ActionID, &moveStatus);
-                        if (moveStatus == 1)
-                        {
-                            CurrentTime = NextNMenit(CurrentTime, JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, ActionID))));
-                        }
+                        /* Gaktau nambah waktu apa ngga, di contoh ngga kalo prep phase */
+                        // if (moveStatus == 1)
+                        // {
+                        //     CurrentTime = NextNMenit(CurrentTime, JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, ActionID))));
+                        // }
                         printf("\n");
                         break;
                     case 4:
@@ -155,6 +160,10 @@ int main()
                         {
                             printf("Input tidak valid\n");
                         }
+                        else if (nearGate(P))
+                        {
+                            printf("Tidak bisa membangun wahana di sebelah gerbang\n");
+                        }
                         else
                         {
                             int pushCode = 0;
@@ -162,24 +171,28 @@ int main()
                             {
                                 pushCode++;
                             }
+
                             if (pushCode == 4)
                             {
                                 printf("Tidak bisa menempatkan wahana di sini\n");
                             }
+                            else if ((JLT(DurasiJam(CurrentTime, OpeningTime), MenitToJAM(JAMToMenit(TotalTime(ActionStack))+JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 4)))))))
+                            {
+                                printf("Waktu yang dibutuhkan tidak cukup\n");
+                            }
                             else
                             {
-                                /* NANTI DIGANTI MASUKIN KE STACK */
-                                /* KURANGIN RESOURCE DAN UANG PLAYER */
+                                /* CEK RESOURCE DAN UANG PLAYER */
                                 setTile(&Map, G_CurrentArea(Map), Pos(P), 'W', AW_GetId(WahanaDatabase, MK_CKata));
-                                CurrentTime = NextNMenit(CurrentTime, JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 4))));
 
-                                Wahana WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
-                                W_Location(WBuilt) = Pos(P);
-                                
+                                StackElmt = CreateStackInfo(MK_MakeKata("build", 5), A_Duration(AA_Elmt(ActionDatabase, 4)), 0/* Harusnya harga bangun wahana */, Pos(P));
+                                Push(&ActionStack, StackElmt);
+
+                                // Wahana WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
+                                // W_Location(WBuilt) = Pos(P);
+                                // AW_AddAsLastEl(&BuiltWahana, WBuilt);
+
                                 move(&Map, &P, pushCode, &moveStatus);
-                                
-                                AW_AddAsLastEl(&BuiltWahana, WBuilt);
-                                AW_ListNamaWahana(BuiltWahana);
                             }
                         }
                         break;
@@ -208,21 +221,34 @@ int main()
                         {
                             printf("Input tidak valid\n");
                         }
-                        else if (price > Money(P))
+                        else if (TotalMoney(ActionStack)+price > Money(P))
                         {
                             printf("Uang anda tidak cukup\n");
                         }
+                        else if (JLT(DurasiJam(CurrentTime, OpeningTime), MenitToJAM(JAMToMenit(TotalTime(ActionStack))+JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 6))))))
+                        {
+                            printf("Waktu yang dibutuhkan tidak cukup\n");
+                        }
                         else
                         {
-                            /* NANTI DIGANTI MASUKIN KE STACK */
-                            Money(P) -= price;
-                            AM_AddCount(&Materials(P), matName, matCount, AM_GetPrice(MaterialDatabase, matName));
+                            StackElmt = CreateStackInfo(MK_MakeKata("buy", 3), A_Duration(AA_Elmt(ActionDatabase, 6)), price, MakePOINT(-1,-1));
+                            Push(&ActionStack, StackElmt);
+                            // Money(P) -= price;
+                            // AM_AddCount(&Materials(P), matName, matCount, AM_GetPrice(MaterialDatabase, matName));
                         }
                         printf("\n");
                         break;
                     case 7:
                         /* UNDO */
-                        /* POP STACK DAN HAPUS/UNDO 'W" DARI PETA (KALO BUILD) */
+                        if (!IsEmptyStack(ActionStack))
+                        {
+                            Pop(&ActionStack, &StackElmt);
+                            if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("build", 5)))
+                            {
+                                setTile(&Map, G_CurrentArea(Map), S_PosWahana(StackElmt), '-', -1);
+                                setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
+                            }
+                        }
                         break;
                     case 8:
                         /* EXECUTE */
@@ -233,7 +259,7 @@ int main()
                         break;
                     case 9:
                         /* MAIN */
-                        /* KOSONGIN STACK */
+                        CreateEmptyStack(&ActionStack);
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
                         prepPhase = false;
                         break;
@@ -290,7 +316,6 @@ int main()
                         break;
                     case 12:
                         /* DETAIL */
-                        /* UNTUK SEMUA WAHANA DI SEKITAR PLAYER, TULISIN DETAIL (AW_detailWahana)*/
                         for (size_t i = 0; i < 4; i++)
                         {
                             if (T_Type(Surround(P)[i]) == 'W')
@@ -302,7 +327,6 @@ int main()
                         break;
                     case 13:
                         /* OFFICE */
-                        /* CEK KALO LAGI DI TILE OFFICE, KALO IYA MASUK (MASUK MENU OFFICE) */
                         if (!(T_Type(Elmt(GetMap(Map, G_CurrentArea(Map)), Baris(Pos(P)), Kolom(Pos(P)))) == 'O'))
                         {
                             printf("Anda tidak berada pada office\n");
@@ -321,10 +345,19 @@ int main()
 
                             while (!MK_isKataSama(MK_CKata, MK_MakeKata("Exit", 4)))
                             {
-                                AW_ListNamaWahana(BuiltWahana);
+                                while (!MK_isKataSama(MK_CKata, MK_MakeKata("Details", 7)) &&
+                                       !MK_isKataSama(MK_CKata, MK_MakeKata("Report", 6)) &&
+                                       !MK_isKataSama(MK_CKata, MK_MakeKata("Exit", 4)))
+                                {
+                                    printf("Input tidak valid\n");
+                                    MK_ADVKATAINPUT();
+                                }
+
                                 if (MK_isKataSama(MK_CKata, MK_MakeKata("Details", 7)))
                                 {
                                     /* Details */
+                                    printf("List wahana yang sudah dibangun: \n");
+                                    AW_ListNamaWahana(BuiltWahana);
                                     MK_ADVKATAINPUT();
                                     if (!AW_SearchB(BuiltWahana, MK_CKata))
                                     {
@@ -341,6 +374,8 @@ int main()
                                 else if (MK_isKataSama(MK_CKata, MK_MakeKata("Report", 6)))
                                 {
                                     /* Report */
+                                    printf("List wahana yang sudah dibangun: \n");
+                                    AW_ListNamaWahana(BuiltWahana);
                                     MK_ADVKATAINPUT();
                                     if (!AW_SearchB(BuiltWahana, MK_CKata))
                                     {

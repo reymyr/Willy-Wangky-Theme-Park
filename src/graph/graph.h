@@ -108,4 +108,7 @@ void move(Graph *G, Player * P, int move_code, int * status);
 /* Jika tidak bergerak karena menabrak pagar/wahana, status = 0 */
 /* Jika berhasil bergerak, status = 1 */
 
+boolean nearGate(Player P);
+/* Mengembamilak true jika player berada di sebelah gate, false jika tidak */
+
 #endif
