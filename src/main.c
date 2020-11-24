@@ -20,6 +20,7 @@ int main()
     ArrWahana WahanaDatabase; /* Semua wahana dalam game */
     ArrWahana BuiltWahana; /* List Wahana yang sudah dibangun */
     ArrWahana BaseWahana; /* List wahana dasar yang dapat dibangun di awal */
+    ArrListWahanaUpg ArrWahanaUpg; /* Array yg mencatat List berkait yg merepresentasikan history upgrade dari wahana yg elah dibangun*/
     TabMaterial MaterialDatabase; /* Seluruh material yang ada di dalam game */
     JAM CurrentTime; /* Waktu sekarang */
     JAM OpeningTime = MakeJAM(0, 9, 0); /* Waktu buka */
@@ -31,6 +32,7 @@ int main()
     Stack ExecuteStack;
     S_infotype StackElmt;
     Wahana WBuilt;
+    List WListUpg;
     Kata KATANEW = MK_MakeKata("new", 3);
     Kata KATALOAD = MK_MakeKata("load", 4);
     Kata KATAEXIT = MK_MakeKata("exit", 4);
@@ -84,9 +86,12 @@ int main()
                 InsertLastGraph(&Map, P4);
 
                 setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, 2, 2);
+
+
         
                 /* Inisialisasi data game lain */
                 AW_MakeEmpty(&BuiltWahana);
+                WU_CreateEmpty(&ArrWahanaUpg);
                 CreateEmptyStack(&ActionStack);
                 prepPhase = true;
                 CurrentTime = MakeJAM(1, 21, 0);
@@ -105,8 +110,11 @@ int main()
                 InsertLastGraph(&Map, P2);
                 InsertLastGraph(&Map, P3);
                 InsertLastGraph(&Map, P4);
+
+                /* Load Wahana History */
+                loadwahanahistory("../../WahanaHistory.txt",&ArrWahanaUpg);
             }
- 
+
             do
             {
                 if (prepPhase)   /* Preparation Phase */
@@ -191,7 +199,13 @@ int main()
 
                                 WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
                                 W_Location(WBuilt) = Pos(P);
+                                W_WahanaId(WBuilt) = AW_NEff(BuiltWahana);
+
+                                LL_CreateEmpty(&ArrWahanaUpg.Tab[W_WahanaId(WBuilt)]);
+                                LL_InsVLast(&ArrWahanaUpg.Tab[W_WahanaId(WBuilt)],WBuilt);
+                                
                                 AW_AddAsLastEl(&BuiltWahana, WBuilt);
+                                
 
                                 move(&Map, &P, pushCode, &moveStatus);
                             }
@@ -200,7 +214,26 @@ int main()
                     case 5:
                         /* UPGRADE */
                         /* CEK DISEBELAH WAHANA/TIDAK */
-                        /* KALO IYA, NAMPILIN LIST UPGRADE */
+                        // boolean foundwahana = false;
+
+                        // /* KALO IYA, NAMPILIN LIST UPGRADE */
+                        // printf("Ingin melakukan upgrade apa?\n List:");
+                        // for (size_t i = 0; i < 4; i++)
+                        // {
+                        //     if (T_Type(Surround(P)[i]) == 'W')
+                        //     {
+                        //         // NAMPILIN LIST UPGRADE UNTUK WAHANA DI POINT ITU (DARI TREE?)
+
+
+                        //         foundwahana = true;
+                        //     }
+                        // }
+
+                        // if (!foundwahana)
+                        // {
+                        //     printf("Tidak ada wahana di sekitar.");
+                        // }
+                        
                         break;
                     case 6: ;
                         /* BUY */
@@ -347,7 +380,7 @@ int main()
                         {
                             if (T_Type(Surround(P)[i]) == 'W')
                             {
-                                AW_detailWahana(AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i])));
+                                AW_detailWahana(AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i])),ArrWahanaUpg);
                                 printf("\n");
                             }
                         }
@@ -393,7 +426,7 @@ int main()
                                     else
                                     {
                                         printf("\n");
-                                        AW_detailWahana(AW_GetWahana(BuiltWahana, MK_CKata));
+                                        AW_detailWahana(AW_GetWahana(BuiltWahana, MK_CKata),ArrWahanaUpg);
                                     }
                                     printf("Masukkan perintah (Details / Report / Exit):\n");
                                     MK_ADVKATAINPUT();                              
