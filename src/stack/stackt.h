@@ -11,11 +11,13 @@
 #include "../string_production/mesinkata.h"
 
 #define Nil -1
-#define S_MaxEl 10
+#define S_MaxEl 50
 /* Nil adalah stack dengan elemen kosong . */
 
 typedef struct {
     Kata name;
+    Kata matName;
+    int matCount;
     JAM timeNeeded;
     int moneyNeeded;
     POINT posWahana;
@@ -39,6 +41,8 @@ typedef struct {
 #define S_TimeNeeded(SI) (SI).timeNeeded
 #define S_MoneyNeeded(SI) (SI).moneyNeeded
 #define S_PosWahana(SI) (SI).posWahana
+#define S_MatName(SI) (SI).matName
+#define S_MatCount(SI) (SI).matCount
 
 #define Top(S) (S).TOP
 #define InfoTop(S) (S).T[(S).TOP]

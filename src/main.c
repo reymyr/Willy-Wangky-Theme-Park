@@ -30,6 +30,7 @@ int main()
     Stack ActionStack; /* Stack pada preparation phase */
     Stack ExecuteStack;
     S_infotype StackElmt;
+    Wahana WBuilt;
     Kata KATANEW = MK_MakeKata("new", 3);
     Kata KATALOAD = MK_MakeKata("load", 4);
     Kata KATAEXIT = MK_MakeKata("exit", 4);
@@ -188,9 +189,9 @@ int main()
                                 StackElmt = CreateStackInfo(MK_MakeKata("build", 5), A_Duration(AA_Elmt(ActionDatabase, 4)), 0/* Harusnya harga bangun wahana */, Pos(P));
                                 Push(&ActionStack, StackElmt);
 
-                                // Wahana WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
-                                // W_Location(WBuilt) = Pos(P);
-                                // AW_AddAsLastEl(&BuiltWahana, WBuilt);
+                                WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
+                                W_Location(WBuilt) = Pos(P);
+                                AW_AddAsLastEl(&BuiltWahana, WBuilt);
 
                                 move(&Map, &P, pushCode, &moveStatus);
                             }
@@ -232,6 +233,8 @@ int main()
                         else
                         {
                             StackElmt = CreateStackInfo(MK_MakeKata("buy", 3), A_Duration(AA_Elmt(ActionDatabase, 6)), price, MakePOINT(-1,-1));
+                            S_MatName(StackElmt) = matName;
+                            S_MatCount(StackElmt) = matCount;
                             Push(&ActionStack, StackElmt);
                             // Money(P) -= price;
                             // AM_AddCount(&Materials(P), matName, matCount, AM_GetPrice(MaterialDatabase, matName));
@@ -254,12 +257,36 @@ int main()
                         /* EXECUTE */
                         /* PINDAH STACK KE STACK BARU DGN URUTAN DIBALIK */
                         /* JALANIN SATU PERSATU DARI TOP */
+                        InverseStack(&ActionStack, &ExecuteStack);
+                        while (!IsEmptyStack(ExecuteStack))
+                        {
+                            Pop(&ExecuteStack, &StackElmt);
+                            if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("buy", 3)))
+                            {
+                                Money(P) -= S_MoneyNeeded(StackElmt);
+                                AM_AddCount(&Materials(P), S_MatName(StackElmt), S_MatCount(StackElmt), AM_GetPrice(MaterialDatabase, matName));
+                            }
+                            else if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("upgrade", 7)))
+                            {
+                                /* Blm tau sistem upgrade */
+                            }
+                            /* build udh ditanganin di commandnya langsung */
+                        }
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
                         prepPhase = false;
                         break;
                     case 9:
                         /* MAIN */
-                        CreateEmptyStack(&ActionStack);
+                        while (!IsEmptyStack(ActionStack))
+                        {
+                            Pop(&ActionStack, &StackElmt);
+                            if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("build", 5)))
+                            {
+                                setTile(&Map, G_CurrentArea(Map), S_PosWahana(StackElmt), '-', -1);
+                                setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
+                                AW_DelLastEl(&BuiltWahana, &WBuilt);
+                            }
+                        }
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
                         prepPhase = false;
                         break;

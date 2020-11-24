@@ -73,12 +73,12 @@ void Pop (Stack * S, S_infotype* X)
 //Kalo mau nambah command setelah eksekusi command InverseStack->Push
 void InverseStack(Stack *Sin, Stack *Sout){
 	CreateEmptyStack(Sout);
-	S_infotype* X;
+	S_infotype X;
 	while(Top(*Sin)!=Nil){
-		*X=InfoTop(*Sin);
+		X=InfoTop(*Sin);
 		Top(*Sin)--;
 		Top(*Sout)++;
-		InfoTop(*Sout)=*X;
+		InfoTop(*Sout)=X;
 	}
 }
 

@@ -84,39 +84,39 @@ boolean AA_IsFull(ArrAction T)
 
 /* ********** BACA dan TULIS dengan INPUT/OUTPUT device ********** */
 /* *** Mendefinisikan isi tabel dari pembacaan *** */
-void AA_BacaIsi(ArrAction *T)
-/* I.S. T sembarang dan sudah dialokasikan sebelumnya */
-/* F.S. Tabel T terdefinisi */
-/* Proses : membaca banyaknya elemen T dan mengisi nilainya */
-/* 1. Baca banyaknya elemen diakhiri enter, misalnya N */
-/*    Pembacaan diulangi sampai didapat N yang benar yaitu 0 <= N <= AA_MaxElement(T) */
-/*    Jika N tidak valid, tidak diberikan pesan kesalahan */
-/* 2. Jika 0 < N <= AA_MaxElement(T); Lakukan N kali: Baca elemen mulai dari indeks
-      IdxMin satu per satu diakhiri enter */
-/*    Jika N = 0; hanya terbentuk T kosong */
-{
-    int i, N;
+// void AA_BacaIsi(ArrAction *T)
+// /* I.S. T sembarang dan sudah dialokasikan sebelumnya */
+// /* F.S. Tabel T terdefinisi */
+// /* Proses : membaca banyaknya elemen T dan mengisi nilainya */
+// /* 1. Baca banyaknya elemen diakhiri enter, misalnya N */
+// /*    Pembacaan diulangi sampai didapat N yang benar yaitu 0 <= N <= AA_MaxElement(T) */
+// /*    Jika N tidak valid, tidak diberikan pesan kesalahan */
+// /* 2. Jika 0 < N <= AA_MaxElement(T); Lakukan N kali: Baca elemen mulai dari indeks
+//       IdxMin satu per satu diakhiri enter */
+// /*    Jika N = 0; hanya terbentuk T kosong */
+// {
+//     int i, N;
     
-    do
-    {
-        scanf("%d", &N);
-    } while (N < 0 || N > AA_MaxElement(*T));
+//     do
+//     {
+//         scanf("%d", &N);
+//     } while (N < 0 || N > AA_MaxElement(*T));
     
-    if (N == 0)
-    {
-        AA_NEff(*T) = 0;
-    }
-    else
-    {
-        for (i = IdxMin; i < N; i++)
-        {
-            Action x;
-            scanf("%d", &x);
-            AA_Elmt(*T, i) = x;
-            AA_NEff(*T)++;
-        }
-    }
-}
+//     if (N == 0)
+//     {
+//         AA_NEff(*T) = 0;
+//     }
+//     else
+//     {
+//         for (i = IdxMin; i < N; i++)
+//         {
+//             Action x;
+//             scanf("%d", &x);
+//             AA_Elmt(*T, i) = x;
+//             AA_NEff(*T)++;
+//         }
+//     }
+// }
 void AA_TulisIsiTab(ArrAction T)
 /* Proses : Menuliskan isi tabel dengan traversal, tabel ditulis di antara kurung siku;
    antara dua elemen dipisahkan dengan separator "koma", tanpa tambahan karakter di depan,
