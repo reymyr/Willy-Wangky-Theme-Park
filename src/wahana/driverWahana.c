@@ -5,7 +5,7 @@
 
 int main()
 {
-    ArrAddressBaseWahana A;
+    ArrListWahanaUpg A;
     loadwahanahistory("../../files/WahanaHistory.txt",&A);
 
     for (int i=0;i<A.Neff;i++){

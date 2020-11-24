@@ -293,7 +293,7 @@ void AW_DelLastEl(ArrWahana *T, Wahana *X)
     AW_NEff(*T)--;
 }
 
-void AW_detailWahana(Wahana W, ArrAddressBaseWahana A)
+void AW_detailWahana(Wahana W, ArrListWahanaUpg A)
 /* I.S. sembarang */
 /* F.S. detail wahana tertulis di layar */
 {

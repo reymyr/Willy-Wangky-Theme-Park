@@ -4,7 +4,14 @@
 
 //gcc -o wh wahanahistory.c wahana.c ../listlinier/listlinier.c ../string_production/mesinkata.c ../string_production/mesinkar.c ../jam/jam.c ../point/point.c
 
-void loadwahanahistory(char *filename, ArrAddressBaseWahana * A){
+void WU_CreateEmpty(ArrListWahanaUpg* A)
+/* I.S A sembarang, F.S A merupakan sebuah Array kosong (Neff=0) */
+{
+    NEff_ArrListWahanaUpg(*A) = 0;
+}
+
+
+void loadwahanahistory(char *filename, ArrListWahanaUpg * A){
     int currentid;
     Wahana W;
     List WahanaHistory;
@@ -52,8 +59,17 @@ void loadwahanahistory(char *filename, ArrAddressBaseWahana * A){
     }
 }
 
-void PrintWahanaHistory(Wahana W, ArrAddressBaseWahana A)
+void PrintWahanaHistory(Wahana W, ArrListWahanaUpg A)
 /* Menampilkan history dari wahana W*/
 {
     LL_PrintInfoNamaWahana(A.Tab[W_WahanaId(W)]);
+}
+
+boolean IsWahanaRusak(Wahana W){
+    return W_IsBroken(W) == true;
+}
+
+void RepairWahanaRusak(Wahana W)
+{
+    W_IsBroken(W) = false;
 }
