@@ -10,7 +10,7 @@ static FILE * MK_pita;
 static int MK_retval;
 
 
-void MK_STARTINPUT(string filename) {
+void MK_STARTINPUT() {
 /* Mesin siap dioperasikan. Pita disiapkan untuk dibaca.
    Karakter pertama yang ada pada pita posisinya adalah pada jendela.
    I.S. : sembarang
@@ -18,7 +18,7 @@ void MK_STARTINPUT(string filename) {
           Jika CC = MARK maka EOP akan menyala (true) */
 
 	/* Algoritma */
-	MK_pita = fopen(filename,"r");
+	MK_pita = stdin;
 	MK_ADV();
 }
 

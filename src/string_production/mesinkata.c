@@ -3,7 +3,6 @@
 #include "mesinkata.h"
 #include <string.h>
 #include <stdio.h>
-#include "../point/point.h"
 
 /* State Mesin Kata */
 boolean MK_EndKata;
@@ -20,13 +19,13 @@ void MK_IgnoreNewline(){
     return;
 }
 
-void MK_STARTKATAINPUT(string filename)
+void MK_STARTKATAINPUT()
 /* I.S. : CC sembarang 
    F.S. : EndKata = true, dan CC = MARK; 
           atau EndKata = false, CKata adalah kata yang sudah diakuisisi,
           CC karakter pertama sesudah karakter terakhir kata */
 {
-    MK_STARTINPUT(filename);
+    MK_STARTINPUT();
     MK_IgnoreNewline();
     if (MK_CC == MK_MARK)
     {
@@ -210,8 +209,6 @@ int MK_CToI(char c)
         return 8;
     case '9':
         return 9;
-    default:
-        return -1;
     }
 }
 
