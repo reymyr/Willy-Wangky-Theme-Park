@@ -4,6 +4,7 @@
 #include "../boolean.h"
 #include "mesinkar.h"
 #include <string.h>
+#include "../point/point.h"
 
 #define MK_NMax 50
 #define MK_BLANK ' '
@@ -88,6 +89,9 @@ int MK_CToI(char c);
 
 int MK_KataToInt(Kata K);
 /* Mengubah kata ke integer */
+
+POINT MK_KataToPoint(Kata K);
+/*Mengubah kata ke point. I.S Format Kata K : '<absis>,<ordinat>' contoh : 1,1*/
 
 #endif
 

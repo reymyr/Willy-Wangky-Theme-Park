@@ -12,7 +12,7 @@ extern char MK_CC;
 extern boolean MK_EOP;
 
 /* Mesin karakter dari input */
-void MK_STARTINPUT();
+void MK_STARTINPUT(string filename);
 /* Mesin siap dioperasikan. Pita disiapkan untuk dibaca.
    Karakter pertama yang ada pada pita posisinya adalah pada jendela.
    I.S. : sembarang

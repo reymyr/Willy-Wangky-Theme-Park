@@ -3,6 +3,7 @@
 #include "mesinkata.h"
 #include <string.h>
 #include <stdio.h>
+#include "../point/point.h"
 
 /* State Mesin Kata */
 boolean MK_EndKata;
@@ -19,13 +20,13 @@ void MK_IgnoreNewline(){
     return;
 }
 
-void MK_STARTKATAINPUT()
+void MK_STARTKATAINPUT(string filename)
 /* I.S. : CC sembarang 
    F.S. : EndKata = true, dan CC = MARK; 
           atau EndKata = false, CKata adalah kata yang sudah diakuisisi,
           CC karakter pertama sesudah karakter terakhir kata */
 {
-    MK_STARTINPUT();
+    MK_STARTINPUT(filename);
     MK_IgnoreNewline();
     if (MK_CC == MK_MARK)
     {
@@ -209,6 +210,8 @@ int MK_CToI(char c)
         return 8;
     case '9':
         return 9;
+    default:
+        return -1;
     }
 }
 
@@ -223,4 +226,31 @@ int MK_KataToInt(Kata K)
     }
     
     return val;
+}
+
+POINT MK_KataToPoint(Kata K)
+/*Mengubah kata ke point. I.S Format Kata K : '<absis>,<ordinat>' contoh : 1,1*/
+{
+    int i = 0;
+    Kata Absis;
+    Kata Ordinat;
+    while (K.TabKata[i]!=',')
+    {
+        Absis.TabKata[i] = K.TabKata[i];
+        i++;
+    }
+    Absis.Length = i;
+    int j = 0;
+    i++;
+    while (i < K.Length)
+    {
+        Ordinat.TabKata[j] = K.TabKata[i];
+        i++;
+        j++;
+    }
+    Ordinat.Length = j;
+    
+    POINT P = MakePOINT(MK_KataToInt(Absis),MK_KataToInt(Ordinat));
+
+    return P;
 }
