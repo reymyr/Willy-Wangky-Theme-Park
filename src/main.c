@@ -203,7 +203,7 @@ int main()
 
                                 WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
                                 W_Location(WBuilt) = Pos(P);
-                                W_WahanaId(WBuilt) = AW_NEff(BuiltWahana);
+                                W_WahanaId(WBuilt) = AW_GetId(WahanaDatabase, MK_CKata);
 
                                 LL_CreateEmpty(&ArrWahanaUpg.Tab[W_WahanaId(WBuilt)]);
                                 LL_InsVLast(&ArrWahanaUpg.Tab[W_WahanaId(WBuilt)],WBuilt);
