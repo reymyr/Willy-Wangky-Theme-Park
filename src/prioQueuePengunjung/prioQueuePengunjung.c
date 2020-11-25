@@ -8,7 +8,7 @@
 boolean PQ_IsEmpty (PrioQueuePengunjung Q)
 /* Mengirim true jika Q kosong: lihat definisi di atas */
 {
-    return (PQ_Head(Q) == Nil && PQ_Tail(Q) == Nil);
+    return (PQ_Head(Q) == PQ_Nil && PQ_Tail(Q) == PQ_Nil);
 }
 boolean PQ_IsFull (PrioQueuePengunjung Q)
 /* Mengirim true jika tabel penampung elemen Q sudah penuh */
@@ -39,8 +39,8 @@ void PQ_MakeEmpty (PrioQueuePengunjung * Q)
 /* F.S. Sebuah Q kosong terbentuk*/
 /* Proses : Membuat sebuah Q kosong */
 {
-    PQ_Head(*Q) = Nil;
-    PQ_Tail(*Q) = Nil;
+    PQ_Head(*Q) = PQ_Nil;
+    PQ_Tail(*Q) = PQ_Nil;
 }
 
 /* *** Primitif Add/Delete *** */
@@ -77,8 +77,8 @@ void PQ_Dequeue (PrioQueuePengunjung * Q, Pengunjung * X)
     *X = PQ_InfoHead(*Q);
     if (PQ_Head(*Q) == PQ_Tail(*Q))
     {
-        PQ_Head(*Q) = Nil;
-        PQ_Tail(*Q) = Nil;
+        PQ_Head(*Q) = PQ_Nil;
+        PQ_Tail(*Q) = PQ_Nil;
     }
     else
     {
@@ -101,6 +101,17 @@ void PQ_PrintQueuePengunjung (PrioQueuePengunjung Q)
     for (int i = 0; i < PQ_NBElmt(Q); i++)
     {
         int current = (PQ_Head(Q) + i) % PQ_MaxEl;
-        printf("(GANTI JADI LIST WAHANA),  kesabaran: %d\n", P_Kesabaran(PQ_Elmt(Q, current)));
+        Pengunjung P = PQ_Elmt(Q, current);
+        int num = P_NumWahana(P);
+        printf("(");
+        for (size_t j = 0; j < num; j++)
+        {
+            MK_printKata(P_Wahana(P)[j]);
+            if (j != P_NumWahana(P)-1)
+            {   
+                printf(", ");
+            }
+        }
+        printf("),  kesabaran: %d\n", P_Kesabaran(P));
     }
 }

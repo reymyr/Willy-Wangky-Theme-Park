@@ -1,2 +1,4 @@
 0 wahana satu_tipe 1_500_3_15_tes deskripsi
-1 wahana dua_tipe 2_300_2_10_ini wahana 2.
+1 wahana dua_tipe 2_300_2_10_ini wahana 2
+2 rollercoaster_roller_250_5_20_roller coaster asik
+3 jungkat jungkit_wahana anak_100_2_15_naik turun.
