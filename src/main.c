@@ -3,6 +3,9 @@
 #include <time.h>
 #include "adt.h"
 
+void randomPengunjung(PrioQueuePengunjung * PQ, ArrWahana AW);
+/* I.S. PQ sembarang */
+/* F.S. PQ terisi pengunjung secara acak */
 void initActionDatabase(ArrAction * AA);
 /* Menginisialisasi array action yang diisi semua action */
 void initPrepActionArray(ArrAction * AA);
@@ -12,6 +15,7 @@ void initMainActionArray(ArrAction * AA);
 
 int main()
 {
+    srand(time(0));
     int moveStatus; /* Penanda keberhasilan gerak */
     boolean prepPhase; /* Penanda phase saat ini */
     ArrAction ActionDatabase; /* Seluruh aksi yang bisa dilakukan dalam game */
@@ -308,6 +312,7 @@ int main()
                         }
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
                         prepPhase = false;
+                        randomPengunjung(&Antrian, BuiltWahana);
                         break;
                     case 9:
                         /* MAIN */
@@ -323,6 +328,7 @@ int main()
                         }
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
                         prepPhase = false;
+                        randomPengunjung(&Antrian, BuiltWahana);
                         break;
                     default:
                         break;
@@ -475,17 +481,38 @@ int main()
     return 0;
 }
 
-// void randomPengunjung(PrioQueuePengunjung * PQ)
-// /* I.S. PQ sembarang */
-// /* F.S. PQ terisi pengunjung secara acak */
-// {
-//     srand(time(0));
-//     for (size_t i = 0; i < 7; i++)
-//     {
-        
-//     }
-    
-// }
+void randomPengunjung(PrioQueuePengunjung * PQ, ArrWahana AW)
+/* I.S. PQ sembarang */
+/* F.S. PQ terisi pengunjung secara acak */
+{
+    PQ_MakeEmpty(PQ);
+    int maxNbWahana = AW_NbElmt(AW);
+    int numPengunjung = rand() % PQ_MaxEl + 1;
+    for (size_t i = 0; i < numPengunjung; i++)
+    {
+        Pengunjung Pgj;
+        P_Kesabaran(Pgj) = 5;
+        P_Prio(Pgj) = rand() % 100 + 1;
+        P_NumWahana(Pgj) = 0;
+        int idx = 0;
+        for (size_t j = 0; j < AW_NbElmt(AW); j++)
+        {
+            int r = rand() % 100;
+            printf("%d\n", r);
+            if (r < 45)
+            {
+                P_Wahana(Pgj)[idx] = W_Name(AW_Elmt(AW, j));
+                idx++;
+                P_NumWahana(Pgj)++;
+            }
+        }
+
+        if (P_NumWahana(Pgj) > 0)
+        {
+            PQ_Enqueue(PQ, Pgj);
+        }
+    }
+}
 
 void initActionDatabase(ArrAction * AA)
 /* Menginisialisasi array action yang dapat diisi semua action */

@@ -7,8 +7,9 @@
 #define PRIOQUEUEPENGUNJUNG_H
 
 #include "../boolean.h"
+#include "../string_production/mesinkata.h"
 
-#define Nil -1
+#define PQ_Nil -1
 /* Konstanta untuk mendefinisikan address tak terdefinisi */
 
 #define PQ_MaxEl 7
@@ -17,7 +18,8 @@
 /* Definisi elemen dan address */
 typedef struct {
     int prio;  /* (1 adalah prioritas tertinggi) */
-    int wahana[5];  /* ID dari wahana yang ingin dinaiki pengunjung */
+    Kata wahana[5];  /* nama dari wahana yang ingin dinaiki pengunjung */
+    int numWahana;
     int kesabaran; /* 10-0 (kesabaran 0 berarti sudah habis) */
 } Pengunjung; 
 
@@ -29,13 +31,14 @@ typedef struct {
     PQaddress HEAD;               /* alamat penghapusan */
     PQaddress TAIL;               /* alamat penambahan */
 } PrioQueuePengunjung;
-/* Definisi PrioQueuePengunjung kosong: HEAD=Nil; TAIL=Nil. */
+/* Definisi PrioQueuePengunjung kosong: HEAD=PQ_Nil; TAIL=PQ_Nil. */
 
 /* ********* AKSES (Selektor) ********* */
 /* Jika P adalah Pengunjung dan Q adalah PrioQueuePengunjung, maka akses elemen : */
 #define P_Prio(P)      (P).prio
 #define P_Wahana(P)    (P).wahana
 #define P_Kesabaran(P) (P).kesabaran
+#define P_NumWahana(P) (P).numWahana
 
 #define PQ_Head(Q)     (Q).HEAD
 #define PQ_Tail(Q)     (Q).TAIL
@@ -43,8 +46,6 @@ typedef struct {
 #define PQ_InfoTail(Q) (Q).T[(Q).TAIL]
 #define PQ_Elmt(Q,i)   (Q).T[(i)]
 
-
-Pengunjung createPengunjung(/* TabWahana wahanaList */);
 
 /* ********* Prototype ********* */
 boolean PQ_IsEmpty (PrioQueuePengunjung Q);
@@ -88,5 +89,7 @@ void PQ_PrintQueuePengunjung (PrioQueuePengunjung Q);
 <prio-n> <elemen-n>
 #
 */
+
+void PQ_removeWahana(Pengunjung P);
 
 #endif
