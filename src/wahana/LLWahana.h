@@ -23,7 +23,7 @@ void loadwahanahistory(char *filename, ArrListWahanaUpg * A);
 void PrintWahanaHistory(Wahana W, ArrListWahanaUpg A);
 /* Menampilkan History Upgrade Wahana W */
 
-boolean IsBrokenWahana(Wahana W);
+boolean IsWahanaRusak(Wahana W);
 /* Mengembalikan true jika Wahana rusak dan false jika tidak*/
 
 void RepairWahanaRusak(Wahana W);

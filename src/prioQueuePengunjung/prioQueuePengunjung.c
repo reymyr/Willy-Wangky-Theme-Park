@@ -102,16 +102,7 @@ void PQ_PrintQueuePengunjung (PrioQueuePengunjung Q)
     {
         int current = (PQ_Head(Q) + i) % PQ_MaxEl;
         Pengunjung P = PQ_Elmt(Q, current);
-        int num = P_NumWahana(P);
-        printf("(");
-        for (size_t j = 0; j < num; j++)
-        {
-            MK_printKata(P_Wahana(P)[j]);
-            if (j != P_NumWahana(P)-1)
-            {   
-                printf(", ");
-            }
-        }
-        printf("),  kesabaran: %d\n", P_Kesabaran(P));
+        AK_TulisIsiTab(P_Wahana(P));
+        printf(", kesabaran: %d\n", P_Kesabaran(P));
     }
 }

@@ -319,3 +319,26 @@ void AW_reportWahana(Wahana W)
     printf("Total wahana dinaiki hari ini : %d kali\n", W_TodayUseCount(W));
     printf("Penghasilan hari ini : %d\n", W_TodayPenghasilan(W));
 }
+
+void AW_printBroken(ArrWahana AW)
+/* I.S. AW terdefinisi */
+/* F.S. Nama wahana yang rusak tertulis di layar */
+{
+    IdxType i;
+    printf("Broken:\n");
+    for (i = AW_GetFirstIdx(AW); i <= AW_GetLastIdx(AW); i++)
+    {
+        if (W_IsBroken(AW_Elmt(AW, i)))
+        {
+            printf(" - "); MK_printKata(W_Name(AW_Elmt(AW,i))); printf("\n");
+        }
+    }
+}
+
+void AW_setRusak(ArrWahana * AW, Kata K)
+/* I.S. AW terdefinisi */
+/* F.S. Wahana W pada AW menjadi rusak */
+{
+    IdxType i = AW_SearchI(*AW, K);
+    W_IsBroken(AW_Elmt(*AW, i)) = true;
+}

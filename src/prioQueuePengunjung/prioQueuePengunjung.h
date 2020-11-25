@@ -6,6 +6,7 @@
 #ifndef PRIOQUEUEPENGUNJUNG_H
 #define PRIOQUEUEPENGUNJUNG_H
 
+#include "arrKata.h"
 #include "../boolean.h"
 #include "../string_production/mesinkata.h"
 
@@ -18,8 +19,7 @@
 /* Definisi elemen dan address */
 typedef struct {
     int prio;  /* (1 adalah prioritas tertinggi) */
-    Kata wahana[5];  /* nama dari wahana yang ingin dinaiki pengunjung */
-    int numWahana;
+    ArrKata wahana;  /* nama dari wahana yang ingin dinaiki pengunjung */
     int kesabaran; /* 10-0 (kesabaran 0 berarti sudah habis) */
 } Pengunjung; 
 
@@ -38,7 +38,6 @@ typedef struct {
 #define P_Prio(P)      (P).prio
 #define P_Wahana(P)    (P).wahana
 #define P_Kesabaran(P) (P).kesabaran
-#define P_NumWahana(P) (P).numWahana
 
 #define PQ_Head(Q)     (Q).HEAD
 #define PQ_Tail(Q)     (Q).TAIL
@@ -90,6 +89,5 @@ void PQ_PrintQueuePengunjung (PrioQueuePengunjung Q);
 #
 */
 
-void PQ_removeWahana(Pengunjung P);
 
 #endif

@@ -306,12 +306,12 @@ void move(Graph *G, Player * P, int move_code, int * status)
     
 }
 
-boolean nearGate(Player P)
-/* Mengembalikan true jika player berada di sebelah gate, false jika tidak */
+boolean nearChar(Player P, char c)
+/* Mengembalikan true jika player berada di sebelah char c, false jika tidak */
 {
     for (size_t i = 0; i < 4; i++)
     {
-        if (T_Type(Surround(P)[i]) == '^' || T_Type(Surround(P)[i]) == '>' || T_Type(Surround(P)[i]) == 'V' || T_Type(Surround(P)[i]) == '<')
+        if (T_Type(Surround(P)[i]) == c)
         {
             return true;
         }

@@ -6,6 +6,8 @@
 void randomPengunjung(PrioQueuePengunjung * PQ, ArrWahana AW);
 /* I.S. PQ sembarang */
 /* F.S. PQ terisi pengunjung secara acak */
+void processKesabaran(PrioQueuePengunjung * Antrian);
+/* Proses kesabaran pengunjung */
 void initActionDatabase(ArrAction * AA);
 /* Menginisialisasi array action yang diisi semua action */
 void initPrepActionArray(ArrAction * AA);
@@ -17,6 +19,7 @@ int main()
 {
     srand(time(0));
     int moveStatus; /* Penanda keberhasilan gerak */
+    int counter;
     boolean prepPhase; /* Penanda phase saat ini */
     ArrAction ActionDatabase; /* Seluruh aksi yang bisa dilakukan dalam game */
     ArrAction PrepActionArray; /* Aksi yang dapat dilakukan saat preparation phase */
@@ -31,6 +34,7 @@ int main()
     JAM ClosingTime = MakeJAM(0, 21, 0); /* Waktu tutup */
     Graph Map; /* Map */
     Player P; /* Player */
+    Pengunjung Pgj; /* Pengunjung yang sedang diproses */
     PrioQueuePengunjung Antrian; /* Antrian pengunjung */
     Stack ActionStack; /* Stack pada preparation phase */
     Stack ExecuteStack;
@@ -92,7 +96,6 @@ int main()
                 setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, 2, 2);
 
 
-        
                 /* Inisialisasi data game lain */
                 AW_MakeEmpty(&BuiltWahana);
                 WU_CreateEmpty(&ArrWahanaUpg);
@@ -173,7 +176,7 @@ int main()
                         {
                             printf("Input tidak valid\n");
                         }
-                        else if (nearGate(P))
+                        else if (nearChar(P, '^') || nearChar(P, '>') || nearChar(P, 'V') || nearChar(P, '<'))
                         {
                             printf("Tidak bisa membangun wahana di sebelah gerbang\n");
                         }
@@ -293,9 +296,8 @@ int main()
                         break;
                     case 8:
                         /* EXECUTE */
-                        /* PINDAH STACK KE STACK BARU DGN URUTAN DIBALIK */
-                        /* JALANIN SATU PERSATU DARI TOP */
                         InverseStack(&ActionStack, &ExecuteStack);
+                        /* JALANIN SATU PERSATU DARI TOP */
                         while (!IsEmptyStack(ExecuteStack))
                         {
                             Pop(&ExecuteStack, &StackElmt);
@@ -308,11 +310,16 @@ int main()
                             {
                                 /* Blm tau sistem upgrade */
                             }
-                            /* build udh ditanganin di commandnya langsung */
+                            else /* build */
+                            {
+                                /* NGURANGIN UANG DAN RESOURCE PLAYER */
+                            }
+
                         }
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
                         prepPhase = false;
                         randomPengunjung(&Antrian, BuiltWahana);
+                        counter = 0;
                         break;
                     case 9:
                         /* MAIN */
@@ -329,6 +336,7 @@ int main()
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
                         prepPhase = false;
                         randomPengunjung(&Antrian, BuiltWahana);
+                        counter = 0;
                         break;
                     default:
                         break;
@@ -336,6 +344,13 @@ int main()
                 }
                 else /* Main Phase */
                 {
+                    
+                    if ((JAMToMenit(DurasiJam(OpeningTime, CurrentTime)) / 45) > counter)
+                    {
+                        counter++;
+                        processKesabaran(&Antrian);     
+                    }                  
+
                     printf("Main Phase Day %d\n", Day(CurrentTime)); 
                     printCurrentMap(Map, P);
                     printf("Name: "); MK_printKata(Nama(P)); printf("\n");
@@ -344,6 +359,7 @@ int main()
                     printf("Closing Time: "); TulisJAM(ClosingTime); printf("\n");
                     printf("Time Remaining: "); TulisJamMenit(DurasiJam(CurrentTime, ClosingTime)); printf("\n");
                     PQ_PrintQueuePengunjung(Antrian); printf("\n");
+                    AW_printBroken(BuiltWahana); printf("\n");
 
                     printf("Masukkan perintah");
                     if (T_Type(Elmt(GetMap(Map, G_CurrentArea(Map)), Baris(Pos(P)), Kolom(Pos(P)))) == 'O')
@@ -375,7 +391,50 @@ int main()
                         break;
                     case 10:
                         /* SERVE */
-                        /*  */
+                        if (!nearChar(P, 'A'))
+                        {
+                            printf("Anda tidak berada di sebelah antrian\n");
+                        }
+                        else if (PQ_IsEmpty(Antrian))
+                        {
+                            printf("Antrian sudah kosong\n");
+                        }
+                        else
+                        {
+                            printf("Ingin serve wahana apa?\n");
+                            MK_ADVKATAINPUT();
+                            PQ_Dequeue(&Antrian, &Pgj);
+                            if (!AK_SearchB(P_Wahana(Pgj), MK_CKata))
+                            {
+                                printf("Pengunjung tersebut tidak ingin menaiki wahana tersebut\n");
+                                PQ_Enqueue(&Antrian, Pgj);
+                            }
+                            else
+                            {
+                                if (IsWahanaRusak(AW_GetWahana(BuiltWahana, MK_CKata)))
+                                {
+                                    printf("Wahana tersebut rusak\n");
+                                    PQ_Enqueue(&Antrian, Pgj);
+                                }
+                                else
+                                {
+                                    
+                                    Money(P) += AW_GetPrice(BuiltWahana, MK_CKata);
+                                    CurrentTime = NextNMenit(CurrentTime, W_Duration(AW_GetWahana(BuiltWahana, MK_CKata)));
+                                    AK_DelKata(&P_Wahana(Pgj), MK_CKata);
+                                    if (AK_NbElmt(P_Wahana(Pgj)) > 0)
+                                    {
+                                        P_Prio(Pgj)--;
+                                        PQ_Enqueue(&Antrian, Pgj);
+                                    }
+                                    int r = rand() % 100;
+                                    if (r < 30)
+                                    {
+                                        AW_setRusak(&BuiltWahana, MK_CKata);
+                                    }             
+                                }                                
+                            }
+                        }   
                         break;
                     case 11:
                         /* REPAIR */
@@ -492,26 +551,46 @@ void randomPengunjung(PrioQueuePengunjung * PQ, ArrWahana AW)
     {
         Pengunjung Pgj;
         P_Kesabaran(Pgj) = 5;
-        P_Prio(Pgj) = rand() % 100 + 1;
-        P_NumWahana(Pgj) = 0;
-        int idx = 0;
+        P_Prio(Pgj) = rand() % 100 + 20;
+        AK_MakeEmpty(&P_Wahana(Pgj));
         for (size_t j = 0; j < AW_NbElmt(AW); j++)
         {
             int r = rand() % 100;
-            printf("%d\n", r);
             if (r < 45)
             {
-                P_Wahana(Pgj)[idx] = W_Name(AW_Elmt(AW, j));
-                idx++;
-                P_NumWahana(Pgj)++;
+                AK_AddAsLastEl(&P_Wahana(Pgj), W_Name(AW_Elmt(AW, j)));
             }
         }
 
-        if (P_NumWahana(Pgj) > 0)
+        if (AK_NbElmt(P_Wahana(Pgj)) > 0)
         {
             PQ_Enqueue(PQ, Pgj);
         }
     }
+}
+
+void processKesabaran(PrioQueuePengunjung * Antrian)
+/* Proses kesabaran pengunjung */
+{
+    int r = rand() % PQ_NBElmt(*Antrian);
+    P_Kesabaran(PQ_Elmt(*Antrian, r))--;
+    if (P_Kesabaran(PQ_Elmt(*Antrian, r)) == 0)
+    {
+        PrioQueuePengunjung Temp;
+        Pengunjung PTemp;
+        PQ_MakeEmpty(&Temp);
+        for (size_t i = 0; i < r; i++)
+        {
+            PQ_Dequeue(Antrian, &PTemp);
+            PQ_Enqueue(&Temp, PTemp);
+        }
+        PQ_Dequeue(Antrian, &PTemp);
+        while (!PQ_IsEmpty(Temp))
+        {
+            PQ_Dequeue(&Temp, &PTemp);
+            PQ_Enqueue(Antrian, PTemp);
+        }
+    }    
 }
 
 void initActionDatabase(ArrAction * AA)
