@@ -9,7 +9,7 @@
 #include "../wahana/wahana.h"
 #include "../boolean.h"
 
-#define Nil NULL
+#define LL_Nil NULL
 
 typedef Wahana infotype;
 typedef struct tElmtlist *address;
@@ -22,9 +22,9 @@ typedef struct {
 } List;
 
 /* Definisi list : */
-/* List kosong : First(L) = Nil */
+/* List kosong : First(L) = LL_Nil */
 /* Setiap elemen dengan address P dapat diacu Info(P), Next(P) */
-/* Elemen terakhir list : jika addressnya Last, maka Next(Last)=Nil */
+/* Elemen terakhir list : jika addressnya Last, maka Next(Last)=LL_Nil */
 
 #define Info(P) (P)->info
 #define InfoNamaWahana(P) ((P)->info).NamaWahana
@@ -49,8 +49,8 @@ void LL_CreateEmpty (List *L);
 address LL_Alokasi (infotype X);
 /* Mengirimkan address hasil alokasi sebuah elemen */
 /* Jika alokasi berhasil, maka address tidak nil, dan misalnya */
-/* menghasilkan P, maka Info(P)=X, Next(P)=Nil */
-/* Jika alokasi gagal, mengirimkan Nil */
+/* menghasilkan P, maka Info(P)=X, Next(P)=LL_Nil */
+/* Jika alokasi gagal, mengirimkan LL_Nil */
 void LL_Dealokasi (address *P);
 /* I.S. P terdefinisi */
 /* F.S. P dikembalikan ke sistem */
@@ -60,7 +60,7 @@ void LL_Dealokasi (address *P);
 address LL_Search (List L, infotype X);
 /* Mencari apakah ada elemen list dengan Info(P)= X */
 /* Jika ada, mengirimkan address elemen tersebut. */
-/* Jika tidak ada, mengirimkan Nil */
+/* Jika tidak ada, mengirimkan LL_Nil */
 boolean LL_FSearch (List L, address P);
 /* Mencari apakah ada elemen list yang beralamat P */
 /* Mengirimkan true jika ada, false jika tidak ada */
@@ -68,8 +68,8 @@ address LL_SearchPrec (List L, infotype X);
 /* Mengirimkan address elemen sebelum elemen yang nilainya=X */
 /* Mencari apakah ada elemen list dengan Info(P)=X */
 /* Jika ada, mengirimkan address Prec, dengan Next(Prec)=P dan Info(P)=X. */
-/* Jika tidak ada, mengirimkan Nil */
-/* Jika P adalah elemen pertama, maka Prec=Nil */
+/* Jika tidak ada, mengirimkan LL_Nil */
+/* Jika P adalah elemen pertama, maka Prec=LL_Nil */
 /* Search dengan spesifikasi seperti ini menghindari */
 /* traversal ulang jika setelah Search akan dilakukan operasi lain */
 

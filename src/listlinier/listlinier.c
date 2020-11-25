@@ -8,7 +8,7 @@
 boolean LL_IsEmpty (List L)
 /* Mengirim true jika list kosong */
 {
-    return First(L) == Nil;
+    return First(L) == LL_Nil;
 }
 
 /****************** PEMBUATAN LIST KOSONG ******************/
@@ -16,25 +16,25 @@ void LL_CreateEmpty (List *L)
 /* I.S. sembarang             */
 /* F.S. Terbentuk list kosong */
 {
-    First(*L) = Nil;
+    First(*L) = LL_Nil;
 }
 
 /****************** Manajemen Memori ******************/
 address LL_Alokasi (infotype X)
 /* Mengirimkan address hasil alokasi sebuah elemen */
 /* Jika alokasi berhasil, maka address tidak nil, dan misalnya */
-/* menghasilkan P, maka Info(P)=X, Next(P)=Nil */
-/* Jika alokasi gagal, mengirimkan Nil */
+/* menghasilkan P, maka Info(P)=X, Next(P)=LL_Nil */
+/* Jika alokasi gagal, mengirimkan LL_Nil */
 {
     ElmtList *P = (ElmtList *)malloc(sizeof(ElmtList));
 
-    if (P==Nil)
+    if (P==LL_Nil)
     {
-        return Nil;
+        return LL_Nil;
     } else
     {
         Info(P) = X;
-        Next(P) = Nil;
+        Next(P) = LL_Nil;
         return P;
     }
 }
@@ -50,14 +50,14 @@ void LL_Dealokasi (address *P)
 address LL_Search (List L, infotype X)
 /* Mencari apakah ada elemen list dengan Info(P)= X */
 /* Jika ada, mengirimkan address elemen tersebut. */
-/* Jika tidak ada, mengirimkan Nil */
+/* Jika tidak ada, mengirimkan LL_Nil */
 {
     address P = First(L);
     boolean found = false;
 
     if (!LL_IsEmpty(L))
     {
-        while (!found && P!=Nil)
+        while (!found && P!=LL_Nil)
         {
             if (W_WahanaId(X)==W_WahanaId(Info(P))){
                 found = true;
@@ -76,7 +76,7 @@ boolean LL_FSearch (List L, address P)
     boolean found = false;
     address X = First(L);
 
-    while (!found && X!=Nil)
+    while (!found && X!=LL_Nil)
     {
         if (X==P)
         {
@@ -92,16 +92,16 @@ address LL_SearchPrec (List L, infotype X)
 /* Mengirimkan address elemen sebelum elemen yang nilainya=X */
 /* Mencari apakah ada elemen list dengan Info(P)=X */
 /* Jika ada, mengirimkan address Prec, dengan Next(Prec)=P dan Info(P)=X. */
-/* Jika tidak ada, mengirimkan Nil */
-/* Jika P adalah elemen pertama, maka Prec=Nil */
+/* Jika tidak ada, mengirimkan LL_Nil */
+/* Jika P adalah elemen pertama, maka Prec=LL_Nil */
 /* Search dengan spesifikasi seperti ini menghindari */
 /* traversal ulang jika setelah Search akan dilakukan operasi lain */
 {
-    address Prec = Nil;
+    address Prec = LL_Nil;
     address P = First(L);
     boolean found = false;
     
-    while (!found && P!=Nil)
+    while (!found && P!=LL_Nil)
     {
         if (W_WahanaId(X)==W_WahanaId(Info(P))){
             found = true;
@@ -122,7 +122,7 @@ void LL_InsVFirst (List *L, infotype X)
 /* menambahkan elemen pertama dengan nilai X jika alokasi berhasil */
 {
     address P = LL_Alokasi(X);
-    if (P!=Nil)
+    if (P!=LL_Nil)
     {
         LL_InsertFirst(L,P);
     }
@@ -135,7 +135,7 @@ void LL_InsVLast (List *L, infotype X)
 /* bernilai X jika alokasi berhasil. Jika alokasi gagal: I.S.= F.S. */
 {
     address P  = LL_Alokasi(X);
-    if (P != Nil){
+    if (P != LL_Nil){
         LL_InsertLast(L,P);
     }
 }
@@ -189,7 +189,7 @@ void LL_InsertLast (List *L, address P)
     if (!LL_IsEmpty(*L)){
         // Mendapat address dari last element list
         address El = First(*L);
-        while (Next(El) != Nil)
+        while (Next(El) != LL_Nil)
         {
             El = Next(El);
         }
@@ -223,7 +223,7 @@ void LL_DelP (List *L, infotype X)
 {
     address P = LL_Search(*L,X);
     address Prev;
-    if (P != Nil)
+    if (P != LL_Nil)
     {
         Prev=First(*L);
 
@@ -249,15 +249,15 @@ void LL_DelLast (List *L, address *P)
 /* Last element baru adalah predesesor elemen terakhir yg lama, */
 /* jika ada */
 {
-    address Prev=Nil;
+    address Prev=LL_Nil;
     address Last = First(*L);
-    while (Next(Last)!=Nil)
+    while (Next(Last)!=LL_Nil)
     {
         Prev= Last;
         Last = Next(Last);
     }
     *P = Last;
-    if (Prev==Nil)
+    if (Prev==LL_Nil)
     {
         LL_DelFirst(L,P);
     } else
@@ -272,7 +272,7 @@ void LL_DelAfter (List *L, address *Pdel, address Prec)
 /*      Pdel adalah alamat elemen list yang dihapus  */
 {
     *Pdel = Next(Prec);
-    if (*Pdel!=Nil)
+    if (*Pdel!=LL_Nil)
     {
         Next(Prec) = Next(Next(Prec));
     }
@@ -292,7 +292,7 @@ void LL_PrintInfoNamaWahana (List L)
     {
         MK_printKata(W_Name(Info(P)));
         P = Next(P);
-        while (P!=Nil){
+        while (P!=LL_Nil){
             printf(" -> ");
             MK_printKata(W_Name(Info(P)));
             P=Next(P);
@@ -305,7 +305,7 @@ int LL_NbElmt (List L)
 {
     int nbelmt = 0;
     address P = First(L);
-    while (P!=Nil)
+    while (P!=LL_Nil)
     {
         nbelmt+=1;
         P=Next(P);
