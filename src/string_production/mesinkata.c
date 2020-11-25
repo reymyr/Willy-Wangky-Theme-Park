@@ -3,6 +3,7 @@
 #include "mesinkata.h"
 #include <string.h>
 #include <stdio.h>
+#include "../point/point.h"
 
 /* State Mesin Kata */
 boolean MK_EndKata;
