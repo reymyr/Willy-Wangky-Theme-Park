@@ -283,6 +283,7 @@ int main()
                             {
                                 setTile(&Map, G_CurrentArea(Map), S_PosWahana(StackElmt), '-', -1);
                                 setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
+                                AW_DelLastEl(&BuiltWahana, &WBuilt);
                             }
                         }
                         break;
