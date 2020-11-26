@@ -170,7 +170,7 @@ int main()
                         MK_ADVKATAINPUT();
                         if (AW_SearchB(BuiltWahana, MK_CKata)) /* Nanti ada bug klo bisa dua wahana yg sama jdi fix sementara ini dlu */
                         {
-                            printf("Anda sudah membangun wahana tersbeut\n");
+                            printf("Anda sudah membangun wahana tersebut\n");
                         }
                         else if (!AW_SearchB(WahanaDatabase, MK_CKata)) /* Harusnya BaseWahana */
                         {
