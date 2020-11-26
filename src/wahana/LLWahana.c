@@ -10,18 +10,25 @@ void WU_CreateEmpty(ArrListWahanaUpg* A)
     NEff_ArrListWahanaUpg(*A) = 0;
 }
 
+boolean WU_IsEmpty(ArrListWahanaUpg A)
+/* Mengembalikan True jika Neff A = 0, false jika tidak*/
+{
+    return NEff_ArrListWahanaUpg(A) == 0;
+}
+
 
 void loadwahanahistory(char *filename, ArrListWahanaUpg * A){
     int currentid;
     Wahana W;
     List WahanaHistory;
 
-    MK_STARTKATAINPUT(filename);
+    MK_STARTKATA(filename);
     while (!MK_EndKata)
     {
         LL_CreateEmpty(&WahanaHistory);
         W_WahanaId(W) = MK_KataToInt(MK_CKata);
         currentid = W_WahanaId(W);
+        printf("%d",currentid);
         while (currentid == W_WahanaId(W))
         {
             MK_ADVKATAINPUT();
@@ -47,7 +54,8 @@ void loadwahanahistory(char *filename, ArrListWahanaUpg * A){
             W_TodayPenghasilan(W) = 0;
             W_TodayUseCount(W) = 0;
             LL_InsVLast(&WahanaHistory,W);
-            MK_ADVKATAINPUT();
+            MK_ADV();
+            MK_ADVKATA();
             if (!MK_EndKata){
                 W_WahanaId(W) = MK_KataToInt(MK_CKata);
             } else{
@@ -57,6 +65,23 @@ void loadwahanahistory(char *filename, ArrListWahanaUpg * A){
         (*A).Tab[currentid] = WahanaHistory;
         (*A).Neff = currentid+1;
     }
+}
+
+
+void savewahanahistory(char *filename, ArrListWahanaUpg A){
+/* Menyalin dan menyimpan riwayat wahana pada array A ke file eksternal*/
+    FILE * f = fopen(filename,"w");
+
+    for (int i = 0; i < NEff_ArrListWahanaUpg(A); i++){
+        LL_writeList(f,WU_Info(A,i));
+        if (i != NEff_ArrListWahanaUpg(A)-1)
+        {
+            fprintf(f,"%c",MK_NEWLINE);
+        }   
+    }
+    fprintf(f,"%c",MK_MARK);
+    
+    fclose(f);   
 }
 
 void PrintWahanaHistory(Wahana W, ArrListWahanaUpg A)
@@ -72,4 +97,13 @@ boolean IsWahanaRusak(Wahana W){
 void RepairWahanaRusak(Wahana W)
 {
     W_IsBroken(W) = false;
+}
+
+void UpgradeWahana(Wahana W0, Wahana W1, ArrListWahanaUpg A)
+/* Meng-upgrade Wahana W0 menjadi Wahana W1 */
+/* I.S : Asumsi W1 sudah valid merupakan upgrade dari wahana W0*/
+{
+    W_WahanaId(W1) = W_WahanaId(W0);
+    W_Location(W1) = W_Location(W0);
+    LL_InsVLast(&WU_Info(A,W_WahanaId(W0)),W1);
 }
