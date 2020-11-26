@@ -7,7 +7,7 @@ int main()
 {
     ArrListWahanaUpg A;
     WU_CreateEmpty(&A);
-    loadwahanahistory("WahanaHistory.txt",&A);
+    loadwahanahistory("../../files/WahanaHistory.txt",&A);
 
     for (int i=0;i<A.Neff;i++){
         AW_detailWahana(Info(First(A.Tab[i])),A);
