@@ -151,4 +151,8 @@ int LL_NbElmt (List L);
 void LL_DelAll (List *L);
 /* Delete semua elemen list dan alamat elemen di-dealokasi */
 
+void LL_writeList(FILE * f, List L);
+/* Menyalin isi list L ke file eksternal f*/
+
+
 #endif
