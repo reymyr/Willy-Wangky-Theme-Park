@@ -19,21 +19,6 @@ typedef struct {
 } ArrWahana;
 
 /* SELEKTOR */
-/* Misal W adalah variabel bertipe Wahana */
-#define W_WahanaId(W) (W).id
-#define W_Name(W) (W).name
-#define W_Type(W) (W).type
-#define W_Price(W) (W).harga
-#define W_Location(W) (W).lokasi
-#define W_Desc(W) (W).deskripsi
-#define W_Capacity(W) (W).kapasitas
-#define W_Duration(W) (W).durasi
-#define W_UseCount(W) (W).useCount
-#define W_Penghasilan(W) (W).totalPenghasilan
-#define W_TodayUseCount(W) (W).todayUseCount
-#define W_TodayPenghasilan(W) (W).todayPenghasilan
-#define W_IsBroken(W) (W).isBroken
-
 /* Misal Arr adalah variabel bertipe ArrWahana */
 #define AW_NEff(Arr) (Arr).NEff
 #define AW_T(Arr) (Arr).T

@@ -276,8 +276,6 @@ int main()
                             S_MatName(StackElmt) = matName;
                             S_MatCount(StackElmt) = matCount;
                             Push(&ActionStack, StackElmt);
-                            // Money(P) -= price;
-                            // AM_AddCount(&Materials(P), matName, matCount, AM_GetPrice(MaterialDatabase, matName));
                         }
                         printf("\n");
                         break;
@@ -332,6 +330,7 @@ int main()
                                 setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
                                 AW_DelLastEl(&BuiltWahana, &WBuilt);
                             }
+                            /* Undo Upgrade kalo ada yg udh dijalanin pas commandnya */
                         }
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
                         prepPhase = false;
@@ -344,7 +343,6 @@ int main()
                 }
                 else /* Main Phase */
                 {
-                    
                     if ((JAMToMenit(DurasiJam(OpeningTime, CurrentTime)) / 45) > counter)
                     {
                         counter++;
@@ -418,10 +416,10 @@ int main()
                                 }
                                 else
                                 {
-                                    
                                     Money(P) += AW_GetPrice(BuiltWahana, MK_CKata);
                                     CurrentTime = NextNMenit(CurrentTime, W_Duration(AW_GetWahana(BuiltWahana, MK_CKata)));
                                     AK_DelKata(&P_Wahana(Pgj), MK_CKata);
+                                    /* Nambahin pengasilan dan useCount blm */
                                     if (AK_NbElmt(P_Wahana(Pgj)) > 0)
                                     {
                                         P_Prio(Pgj)--;
