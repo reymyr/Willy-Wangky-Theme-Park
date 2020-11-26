@@ -5,6 +5,7 @@
 #include "mesinkar.h"
 #include <string.h>
 #include "../point/point.h"
+#include "stdio.h"
 
 #define MK_NMax 50
 #define MK_BLANK ' '
@@ -92,6 +93,12 @@ int MK_KataToInt(Kata K);
 
 POINT MK_KataToPoint(Kata K);
 /*Mengubah kata ke point. I.S Format Kata K : '<absis>,<ordinat>' contoh : 1,1*/
+
+void MK_WriteKata(FILE * f, Kata K);
+/* Menyalin isi kata ke file eksternal f*/
+
+void MK_WritePoint(FILE * f, POINT P);
+/* Menyalin point ke file eksternal f*/
 
 #endif
 

@@ -252,3 +252,19 @@ POINT MK_KataToPoint(Kata K)
 
     return P;
 }
+
+
+void MK_WriteKata(FILE * f, Kata K){
+/* Menyalin isi kata ke file eksternal f*/
+    int i = 0;
+    while (i<K.Length)
+    {
+        fprintf(f,"%c",K.TabKata[i]);
+        i++;
+    }
+}
+
+void MK_WritePoint(FILE * f, POINT P){
+/* Menyalin point ke file eksternal f*/
+    fprintf(f,"%d,%d",Baris(P),Kolom(P));
+}
