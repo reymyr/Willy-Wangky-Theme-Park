@@ -72,6 +72,11 @@ long JAMToMenit (JAM J)
     return(1440 * Day(J) + 60 * Hour(J) + Minute(J));  
 }
 
+long JAMToMenitMinDay(JAM J)
+{
+    return(60 * Hour(J) + Minute(J));  
+}
+
 JAM MenitToJAM (long N)
 /* Mengirim  konversi menit ke JAM */
 {

@@ -75,6 +75,18 @@ void MK_SalinKataInput()
     MK_CKata.Length = i;
 }
 
+void MK_SalinKataTree()
+{
+    int i = 0;
+    while (MK_CC != MK_MARK && MK_CC != '(' && MK_CC != ')' && i < MK_NMax)
+    {
+        MK_CKata.TabKata[i] = MK_CC;
+        i++;
+        MK_ADV();
+    }
+    MK_CKata.Length = i;
+}
+
 /* Mesin Kata file */
 void MK_IgnoreBlank(){
 /* Mengabaikan satu atau beberapa BLANK

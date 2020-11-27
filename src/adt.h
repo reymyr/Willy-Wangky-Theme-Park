@@ -11,6 +11,8 @@
 #include "stack/stackt.h"
 #include "string_production/mesinkata.h"
 #include "string_production/mesinkar.h"
+#include "tree/bintree.h"
+#include "tree/arrTree.h"
 #include "wahana/wahana.h"
 #include "wahana/ArrWahana.h"
 #include "wahana/LLWahana.h"

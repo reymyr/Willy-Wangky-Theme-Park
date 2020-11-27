@@ -76,7 +76,7 @@ boolean AM_IsFull(TabMaterial T);
 
 /* ********** BACA dan TULIS dengan INPUT/OUTPUT device ********** */
 /* *** Mendefinisikan isi tabel dari pembacaan *** */
-void AM_BacaFile(TabMaterial *T, char* filename);
+void AM_BacaFile(TabMaterial *T, char* filename, boolean fileOpened);
 /* I.S. T sembarang dan sudah dialokasikan sebelumnya */
 /* F.S. Tabel T terdefinisi */
 /* Proses : membaca banyaknya elemen T dan mengisi nilainya */
@@ -94,7 +94,14 @@ void AM_TulisIsiTab(TabMaterial T);
 /* F.S. Jika T tidak kosong: [e1,e2,...,en] */
 /* Contoh : jika ada tiga elemen bernilai 1, 20, 30 akan dicetak: [1,20,30] */
 /* Jika tabel kosong : menulis [] */
-
+void AM_TulisIsiTabCount(TabMaterial T);
+/* Proses : Menuliskan isi tabel dengan traversal, tabel ditulis di antara kurung siku;
+   antara dua elemen dipisahkan dengan separator "koma", tanpa tambahan karakter di depan,
+   di tengah, atau di belakang, termasuk spasi dan enter */
+/* I.S. T boleh kosong */
+/* F.S. Jika T tidak kosong: [e1,e2,...,en] */
+/* Contoh : jika ada tiga elemen bernilai 1, 20, 30 akan dicetak: [1,20,30] */
+/* Jika tabel kosong : menulis [] */
 
 /* ********** SEARCHING ********** */
 /* ***  Perhatian : Tabel boleh kosong!! *** */

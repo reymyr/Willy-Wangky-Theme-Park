@@ -33,9 +33,6 @@ void PrintWahanaHistory(Wahana W, ArrListWahanaUpg A);
 boolean IsWahanaRusak(Wahana W);
 /* Mengembalikan true jika Wahana rusak dan false jika tidak*/
 
-void RepairWahanaRusak(Wahana W);
-/* I.S : W_IsBroken(W) = true, F.S. : W_IsBroken(W) = false*/
-
 void UpgradeWahana(Wahana W0, Wahana W1, ArrListWahanaUpg A);
 /* Meng-upgrade Wahana W0 menjadi Wahana W1 */
 /* I.S : Asumsi W1 sudah valid merupakan upgrade dari wahana W0*/

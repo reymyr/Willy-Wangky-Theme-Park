@@ -15,6 +15,73 @@ void initPrepActionArray(ArrAction * AA);
 void initMainActionArray(ArrAction * AA);
 /* Menginisialisasi array action yang dapat dilakukan saat main phase */
 
+/* Savenya gabisa ngeload pointer (Graph, list linear, tree) */
+struct SaveData {
+    boolean prepPhase;
+    Player player;
+    ArrWahana builtWahana;
+    JAM currentTime;
+    PrioQueuePengunjung antrian;
+    Stack actionStack;
+};
+
+void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, Stack actStack)
+{
+    char* path = "../files/savedata";
+
+    FILE *savefile;
+    savefile = fopen(path, "wb");
+    struct SaveData s;
+    s.prepPhase = prep;
+    s.player = P;
+    s.builtWahana = builtW;
+    s.currentTime = currentTime;
+    s.antrian = antrian;
+    s.actionStack = actStack;
+
+    fwrite(&s, sizeof(struct SaveData), 1, savefile);
+    fclose(savefile);
+    printf("Game saved\n");
+}
+
+void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, Stack *actStack)
+{
+    char* path = "../files/savedata";
+
+    FILE *savefile;
+    savefile = fopen(path, "rb");
+    struct SaveData s;
+    fread(&s, sizeof(struct SaveData), 1, savefile);
+
+    *prep = s.prepPhase;
+    *P = s.player;
+    *builtW = s.builtWahana;
+    *currentTime = s.currentTime;
+    *antrian = s.antrian;
+    *actStack = s.actionStack;
+
+    fclose(savefile);
+
+    CreateEmptyGraph(G);
+    Gaddress P1 = AlokasiNodeGraph("../files/map1.txt");
+    Gaddress P2 = AlokasiNodeGraph("../files/map2.txt");
+    Gaddress P3 = AlokasiNodeGraph("../files/map3.txt");
+    Gaddress P4 = AlokasiNodeGraph("../files/map4.txt");
+    InsertLastGraph(G, P1);
+    InsertLastGraph(G, P2);
+    InsertLastGraph(G, P3);
+    InsertLastGraph(G, P4);
+
+    printf("tes\n");
+
+    for (size_t i = 0; i < AW_NbElmt(*builtW); i++)
+    {
+        setTile(G, W_Area(AW_Elmt(*builtW, i)), W_Location(AW_Elmt(*builtW, i)), 'W', W_WahanaId(AW_Elmt(*builtW, i)));
+    }
+
+    printf("Game loaded\n");
+}
+
 int main()
 {
     srand(time(0));
@@ -28,6 +95,7 @@ int main()
     ArrWahana BuiltWahana; /* List Wahana yang sudah dibangun */
     ArrWahana BaseWahana; /* List wahana dasar yang dapat dibangun di awal */
     ArrListWahanaUpg ArrWahanaUpg; /* Array yg mencatat List berkait yg merepresentasikan history upgrade dari wahana yg elah dibangun*/
+    ArrTree UpgradeTrees;
     TabMaterial MaterialDatabase; /* Seluruh material yang ada di dalam game */
     JAM CurrentTime; /* Waktu sekarang */
     JAM OpeningTime = MakeJAM(0, 9, 0); /* Waktu buka */
@@ -50,8 +118,15 @@ int main()
     initPrepActionArray(&PrepActionArray);
     initMainActionArray(&MainActionArray);
     PQ_MakeEmpty(&Antrian);
-    AM_BacaFile(&MaterialDatabase, "../files/material.txt");
-    AW_BacaFile(&WahanaDatabase, "../files/wahana.txt");
+    AM_BacaFile(&MaterialDatabase, "../files/material.txt", false);
+    // AW_BacaFile(&WahanaDatabase, "../files/wahana.txt");
+    MK_EndKata = false;
+    AW_readWahanaDanTree(&UpgradeTrees, &WahanaDatabase, "../files/wahana.txt");
+    AW_MakeEmpty(&BaseWahana);
+    for (size_t i = 0; i < AT_Neff(UpgradeTrees); i++)
+    {
+        AW_AddAsLastEl(&BaseWahana, AW_GetWahanaId(WahanaDatabase, Akar(AT_Elmt(UpgradeTrees, i))));
+    }
 
     printf("Welcome to Willy Wangky's\n");
     printf("Commands:\n");
@@ -77,7 +152,7 @@ int main()
                 MK_ADVKATAINPUT();
                 /* Insialisasi player dgn nama MK_CKata */
                 Nama(P) = MK_CKata;
-                Money(P) = 500;
+                Money(P) = 1000;
                 AM_MakeEmpty(&Materials(P));
                 printf("Selamat bermain, ");
                 MK_printKata(Nama(P)); printf("\n");
@@ -109,15 +184,10 @@ int main()
                 /* Baca state dari file */
                 /* NANTI GANTI JADI DARI FILE EKSTERNAL */
                 CreateEmptyGraph(&Map);
-                Gaddress P1 = AlokasiNodeGraph("../files/map1.txt");
-                Gaddress P2 = AlokasiNodeGraph("../files/map2.txt");
-                Gaddress P3 = AlokasiNodeGraph("../files/map3.txt");
-                Gaddress P4 = AlokasiNodeGraph("../files/map4.txt");
-                InsertLastGraph(&Map, P1);
-                InsertLastGraph(&Map, P2);
-                InsertLastGraph(&Map, P3);
-                InsertLastGraph(&Map, P4);
-
+                AW_MakeEmpty(&BuiltWahana);
+                WU_CreateEmpty(&ArrWahanaUpg);
+                CreateEmptyStack(&ActionStack);
+                load(&prepPhase, &P, &BuiltWahana, &CurrentTime, &Map, &Antrian, &ActionStack);
                 /* Load Wahana History */
                 loadwahanahistory("../../WahanaHistory.txt",&ArrWahanaUpg);
             }
@@ -154,25 +224,27 @@ int main()
                     case 3:
                         /* MOVE (W, A, S, D) */
                         move(&Map, &P, ActionID, &moveStatus);
-                        /* Gaktau nambah waktu apa ngga, di contoh ngga kalo prep phase */
-                        // if (moveStatus == 1)
-                        // {
-                        //     CurrentTime = NextNMenit(CurrentTime, JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, ActionID))));
-                        // }
                         printf("\n");
                         break;
                     case 4:
                         /* BUILD */
                         printf("Ingin membangun apa?\n");
                         printf("List:\n");
-                        AW_ListNamaWahana(WahanaDatabase); /* Harusnya BaseWahana */
 
+                        for (size_t i = 0; i < AW_NbElmt(BaseWahana); i++)
+                        {
+                            AW_printWahanaCost(AW_Elmt(BaseWahana, i));
+                            printf("\n\n");
+                        }
+
+                        printf("Bahan yang anda miliki:\n");
+                        AM_TulisIsiTabCount(Materials(P)); printf("\n");
                         MK_ADVKATAINPUT();
                         if (AW_SearchB(BuiltWahana, MK_CKata)) /* Nanti ada bug klo bisa dua wahana yg sama jdi fix sementara ini dlu */
                         {
                             printf("Anda sudah membangun wahana tersebut\n");
                         }
-                        else if (!AW_SearchB(WahanaDatabase, MK_CKata)) /* Harusnya BaseWahana */
+                        else if (!AW_SearchB(BaseWahana, MK_CKata))
                         {
                             printf("Input tidak valid\n");
                         }
@@ -198,49 +270,108 @@ int main()
                             }
                             else
                             {
-                                /* CEK RESOURCE DAN UANG PLAYER */
-                                setTile(&Map, G_CurrentArea(Map), Pos(P), 'W', AW_GetId(WahanaDatabase, MK_CKata));
-
-                                StackElmt = CreateStackInfo(MK_MakeKata("build", 5), A_Duration(AA_Elmt(ActionDatabase, 4)), 0/* Harusnya harga bangun wahana */, Pos(P));
-                                Push(&ActionStack, StackElmt);
-
                                 WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
-                                W_Location(WBuilt) = Pos(P);
-                                W_WahanaId(WBuilt) = AW_GetId(WahanaDatabase, MK_CKata);
+                                int cost = W_MoneyCost(WBuilt);
+                                if (Money(P) < cost)
+                                {
+                                    printf("Uang anda tidak cukup\n");
+                                }
+                                else
+                                {
+                                    setTile(&Map, G_CurrentArea(Map), Pos(P), 'W', AW_GetId(WahanaDatabase, MK_CKata));
 
-                                LL_CreateEmpty(&ArrWahanaUpg.Tab[W_WahanaId(WBuilt)]);
-                                LL_InsVLast(&ArrWahanaUpg.Tab[W_WahanaId(WBuilt)],WBuilt);
-                                
-                                AW_AddAsLastEl(&BuiltWahana, WBuilt);
-                                
+                                    StackElmt = CreateStackInfo(MK_MakeKata("build", 5), A_Duration(AA_Elmt(ActionDatabase, 4)), cost, Pos(P));
+                                    Push(&ActionStack, StackElmt);
 
-                                move(&Map, &P, pushCode, &moveStatus);
+                                    W_Area(WBuilt) = G_CurrentArea(Map);
+                                    W_Location(WBuilt) = Pos(P);
+                                    W_WahanaId(WBuilt) = AW_GetId(WahanaDatabase, MK_CKata);
+
+                                    LL_CreateEmpty(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)]);
+                                    LL_InsVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)],WBuilt);
+                                    
+                                    AW_AddAsLastEl(&BuiltWahana, WBuilt);
+                                    
+
+                                    move(&Map, &P, pushCode, &moveStatus);   
+                                }                              
                             }
                         }
                         break;
-                    case 5:
+                    case 5: ; 
                         /* UPGRADE */
-                        /* CEK DISEBELAH WAHANA/TIDAK */
-                        // boolean foundwahana = false;
-
-                        // /* KALO IYA, NAMPILIN LIST UPGRADE */
-                        // printf("Ingin melakukan upgrade apa?\n List:");
-                        // for (size_t i = 0; i < 4; i++)
-                        // {
-                        //     if (T_Type(Surround(P)[i]) == 'W')
-                        //     {
-                        //         // NAMPILIN LIST UPGRADE UNTUK WAHANA DI POINT ITU (DARI TREE?)
-
-
-                        //         foundwahana = true;
-                        //     }
-                        // }
-
-                        // if (!foundwahana)
-                        // {
-                        //     printf("Tidak ada wahana di sekitar.");
-                        // }
                         
+                        boolean foundwahana = false;
+                        int WId = -1;
+
+                        for (size_t i = 0; i < 4; i++)
+                        {
+                            if (T_Type(Surround(P)[i]) == 'W')
+                            {
+                                WId = T_ID(Surround(P)[i]);
+                                foundwahana = true;
+                                break;
+                            }
+                        }
+
+                        if (!foundwahana)
+                        {
+                            printf("Tidak ada wahana di sekitar.\n");
+                        }
+                        else
+                        {
+                            int LId, RId;
+                            int BaseId = W_BaseId(AW_GetWahanaId(BuiltWahana, WId));
+                            BinTree UpTree = AT_SearchBase(UpgradeTrees, BaseId);
+                            getChildId(UpTree, WId, &LId, &RId);
+                            if (LId == -1 && RId == -1)
+                            {
+                                printf("Wahana sudah tidak dapat diupgrade lagi\n");
+                            }
+                            else
+                            {
+                                printf("Ingin melakukan upgrade apa?\nList:\n");
+                                if (LId != -1)
+                                {
+                                    AW_printWahanaCost(AW_GetWahanaId(WahanaDatabase, LId));
+                                    printf("\n");
+                                    printf("\n");
+                                }
+                                if (RId != -1)
+                                {
+                                    AW_printWahanaCost(AW_GetWahanaId(WahanaDatabase, RId));
+                                }
+                                printf("\n");
+
+                                MK_ADVKATAINPUT();
+                                int IdInput = AW_GetId(WahanaDatabase, MK_CKata);
+                                if (IdInput == -1)
+                                {
+                                    printf("Tidak ada wahana dengan nama tersebut\n");
+                                }
+                                else if (!isChild(UpTree, IdInput, WId))
+                                {
+                                    printf("Wahana ini tidak dapat di upgrade ke wahana yang di input\n");
+                                }
+                                else
+                                {
+                                    WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
+                                    int cost = W_MoneyCost(WBuilt);
+                                    StackElmt = CreateStackInfo(MK_MakeKata("upgrade", 7), A_Duration(AA_Elmt(ActionDatabase, 5)), cost, Pos(P));
+                                    Push(&ActionStack, StackElmt);
+
+                                    /* BLM JADI, MASI DIPIKIRIN GMN CARANYA */
+
+                                    // W_Area(WBuilt) = G_CurrentArea(Map);
+                                    // W_Location(WBuilt) = Pos(P);
+                                    // W_WahanaId(WBuilt) = AW_GetId(WahanaDatabase, MK_CKata);
+
+                                    // LL_InsVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)],WBuilt);
+                                    
+                                    // AW_AddAsLastEl(&BuiltWahana, WBuilt);
+                                }
+                            }
+                        }                        
                         break;
                     case 6: ;
                         /* BUY */
@@ -299,9 +430,9 @@ int main()
                         while (!IsEmptyStack(ExecuteStack))
                         {
                             Pop(&ExecuteStack, &StackElmt);
+                            Money(P) -= S_MoneyNeeded(StackElmt);
                             if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("buy", 3)))
                             {
-                                Money(P) -= S_MoneyNeeded(StackElmt);
                                 AM_AddCount(&Materials(P), S_MatName(StackElmt), S_MatCount(StackElmt), AM_GetPrice(MaterialDatabase, matName));
                             }
                             else if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("upgrade", 7)))
@@ -310,7 +441,7 @@ int main()
                             }
                             else /* build */
                             {
-                                /* NGURANGIN UANG DAN RESOURCE PLAYER */
+                                
                             }
 
                         }
@@ -337,13 +468,16 @@ int main()
                         randomPengunjung(&Antrian, BuiltWahana);
                         counter = 0;
                         break;
+                    case 15:
+                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, ActionStack);
+                        break;
                     default:
                         break;
                     }
                 }
                 else /* Main Phase */
                 {
-                    if ((JAMToMenit(DurasiJam(OpeningTime, CurrentTime)) / 45) > counter)
+                    if ((JAMToMenit(DurasiJam(OpeningTime, CurrentTime)) / 30) > counter)
                     {
                         counter++;
                         processKesabaran(&Antrian);     
@@ -419,7 +553,7 @@ int main()
                                     Money(P) += AW_GetPrice(BuiltWahana, MK_CKata);
                                     CurrentTime = NextNMenit(CurrentTime, W_Duration(AW_GetWahana(BuiltWahana, MK_CKata)));
                                     AK_DelKata(&P_Wahana(Pgj), MK_CKata);
-                                    /* Nambahin pengasilan dan useCount blm */
+                                    AW_pengungjungNaik(&BuiltWahana, MK_CKata);
                                     if (AK_NbElmt(P_Wahana(Pgj)) > 0)
                                     {
                                         P_Prio(Pgj)--;
@@ -436,7 +570,19 @@ int main()
                         break;
                     case 11:
                         /* REPAIR */
-                        /* CEK SEKITAR KALO ADA WAHANA RUSAK, KALO ADA BENERIN, TAMBAHIN CURRENTTIME */
+                        for (size_t i = 0; i < 4; i++)
+                        {
+                            if (T_Type(Surround(P)[i]) == 'W')
+                            {
+                                if (W_IsBroken(AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i]))))
+                                {
+                                    Money(P) -= 50;
+                                    CurrentTime = NextNMenit(CurrentTime, JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 11))));
+                                    AW_RepairWahanaRusak(&BuiltWahana, W_Name(AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i]))));
+                                    break;
+                                }
+                            }
+                        }
                         break;
                     case 12:
                         /* DETAIL */
@@ -525,9 +671,16 @@ int main()
                     default:
                         break;
                     }
+                    if (!prepPhase)
+                    {
+                        if (JAMToMenitMinDay(ClosingTime) - JAMToMenitMinDay(CurrentTime) <= 0)
+                        {
+                            CurrentTime = MakeJAM(Day(CurrentTime)+1, 21, 0);
+                            prepPhase = true;
+                        }
+                    }                    
                 }
             } while (!MK_EndKata);
-            
         }        
         else
         {
@@ -610,6 +763,7 @@ void initActionDatabase(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(12, MK_MakeKata("detail", 6), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(13, MK_MakeKata("office", 6), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(14, MK_MakeKata("prepare", 7), MakeJAM(0,0,0)));
+    AA_AddAsLastEl(AA, createAction(15, MK_MakeKata("save", 4), MakeJAM(0,0,0)));
 }
 
 void initPrepActionArray(ArrAction * AA)
@@ -626,6 +780,7 @@ void initPrepActionArray(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(7, MK_MakeKata("undo", 4), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(8, MK_MakeKata("execute", 7), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(9, MK_MakeKata("main", 4), MakeJAM(0,0,0)));
+    AA_AddAsLastEl(AA, createAction(15, MK_MakeKata("save", 4), MakeJAM(0,0,0)));
 }
 
 void initMainActionArray(ArrAction * AA)
@@ -641,4 +796,5 @@ void initMainActionArray(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(12, MK_MakeKata("detail", 6), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(13, MK_MakeKata("office", 6), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(14, MK_MakeKata("prepare", 7), MakeJAM(0,0,0)));
+    AA_AddAsLastEl(AA, createAction(15, MK_MakeKata("save", 4), MakeJAM(0,0,0)));
 }

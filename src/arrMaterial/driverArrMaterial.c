@@ -3,6 +3,8 @@
 #include "arrMaterial.h"
 #include "../string_production/mesinkata.h"
 
+/* gcc .\driverArrMaterial.c .\arrMaterial.c ..\string_production\mesinkar.c ..\string_production\mesinkata.c ..\point\point.c -o am -lm */
+
 int main()
 {
 
@@ -22,8 +24,12 @@ int main()
         printf("6. Baca dari file\n");
         printf("7. Exit\n");
 
-        printf("Isi Array:\n");
+        printf("Isi Array dengan harga:\n");
         AM_TulisIsiTab(T);
+        printf("\n");
+
+        printf("Isi Array dengan jumlah:\n");
+        AM_TulisIsiTabCount(T);
         printf("\n");
 
         printf("Pilihan: ");

@@ -42,6 +42,7 @@ void TulisJamMenit (JAM J);
 long JAMToMenit (JAM J);
 /* Diberikan sebuah JAM, mengkonversi menjadi jumlah menit dari pukul 0:0:0 */
 /* Rumus : menit = 1440*DD + 60*HH + MM */
+long JAMToMenitMinDay(JAM J);
 JAM MenitToJAM (long N);
 /* Mengirim  konversi menit ke JAM */
 

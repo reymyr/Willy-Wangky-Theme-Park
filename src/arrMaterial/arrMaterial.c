@@ -3,6 +3,7 @@
 #include "../boolean.h"
 #include "arrMaterial.h"
 #include "../string_production/mesinkata.h"
+#include "../string_production/mesinkar.h"
 
 Material createMaterial(Kata nama, int count, int price)
 /* Fungsi untuk membuat Material baru */
@@ -83,7 +84,7 @@ boolean AM_IsFull(TabMaterial T)
 
 /* ********** BACA dan TULIS dengan INPUT/OUTPUT device ********** */
 /* *** Mendefinisikan isi tabel dari pembacaan *** */
-void AM_BacaFile(TabMaterial *T, char* filename)
+void AM_BacaFile(TabMaterial *T, char* filename, boolean fileOpened)
 /* I.S. T sembarang dan sudah dialokasikan sebelumnya */
 /* F.S. Tabel T terdefinisi */
 /* Proses : membaca banyaknya elemen T dan mengisi nilainya */
@@ -95,13 +96,22 @@ void AM_BacaFile(TabMaterial *T, char* filename)
 /*    Jika N = 0; hanya terbentuk T kosong */
 {
     AM_MakeEmpty(T);
-    MK_STARTKATA(filename);
-    while (!MK_EndKata)
+    if (!fileOpened)
+    {
+        MK_STARTKATA(filename);
+    }
+    else
+    {
+        MK_ADVKATA();
+    }    
+    while (!MK_EndKata && !MK_isKataSama(MK_CKata, MK_MakeKata("_", 1)))
     { 
         Kata nama = MK_CKata;
         MK_ADVKATA();
+        int count = MK_KataToInt(MK_CKata);
+        MK_ADVKATA();
         int harga = MK_KataToInt(MK_CKata);
-        AM_AddAsLastEl(T, createMaterial(nama, 1, harga));
+        AM_AddAsLastEl(T, createMaterial(nama, count, harga));
         MK_ADVKATA();
     }
     
@@ -121,6 +131,24 @@ void AM_TulisIsiTab(TabMaterial T)
         printf(" - ");
         MK_printKata(M_Name(AM_T(T)[i]));
         printf(", Harga: %d\n", M_Price(AM_T(T)[i]));
+    }
+}
+
+void AM_TulisIsiTabCount(TabMaterial T)
+/* Proses : Menuliskan isi tabel dengan traversal, tabel ditulis di antara kurung siku;
+   antara dua elemen dipisahkan dengan separator "koma", tanpa tambahan karakter di depan,
+   di tengah, atau di belakang, termasuk spasi dan enter */
+/* I.S. T boleh kosong */
+/* F.S. Jika T tidak kosong: [e1,e2,...,en] */
+/* Contoh : jika ada tiga elemen bernilai 1, 20, 30 akan dicetak: [1,20,30] */
+/* Jika tabel kosong : menulis [] */
+{
+    IdxType i;
+    for (i = AM_GetFirstIdx(T); i <= AM_GetLastIdx(T); i++)
+    {
+        printf(" - ");
+        MK_printKata(M_Name(AM_T(T)[i]));
+        printf(": %d\n", M_Count(AM_T(T)[i]));
     }
 }
 
@@ -267,7 +295,6 @@ void AM_DelCount(TabMaterial *T, Kata MatName, int count)
         for (size_t i = idx+1; i <= AM_GetLastIdx(*T) ; i++)
         {
             AM_Elmt(*T, idx) = AM_Elmt(*T, i);
-            i++;
             idx++;
         }
         AM_NEff(*T)--;

@@ -47,6 +47,7 @@ void MK_SalinKataInput();
           CC adalah karakter sesudah karakter terakhir yang diakuisisi.
           Jika panjang kata melebihi NMax, maka sisa kata "dipotong" */
 
+void MK_SalinKataTree();
 
 /* Mesin Kata file */
 void MK_IgnoreBlank();

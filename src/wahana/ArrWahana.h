@@ -6,6 +6,8 @@
 #include "../jam/jam.h"
 #include "../point/point.h"
 #include "LLWahana.h"
+#include "../tree/arrTree.h"
+#include "../tree/bintree.h"
 
 #define IdxMax 50   // indeks maksimum array
 #define IdxMin 0    // indeks minimum array
@@ -24,7 +26,7 @@ typedef struct {
 #define AW_T(Arr) (Arr).T
 #define AW_Elmt(Arr, i) (Arr).T[(i)]
 
-Wahana createWahana(int id, Kata nama, Kata tipe, int harga, Kata desc, int kapasitas, int durasi);
+Wahana createWahana(int base, int id, Kata nama, Kata tipe, int harga, Kata desc, int kapasitas, int durasi, int moneyCost, TabMaterial matCost);
 /* Fungsi untuk membuat Wahana baru */
 
 /* ********** KONSTRUKTOR ********** */
@@ -86,6 +88,7 @@ void AW_ListNamaWahana(ArrWahana T);
 /* F.S. Jika T tidak kosong: [e1,e2,...,en] */
 /* Contoh : jika ada tiga elemen bernilai 1, 20, 30 akan dicetak: [1,20,30] */
 /* Jika tabel kosong : menulis [] */
+void AW_printWahanaCost(Wahana W);
 
 
 /* ********** SEARCHING ********** */
@@ -149,5 +152,19 @@ void AW_printBroken(ArrWahana AW);
 void AW_setRusak(ArrWahana * AW, Kata K);
 /* I.S. AW terdefinisi */
 /* F.S. Wahana W pada AW menjadi rusak */
+
+void AW_pengungjungNaik(ArrWahana * AW, Kata K);
+/* I.S. AW terdefinisi */
+/* F.S. penghasilan dan useCount Wahana dengan nama K bertambah */
+
+void AW_RepairWahanaRusak(ArrWahana * AW, Kata K);
+/* I.S : W_IsBroken(W) = true, F.S. : W_IsBroken(W) = false*/
+
+void printWahanaChild(ArrWahana AW, BinTree P);
+
+void AW_readWahanaDanTree(ArrTree * BT, ArrWahana * AW, char* filename);
+
+void AW_delElmt(ArrWahana * AW, Kata K);
+/* Menghapus wahana dengan nama K pada AW */
 
 #endif

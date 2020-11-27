@@ -87,16 +87,11 @@ void savewahanahistory(char *filename, ArrListWahanaUpg A){
 void PrintWahanaHistory(Wahana W, ArrListWahanaUpg A)
 /* Menampilkan history dari wahana W*/
 {
-    LL_PrintInfoNamaWahana(A.Tab[W_WahanaId(W)]);
+    LL_PrintInfoNamaWahana(A.Tab[W_BaseId(W)]);
 }
 
 boolean IsWahanaRusak(Wahana W){
     return W_IsBroken(W) == true;
-}
-
-void RepairWahanaRusak(Wahana W)
-{
-    W_IsBroken(W) = false;
 }
 
 void UpgradeWahana(Wahana W0, Wahana W1, ArrListWahanaUpg A)

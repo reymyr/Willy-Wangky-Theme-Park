@@ -1,4 +1,19 @@
-0 wahana satu_tipe 1_500_3_15_tes deskripsi
-1 wahana dua_tipe 2_300_2_10_ini wahana 2
-2 rollercoaster_roller_250_5_20_roller coaster asik
-3 jungkat jungkit_wahana anak_100_2_15_naik turun.
+2
+(0(1(3()())())(2()()))
+(4(5()())())
+0_0_wahana satu_tipe 1_500_3_15_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_tes deskripsi
+0_1_wahana dua_tipe 2_300_2_10_Wood 3 0 Stone 5 0 Steel 3 0 _ 200_ini wahana 2
+0_2_rollercoaster_roller_250_5_20_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_roller coaster asik
+0_3_jungkat jungkit_wahana anak_100_2_15_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_naik turun
+4_4_halilintar_tipe_100_5_20_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_tes
+4_5_nama wahana_tipe wahana_200_3_30_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_keren.
+
+
+banyak upgrade tree
+tree1
+tree2
+...
+treeN
+baseId_id_nama_tipe_harga_kapasitas_durasi_materialCost _ moneyCost_deskripsi
+                                            /   |    \
+                                        nama  jumlah harga(0)

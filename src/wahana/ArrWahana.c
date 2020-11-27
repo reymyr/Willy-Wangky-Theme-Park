@@ -4,20 +4,27 @@
 #include "ArrWahana.h"
 #include "../jam/jam.h"
 #include "../string_production/mesinkata.h"
+#include "../tree/arrTree.h"
+#include "../tree/bintree.h"
+#include "../arrMaterial/arrMaterial.h"
 
-Wahana createWahana(int id, Kata nama, Kata tipe, int harga, Kata desc, int kapasitas, int durasi)
+Wahana createWahana(int base, int id, Kata nama, Kata tipe, int harga, Kata desc, int kapasitas, int durasi, int moneyCost, TabMaterial matCost)
 /* Fungsi untuk membuat Wahana baru */
 {
     Wahana W;
 
+    W_BaseId(W) = base;
     W_WahanaId(W) = id;
     W_Name(W) = nama;
     W_Type(W) = tipe;
     W_Price(W) = harga;
+    W_Area(W) = -1;
     W_Location(W) = MakePOINT(-1, -1);
     W_Desc(W) = desc;
     W_Capacity(W) = kapasitas;
     W_Duration(W) = durasi;
+    W_MoneyCost(W) = moneyCost;
+    W_MaterialCost(W) = matCost;
     W_UseCount(W) = 0;
     W_Penghasilan(W) = 0;
     W_TodayUseCount(W) = 0;
@@ -98,13 +105,16 @@ void AW_BacaFile(ArrWahana *T, char* filename)
 /* I.S. T sembarang dan sudah dialokasikan sebelumnya */
 /* F.S. Tabel T terdefinisi */
 {
-    int id, harga, kapasitas, durasi;
+    int base, id, harga, kapasitas, durasi, moneyCost;
     Kata nama, tipe, deskripsi;
     Wahana W;
+    TabMaterial matCost;
     AW_MakeEmpty(T);
     MK_STARTKATA(filename);
     while (!MK_EndKata)
     {
+        base = MK_KataToInt(MK_CKata);
+        MK_ADVKATAINPUT();
         id = MK_KataToInt(MK_CKata);
         MK_ADVKATAINPUT();
         nama = MK_CKata;
@@ -116,9 +126,13 @@ void AW_BacaFile(ArrWahana *T, char* filename)
         kapasitas = MK_KataToInt(MK_CKata);
         MK_ADVKATAINPUT();
         durasi = MK_KataToInt(MK_CKata);
+        MK_ADV();
+        AM_BacaFile(&matCost, filename, true);
+        MK_ADVKATAINPUT();
+        moneyCost = MK_KataToInt(MK_CKata);
         MK_ADVKATAINPUT();
         deskripsi = MK_CKata;
-        W = createWahana(id, nama, tipe, harga, deskripsi, kapasitas, durasi);
+        W = createWahana(base, id, nama, tipe, harga, deskripsi, kapasitas, durasi, moneyCost, matCost);
         AW_AddAsLastEl(T, W);
         MK_ADV();
         MK_ADVKATA();
@@ -138,6 +152,14 @@ void AW_ListNamaWahana(ArrWahana T)
     {
         printf(" - "); MK_printKata(W_Name(AW_Elmt(T,i))); printf("\n");
     }
+}
+
+void AW_printWahanaCost(Wahana W)
+{
+    printf(" - "); MK_printKata(W_Name(W)); printf("\n");
+    printf("   Bahan:\n");
+    AM_TulisIsiTabCount(W_MaterialCost(W));
+    printf("   Harga : %d", W_MoneyCost(W));
 }
 
 /* ********** SEARCHING ********** */
@@ -301,7 +323,7 @@ void AW_detailWahana(Wahana W, ArrListWahanaUpg A)
     printf("Nama        : "); MK_printKata(W_Name(W)); printf("\n");
     printf("Tipe        : "); MK_printKata(W_Type(W)); printf("\n");
     printf("Harga       : %d\n", W_Price(W));
-    printf("Lokasi      : "); TulisPOINT(W_Location(W)); printf("\n");
+    printf("Lokasi      : Area %d ", W_Area(W)); TulisPOINT(W_Location(W)); printf("\n");
     printf("Deskripsi   : "); MK_printKata(W_Desc(W)); printf("\n");
     printf("Kapasitas   : %d\n", W_Capacity(W));
     printf("History     : ");PrintWahanaHistory(W,A);printf("\n");
@@ -341,4 +363,109 @@ void AW_setRusak(ArrWahana * AW, Kata K)
 {
     IdxType i = AW_SearchI(*AW, K);
     W_IsBroken(AW_Elmt(*AW, i)) = true;
+}
+
+void AW_pengungjungNaik(ArrWahana * AW, Kata K)
+/* I.S. AW terdefinisi */
+/* F.S. penghasilan dan useCount Wahana dengan nama K bertambah */
+{
+    IdxType i = AW_SearchI(*AW, K);
+    W_Penghasilan(AW_Elmt(*AW, i)) += W_Price(AW_Elmt(*AW, i));
+    W_UseCount(AW_Elmt(*AW, i)) += 1;
+    W_TodayPenghasilan(AW_Elmt(*AW, i)) += W_Price(AW_Elmt(*AW, i));
+    W_TodayUseCount(AW_Elmt(*AW, i)) += 1;
+}
+
+void AW_RepairWahanaRusak(ArrWahana * AW, Kata K)
+/* I.S : W_IsBroken(W) = true, F.S. : W_IsBroken(W) = false*/
+{
+    IdxType i = AW_SearchI(*AW, K);
+    W_IsBroken(AW_Elmt(*AW, i)) = false;
+}
+
+void printWahanaChild(ArrWahana AW, BinTree P)
+{
+    if (IsUnerLeft(P))
+    {
+        printf(" - ");
+        MK_printKata(W_Name(AW_GetWahanaId(AW, Akar(Left(P)))));
+        printf("\n");
+    }
+    else if (IsUnerRight(P))
+    {
+        printf(" - ");
+        MK_printKata(W_Name(AW_GetWahanaId(AW, Akar(Right(P)))));
+        printf("\n");
+    }
+    else
+    {
+        printf(" - ");
+        MK_printKata(W_Name(AW_GetWahanaId(AW, Akar(Left(P)))));
+        printf("\n");
+        printf(" - ");
+        MK_printKata(W_Name(AW_GetWahanaId(AW, Akar(Right(P)))));
+        printf("\n");
+    }   
+    
+}
+
+void AW_readWahanaDanTree(ArrTree * BT, ArrWahana * AW, char* filename)
+{
+    int base, id, harga, kapasitas, durasi, moneyCost;
+    Kata nama, tipe, deskripsi;
+    TabMaterial matCost;
+    Wahana W;
+    AW_MakeEmpty(AW);
+    AT_MakeEmpty(BT);
+    MK_START(filename);
+    MK_ADVKATAINPUT();
+    int treeCount = MK_KataToInt(MK_CKata);
+    AT_Neff(*BT) = treeCount;
+    MK_ADV();
+    for (size_t i = 0; i < treeCount; i++)
+    {
+        readTree(&AT_Elmt(*BT, i));
+        // PrintTree(AT_Elmt(*BT, i), 2);
+        MK_ADV();
+    }
+    
+    MK_ADVKATAINPUT();
+    while (!MK_EndKata)
+    {
+        base = MK_KataToInt(MK_CKata);
+        MK_ADVKATAINPUT();
+        id = MK_KataToInt(MK_CKata);
+        MK_ADVKATAINPUT();
+        nama = MK_CKata;
+        MK_ADVKATAINPUT();
+        tipe = MK_CKata;
+        MK_ADVKATAINPUT();
+        harga = MK_KataToInt(MK_CKata);
+        MK_ADVKATAINPUT();
+        kapasitas = MK_KataToInt(MK_CKata);
+        MK_ADVKATAINPUT();
+        durasi = MK_KataToInt(MK_CKata);
+        MK_ADV();
+        AM_BacaFile(&matCost, filename, true);
+        MK_ADVKATAINPUT();
+        moneyCost = MK_KataToInt(MK_CKata);
+        MK_ADVKATAINPUT();
+        deskripsi = MK_CKata;
+        W = createWahana(base, id, nama, tipe, harga, deskripsi, kapasitas, durasi, moneyCost, matCost);
+        AW_AddAsLastEl(AW, W);
+        MK_ADV();
+        MK_ADVKATAINPUT();
+    }  
+}
+
+void AW_delElmt(ArrWahana * AW, Kata K)
+/* Menghapus wahana dengan nama K pada AW */
+{
+    IdxType idx = AW_SearchI(*AW, K);
+    for (size_t i = idx+1; i <= AW_GetLastIdx(*AW) ; i++)
+    {
+        AW_Elmt(*AW, idx) = AW_Elmt(*AW, i);
+        idx++;
+    }
+    AM_NEff(*AW)--;
 }
