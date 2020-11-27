@@ -118,6 +118,8 @@ boolean AM_SearchB(TabMaterial T, Kata K);
 int AM_GetPrice(TabMaterial T, Kata K);
 /* Mengembalikan harga dari material K */
 /* Jika tidak ada mengembalikan -1 */
+int AM_GetCount(TabMaterial T, Kata K);
+/* Mengembalikan jumlah material K pada T */
 
 /* ********** OPERASI LAIN ********** */
 void AM_CopyTab(TabMaterial Tin, TabMaterial *Tout);
@@ -150,5 +152,8 @@ void AM_DelCount(TabMaterial *T, Kata MatName, int count);
 /* Proses : Membuang material bernama MatName sebanyak count dari T */
 /* I.S. Tabel tidak kosong, MatName terdapat dalam T, count tidak melebihi jumlah material dalam T */
 /* F.S. material bernama MatName berkurang sebanyak count dari T, jika menjadi 0 dihilangkan */
+
+boolean AM_MoreThan(TabMaterial T1, TabMaterial T2);
+/* Mengembalikan apakah semua material pada T1 memiliki jumlah >= di T2 */
 
 #endif

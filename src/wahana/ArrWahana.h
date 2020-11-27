@@ -167,4 +167,8 @@ void AW_readWahanaDanTree(ArrTree * BT, ArrWahana * AW, char* filename);
 void AW_delElmt(ArrWahana * AW, Kata K);
 /* Menghapus wahana dengan nama K pada AW */
 
+void AW_newDay(ArrWahana * AW);
+/* I.S. AW terdefinisi */
+/* F.S todayPenghasilan dan todayUseCount diset menjadi 0 untuk setiap wahana */
+
 #endif

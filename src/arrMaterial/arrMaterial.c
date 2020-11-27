@@ -221,6 +221,20 @@ int AM_GetPrice(TabMaterial T, Kata K)
     }
 }
 
+int AM_GetCount(TabMaterial T, Kata K)
+/* Mengembalikan jumlah material K pada T */
+{
+    int idx = AM_SearchI(T, K);
+    if (idx == IdxUndef)
+    {
+        return 0;
+    }
+    else
+    {
+        return M_Count(AM_Elmt(T, idx));
+    }
+}
+
 /* ********** OPERASI LAIN ********** */
 void AM_CopyTab(TabMaterial Tin, TabMaterial *Tout)
 /* I.S. Tin terdefinisi tidak kosong, Tout sembarang */
@@ -299,4 +313,22 @@ void AM_DelCount(TabMaterial *T, Kata MatName, int count)
         }
         AM_NEff(*T)--;
     }
+}
+
+boolean AM_MoreThan(TabMaterial T1, TabMaterial T2)
+/* Mengembalikan apakah semua material pada T1 memiliki jumlah >= di T2 */
+{
+    boolean more = true;
+    int i = AM_GetFirstIdx(T1);
+    while (i <= AM_GetLastIdx(T1) && more)
+    {
+        int T1Count = M_Count(AM_Elmt(T1, i));
+        int T2Count = AM_GetCount(T2, M_Name(AM_Elmt(T1, i)));
+
+        if (T1Count < T2Count)
+        {
+            more = false; 
+        }
+    }
+    return more;
 }

@@ -666,6 +666,7 @@ int main()
                         /* PREPARE */
                         PQ_MakeEmpty(&Antrian);
                         CurrentTime = MakeJAM(Day(CurrentTime)+1, 21, 0);
+                        AW_newDay(&BuiltWahana);
                         prepPhase = true;
                         break;
                     default:
@@ -676,6 +677,7 @@ int main()
                         if (JAMToMenitMinDay(ClosingTime) - JAMToMenitMinDay(CurrentTime) <= 0)
                         {
                             CurrentTime = MakeJAM(Day(CurrentTime)+1, 21, 0);
+                            AW_newDay(&BuiltWahana);
                             prepPhase = true;
                         }
                     }                    

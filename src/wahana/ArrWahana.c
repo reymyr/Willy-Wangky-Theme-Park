@@ -469,3 +469,14 @@ void AW_delElmt(ArrWahana * AW, Kata K)
     }
     AM_NEff(*AW)--;
 }
+
+void AW_newDay(ArrWahana * AW)
+/* I.S. AW terdefinisi */
+/* F.S todayPenghasilan dan todayUseCount diset menjadi 0 untuk setiap wahana */
+{
+    for (size_t i = 0; i <= AW_GetLastIdx(*AW); i++)
+    {
+        W_TodayPenghasilan(AW_Elmt(*AW, i)) = 0;
+        W_TodayUseCount(AW_Elmt(*AW, i)) = 0;
+    }
+}

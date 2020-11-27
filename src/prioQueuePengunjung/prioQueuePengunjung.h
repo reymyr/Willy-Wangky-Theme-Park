@@ -13,7 +13,7 @@
 #define PQ_Nil -1
 /* Konstanta untuk mendefinisikan address tak terdefinisi */
 
-#define PQ_MaxEl 7
+#define PQ_MaxEl 10
 /* Konstanta untuk mendefinisikan elemen maksimal queue */
 
 /* Definisi elemen dan address */
