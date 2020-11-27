@@ -32,7 +32,7 @@ int main()
         {
         case 1:
 
-            printf("Masukkan banyak wahana pengungjung: ");
+            printf("Masukkan banyak wahana pengunjung: ");
             scanf("%d", &nWahana);
 
             
@@ -43,7 +43,7 @@ int main()
                 AK_AddAsLastEl(&P_Wahana(P), MK_CKata);
             }
 
-            printf("Prioritas pengunjung: ");
+            printf("Prioritas pengunjung (lebih kecil lebih tinggi): ");
             scanf("%d", &prio);          
             P_Prio(P) = prio; 
 
