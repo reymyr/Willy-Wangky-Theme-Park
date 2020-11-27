@@ -569,7 +569,6 @@ int main()
                                 }
                                 else
                                 {
-                                    printf("Kasus else\n");
                                     Money(P) += AW_GetPrice(BuiltWahana, MK_CKata);
                                     CurrentTime = NextNMenit(CurrentTime, W_Duration(AW_GetWahana(BuiltWahana, MK_CKata)));
                                     AK_DelKata(&P_Wahana(Pgj), MK_CKata);
