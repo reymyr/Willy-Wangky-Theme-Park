@@ -18,7 +18,10 @@ int main(){
     scanf("%d",&input);
     flag_start = false;
     if(input==1){
-        
+        MK_EndKata = false;
+        printf("Masukkan input: ");
+        MK_STARTKATAINPUT();
+        printf("Kata yang baru saja anda input adalah: "); MK_printKata(MK_CKata);
     }
     else{
         MK_EndKata = false;
