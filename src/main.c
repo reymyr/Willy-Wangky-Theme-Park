@@ -152,7 +152,7 @@ int main()
                 MK_ADVKATAINPUT();
                 /* Insialisasi player dgn nama MK_CKata */
                 Nama(P) = MK_CKata;
-                Money(P) = 1000;
+                Money(P) = 10000;
                 AM_MakeEmpty(&Materials(P));
                 printf("Selamat bermain, ");
                 MK_printKata(Nama(P)); printf("\n");
@@ -278,22 +278,29 @@ int main()
                                 }
                                 else
                                 {
-                                    setTile(&Map, G_CurrentArea(Map), Pos(P), 'W', AW_GetId(WahanaDatabase, MK_CKata));
+                                    if (AM_MoreThan(Materials(P), W_MaterialCost(WBuilt)))
+                                    {
+                                        setTile(&Map, G_CurrentArea(Map), Pos(P), 'W', -1);
 
-                                    StackElmt = CreateStackInfo(MK_MakeKata("build", 5), A_Duration(AA_Elmt(ActionDatabase, 4)), cost, Pos(P));
-                                    Push(&ActionStack, StackElmt);
+                                        StackElmt = CreateStackInfo(MK_MakeKata("build", 5), A_Duration(AA_Elmt(ActionDatabase, 4)), cost, Pos(P));
+                                        S_IdWahana(StackElmt) = AW_GetId(WahanaDatabase, MK_CKata);
+                                        Push(&ActionStack, StackElmt);
 
-                                    W_Area(WBuilt) = G_CurrentArea(Map);
-                                    W_Location(WBuilt) = Pos(P);
-                                    W_WahanaId(WBuilt) = AW_GetId(WahanaDatabase, MK_CKata);
+                                        W_Area(WBuilt) = G_CurrentArea(Map);
+                                        W_Location(WBuilt) = Pos(P);
 
-                                    LL_CreateEmpty(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)]);
-                                    LL_InsVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)],WBuilt);
-                                    
-                                    AW_AddAsLastEl(&BuiltWahana, WBuilt);
-                                    
+                                        LL_CreateEmpty(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)]);
+                                        LL_InsVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)],WBuilt);
+                                        
+                                        AW_AddAsLastEl(&BuiltWahana, WBuilt);
+                                        
 
-                                    move(&Map, &P, pushCode, &moveStatus);   
+                                        move(&Map, &P, pushCode, &moveStatus);   
+                                    }
+                                    else
+                                    {
+                                        printf("Material anda tidak cukup\n");
+                                    }                                    
                                 }                              
                             }
                         }
@@ -317,6 +324,14 @@ int main()
                         if (!foundwahana)
                         {
                             printf("Tidak ada wahana di sekitar.\n");
+                        }
+                        else if (WId == -1)
+                        {
+                            printf("Wahana belum dibangun, input 'execute' untuk membangun wahana\n");
+                        }
+                        else if ((JLT(DurasiJam(CurrentTime, OpeningTime), MenitToJAM(JAMToMenit(TotalTime(ActionStack))+JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 5)))))))
+                        {
+                            printf("Waktu yang dibutuhkan tidak cukup\n");
                         }
                         else
                         {
@@ -441,9 +456,13 @@ int main()
                             }
                             else /* build */
                             {
-                                
+                                setTile(&Map, G_CurrentArea(Map), S_PosWahana(StackElmt), 'W', S_IdWahana(StackElmt));
+                                TabMaterial matCost = W_MaterialCost(AW_GetWahanaId(WahanaDatabase, S_IdWahana(StackElmt)));
+                                for (size_t i = 0; i < AM_NEff(matCost); i++)
+                                {
+                                    AM_DelCount(&Materials(P), M_Name(AM_Elmt(matCost, i)), M_Count(AM_Elmt(matCost, i)));
+                                }
                             }
-
                         }
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
                         prepPhase = false;
@@ -550,6 +569,7 @@ int main()
                                 }
                                 else
                                 {
+                                    printf("Kasus else\n");
                                     Money(P) += AW_GetPrice(BuiltWahana, MK_CKata);
                                     CurrentTime = NextNMenit(CurrentTime, W_Duration(AW_GetWahana(BuiltWahana, MK_CKata)));
                                     AK_DelKata(&P_Wahana(Pgj), MK_CKata);
@@ -560,7 +580,7 @@ int main()
                                         PQ_Enqueue(&Antrian, Pgj);
                                     }
                                     int r = rand() % 100;
-                                    if (r < 30)
+                                    if (r < 40)
                                     {
                                         AW_setRusak(&BuiltWahana, MK_CKata);
                                     }             
@@ -725,25 +745,28 @@ void randomPengunjung(PrioQueuePengunjung * PQ, ArrWahana AW)
 void processKesabaran(PrioQueuePengunjung * Antrian)
 /* Proses kesabaran pengunjung */
 {
-    int r = rand() % PQ_NBElmt(*Antrian);
-    P_Kesabaran(PQ_Elmt(*Antrian, r))--;
-    if (P_Kesabaran(PQ_Elmt(*Antrian, r)) == 0)
+    if (!PQ_IsEmpty(*Antrian))
     {
-        PrioQueuePengunjung Temp;
-        Pengunjung PTemp;
-        PQ_MakeEmpty(&Temp);
-        for (size_t i = 0; i < r; i++)
+        int r = rand() % PQ_NBElmt(*Antrian);
+        P_Kesabaran(PQ_Elmt(*Antrian, r))--;
+        if (P_Kesabaran(PQ_Elmt(*Antrian, r)) == 0)
         {
+            PrioQueuePengunjung Temp;
+            Pengunjung PTemp;
+            PQ_MakeEmpty(&Temp);
+            for (size_t i = 0; i < r; i++)
+            {
+                PQ_Dequeue(Antrian, &PTemp);
+                PQ_Enqueue(&Temp, PTemp);
+            }
             PQ_Dequeue(Antrian, &PTemp);
-            PQ_Enqueue(&Temp, PTemp);
-        }
-        PQ_Dequeue(Antrian, &PTemp);
-        while (!PQ_IsEmpty(Temp))
-        {
-            PQ_Dequeue(&Temp, &PTemp);
-            PQ_Enqueue(Antrian, PTemp);
-        }
-    }    
+            while (!PQ_IsEmpty(Temp))
+            {
+                PQ_Dequeue(&Temp, &PTemp);
+                PQ_Enqueue(Antrian, PTemp);
+            }
+        }    
+    }
 }
 
 void initActionDatabase(ArrAction * AA)

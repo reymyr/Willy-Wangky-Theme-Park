@@ -320,6 +320,12 @@ boolean AM_MoreThan(TabMaterial T1, TabMaterial T2)
 {
     boolean more = true;
     int i = AM_GetFirstIdx(T1);
+
+    if (AM_NbElmt(T1) < AM_NbElmt(T2))
+    {
+        return false;
+    }
+    
     while (i <= AM_GetLastIdx(T1) && more)
     {
         int T1Count = M_Count(AM_Elmt(T1, i));
@@ -329,6 +335,7 @@ boolean AM_MoreThan(TabMaterial T1, TabMaterial T2)
         {
             more = false; 
         }
+        i++;
     }
     return more;
 }

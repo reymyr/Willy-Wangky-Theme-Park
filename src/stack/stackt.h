@@ -15,12 +15,13 @@
 /* Nil adalah stack dengan elemen kosong . */
 
 typedef struct {
-    Kata name;
-    Kata matName;
-    int matCount;
-    JAM timeNeeded;
-    int moneyNeeded;
-    POINT posWahana;
+    Kata name;        /* Nama aksi */
+    Kata matName;     /* Nama material jika name=buy */
+    int matCount;     /* Jumlah material juka name=buy */
+    JAM timeNeeded;   /* Waktu yang dibutuhkan aksi */
+    int moneyNeeded;  /* Uang yang dibutuhkan aksi */
+    POINT posWahana;  /* Posisi wahana jika name=build atau name=upgrade */
+    int idWahana;     /* Id wahana jika name=build atau name=upgrade */
 } S_infotype;
 typedef int S_address;   /* indeks tabel */
 
@@ -41,6 +42,7 @@ typedef struct {
 #define S_TimeNeeded(SI) (SI).timeNeeded
 #define S_MoneyNeeded(SI) (SI).moneyNeeded
 #define S_PosWahana(SI) (SI).posWahana
+#define S_IdWahana(SI) (SI).idWahana
 #define S_MatName(SI) (SI).matName
 #define S_MatCount(SI) (SI).matCount
 

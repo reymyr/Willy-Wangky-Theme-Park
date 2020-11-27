@@ -14,3 +14,16 @@
 2
 4 11 4 0 1
 11 9 0 9 2.
+
+
+<FORMAT FILE>
+area
+map_
+jumlah_gerbang(N)
+gerbang1
+gerbang2
+...
+gerbangN
+
+<FORMAT GERBANG>
+baris_awal kolom_awal baris_tujuan kolom_tujuan area_tujuan

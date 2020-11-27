@@ -9,7 +9,8 @@
 4_5_nama wahana_tipe wahana_200_3_30_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_keren.
 
 
-banyak upgrade tree
+<FORMAT FILE>
+banyak_upgrade_tree(N)
 tree1
 tree2
 ...
@@ -17,3 +18,5 @@ treeN
 baseId_id_nama_tipe_harga_kapasitas_durasi_materialCost _ moneyCost_deskripsi
                                             /   |    \
                                         nama  jumlah harga(0)
+
+<Format materialCost sama seperti material.txt>
