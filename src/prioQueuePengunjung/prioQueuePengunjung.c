@@ -97,12 +97,20 @@ void PQ_PrintQueuePengunjung (PrioQueuePengunjung Q)
 #
 */
 {
+    Pengunjung P;
     printf("Antrian [%d/%d] :\n", PQ_NBElmt(Q), PQ_MaxEl);
-    for (int i = 0; i < PQ_NBElmt(Q); i++)
+    while (!PQ_IsEmpty(Q))
     {
-        int current = (PQ_Head(Q) + i) % PQ_MaxEl;
-        Pengunjung P = PQ_Elmt(Q, current);
+        PQ_Dequeue(&Q, &P);
         AK_TulisIsiTab(P_Wahana(P));
         printf(", kesabaran: %d\n", P_Kesabaran(P));
     }
+    
+    // for (int i = 0; i < PQ_NBElmt(Q); i++)
+    // {
+    //     int current = (PQ_Head(Q) + i) % PQ_MaxEl;
+    //     Pengunjung P = PQ_Elmt(Q, current);
+    //     AK_TulisIsiTab(P_Wahana(P));
+    //     printf(", kesabaran: %d\n", P_Kesabaran(P));
+    // }
 }

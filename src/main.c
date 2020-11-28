@@ -282,19 +282,21 @@ int main()
                         {
                             if (T_Type(Surround(P)[i]) == 'W')
                             {
-                                WId = T_ID(Surround(P)[i]);
                                 foundwahana = true;
-                                break;
+                                if (T_ID(Surround(P)[i]) != -1)
+                                {
+                                    WId = T_ID(Surround(P)[i]);
+                                    break;
+                                }
                             }
                         }
-                        printf("ketemu dgn id: %d", WId);
                         if (!foundwahana)   /* Tidak ada wahana di sekitar pemain */
                         {
                             printf("Tidak ada wahana di sekitar.\n");
                         }
                         else if (WId == -1) /* Wahana di sekitar pemain belum dibangun atau belum diupgrade (belum dilakukan execute) */
                         {
-                            printf("Wahana belum dibangun, input 'execute' untuk membangun wahana\n");
+                            printf("Wahana belum dibangun atau sedang diupgrade, input 'execute' untuk membangun/upgrade wahana\n");
                         }
                         /* Waktu upgrade tidak cukup */
                         else if ((JLT(DurasiJam(CurrentTime, OpeningTime), MenitToJAM(JAMToMenit(TotalTime(ActionStack))+JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 5)))))))
@@ -308,7 +310,6 @@ int main()
                             int BaseId = W_BaseId(AW_GetWahanaId(BuiltWahana, WId));
                             BinTree UpTree = AT_SearchBase(UpgradeTrees, BaseId);
                             getChildId(UpTree, WId, &LId, &RId);
-                            printf("habis getchild\n");
                             if (LId == -1 && RId == -1) /* Wahana tidak dapat diupgrade lagi */
                             {
                                 printf("Wahana sudah tidak dapat diupgrade lagi\n");
@@ -503,7 +504,7 @@ int main()
                 else /* Main Phase */
                 {
                     /* Pengecekan waktu sekarang untuk mengurangi kesabaran pengunjung */
-                    if ((JAMToMenit(DurasiJam(OpeningTime, CurrentTime)) / 30) > counter)
+                    while ((JAMToMenit(DurasiJam(OpeningTime, CurrentTime)) / 30) > counter)
                     {
                         counter++;
                         processKesabaran(&Antrian);     
@@ -770,8 +771,9 @@ void processKesabaran(PrioQueuePengunjung * Antrian)
     if (!PQ_IsEmpty(*Antrian))
     {
         int r = rand() % PQ_NBElmt(*Antrian);
-        P_Kesabaran(PQ_Elmt(*Antrian, r))--;
-        if (P_Kesabaran(PQ_Elmt(*Antrian, r)) == 0)
+        int idx = (PQ_Head(*Antrian) + r) % PQ_MaxEl;
+        P_Kesabaran(PQ_Elmt(*Antrian, idx))--;
+        if (P_Kesabaran(PQ_Elmt(*Antrian, idx)) <= 0)
         {
             PrioQueuePengunjung Temp;
             Pengunjung PTemp;
