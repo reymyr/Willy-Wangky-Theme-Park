@@ -76,6 +76,7 @@ void MK_SalinKataInput()
 }
 
 void MK_SalinKataTree()
+/* Mengakuisisi Tree secara preorder */
 {
     int i = 0;
     while (MK_CC != MK_MARK && MK_CC != '(' && MK_CC != ')' && i < MK_NMax)

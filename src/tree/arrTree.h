@@ -22,7 +22,9 @@ void AT_MakeEmpty(ArrTree *T);
 /* F.S. Terbentuk tabel T kosong dengan kapasitas maxel */
 
 IdxType AT_SearchI(ArrTree T, BT_infotype x);
+/* Mengembalikan index tree dalam array yang memiliki Akar(P) = x */
 
 BinTree AT_SearchBase(ArrTree T, BT_infotype x);
+/* Mengembalikan tree dalam array yang memiliki Akar(P) = x */
 
 #endif

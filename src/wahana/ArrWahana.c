@@ -155,6 +155,8 @@ void AW_ListNamaWahana(ArrWahana T)
 }
 
 void AW_printWahanaCost(Wahana W)
+/* I.S. W terdefinisi */
+/* F.S. Jumlah material dan uang yang dibutuhkan untuk membangun W tertulis di layar */
 {
     printf(" - "); MK_printKata(W_Name(W)); printf("\n");
     printf("   Bahan:\n");
@@ -398,33 +400,9 @@ void AW_RepairWahanaRusak(ArrWahana * AW, Kata K)
     W_IsBroken(AW_Elmt(*AW, i)) = false;
 }
 
-void printWahanaChild(ArrWahana AW, BinTree P)
-{
-    if (IsUnerLeft(P))
-    {
-        printf(" - ");
-        MK_printKata(W_Name(AW_GetWahanaId(AW, Akar(Left(P)))));
-        printf("\n");
-    }
-    else if (IsUnerRight(P))
-    {
-        printf(" - ");
-        MK_printKata(W_Name(AW_GetWahanaId(AW, Akar(Right(P)))));
-        printf("\n");
-    }
-    else
-    {
-        printf(" - ");
-        MK_printKata(W_Name(AW_GetWahanaId(AW, Akar(Left(P)))));
-        printf("\n");
-        printf(" - ");
-        MK_printKata(W_Name(AW_GetWahanaId(AW, Akar(Right(P)))));
-        printf("\n");
-    }   
-    
-}
-
 void AW_readWahanaDanTree(ArrTree * BT, ArrWahana * AW, char* filename)
+/* I.S. Sembarang */
+/* F.S. Membaca file tree dan wahana, BT terisi array upgrade tree, AW terisi array wahana */
 {
     int base, id, harga, kapasitas, durasi, moneyCost;
     Kata nama, tipe, deskripsi;

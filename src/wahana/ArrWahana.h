@@ -89,7 +89,8 @@ void AW_ListNamaWahana(ArrWahana T);
 /* Contoh : jika ada tiga elemen bernilai 1, 20, 30 akan dicetak: [1,20,30] */
 /* Jika tabel kosong : menulis [] */
 void AW_printWahanaCost(Wahana W);
-
+/* I.S. W terdefinisi */
+/* F.S. Jumlah material dan uang yang dibutuhkan untuk membangun W tertulis di layar */
 
 /* ********** SEARCHING ********** */
 /* ***  Perhatian : Tabel boleh kosong!! *** */
@@ -163,9 +164,9 @@ void AW_pengungjungNaik(ArrWahana * AW, Kata K);
 void AW_RepairWahanaRusak(ArrWahana * AW, Kata K);
 /* I.S : W_IsBroken(W) = true, F.S. : W_IsBroken(W) = false*/
 
-void printWahanaChild(ArrWahana AW, BinTree P);
-
 void AW_readWahanaDanTree(ArrTree * BT, ArrWahana * AW, char* filename);
+/* I.S. Sembarang */
+/* F.S. Membaca file tree dan wahana, BT terisi array upgrade tree, AW terisi array wahana */
 
 void AW_delElmt(ArrWahana * AW, Kata K);
 /* Menghapus wahana dengan nama K pada AW */

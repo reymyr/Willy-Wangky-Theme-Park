@@ -66,10 +66,11 @@ boolean IsUnerRight(BinTree P);
 boolean IsBiner(BinTree P);
 /* Mengirimkan true jika pohon biner tidak kosong P adalah pohon biner: mempunyai subpohon kiri dan subpohon kanan*/
 
-/* *** Traversal *** */
 void readTreeFile(BinTree *P, char* filename);
+/* Membaca tree dari file eksternal, disimpan ke P */
 
 void readTree(BinTree *P);
+/* Membaca tree dengan mesin kata, disimpan dalam P */
 
 void PrintTree(BinTree P, int h);
 /* I.S. P terdefinisi, h adalah jarak indentasi (spasi) */
@@ -93,6 +94,8 @@ A
 /* *** Searching *** */
 boolean SearchTree(BinTree P, BT_infotype X);
 /* Mengirimkan true jika ada node dari P yang bernilai X */
+BinTree SearchNode(BinTree P, BT_infotype X);
+/* Mengembalikan alamat node yang akarnya X, jika X tidak ada pada P, mengembalikan BT_Nil */
 
 /* *** Fungsi-Fungsi Lain *** */
 int NbElmt(BinTree P);
@@ -100,12 +103,6 @@ int NbElmt(BinTree P);
 int NbDaun(BinTree P);
 /* Mengirimkan banyaknya daun (node) pohon biner P */
 /* Prekondisi: P tidak kosong */
-boolean IsSkewLeft(BinTree P);
-/* Mengirimkan true jika P adalah pohon condong kiri */
-/* Pohon kosong adalah pohon condong kiri */
-boolean IsSkewRight(BinTree P);
-/* Mengirimkan true jika P adalah pohon condong kanan */
-/* Pohon kosong adalah pohon condong kanan */
 int Level(BinTree P, BT_infotype X);
 /* Mengirimkan level dari node X yang merupakan salah satu simpul dari pohon biner P. 
    Akar(P) level-nya adalah 1. Pohon P tidak kosong. */
@@ -137,4 +134,8 @@ BinTree GetNode(BinTree P, BT_infotype x);
 /* Mengembalikan Node dengan akar=x */
 
 void getChildId(BinTree P, BT_infotype x, BT_infotype * CL, BT_infotype * CR);
+/* I.S. P terdefinisi, x ada dalam P */
+/* F.S. CL terisi Akar dari anak kiri node berinfo x, CR terisi Akar dari anak kanan node berinfo x */
+/*      Jika tidak memiliki akar kiri/kanan, CL/CR terisi -1  */
+
 #endif

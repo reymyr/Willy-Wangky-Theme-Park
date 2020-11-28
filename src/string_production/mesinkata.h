@@ -48,6 +48,7 @@ void MK_SalinKataInput();
           Jika panjang kata melebihi NMax, maka sisa kata "dipotong" */
 
 void MK_SalinKataTree();
+/* Mengakuisisi Tree secara preorder */
 
 /* Mesin Kata file */
 void MK_IgnoreBlank();

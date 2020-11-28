@@ -91,10 +91,10 @@ void PQ_PrintQueuePengunjung (PrioQueuePengunjung Q)
 /* Mencetak isi queue Q ke layar */
 /* I.S. Q terdefinisi, mungkin kosong */
 /* F.S. Q tercetak ke layar dengan format:
-<prio-1> <elemen-1>
+Antrian[NbElmt/MaxEl] :
+(List_Wahana-1), kesabaran: kesabaran-1
 ...
-<prio-n> <elemen-n>
-#
+(List_Wahana-n), kesabaran: kesabaran-n
 */
 {
     Pengunjung P;
@@ -105,12 +105,4 @@ void PQ_PrintQueuePengunjung (PrioQueuePengunjung Q)
         AK_TulisIsiTab(P_Wahana(P));
         printf(", kesabaran: %d\n", P_Kesabaran(P));
     }
-    
-    // for (int i = 0; i < PQ_NBElmt(Q); i++)
-    // {
-    //     int current = (PQ_Head(Q) + i) % PQ_MaxEl;
-    //     Pengunjung P = PQ_Elmt(Q, current);
-    //     AK_TulisIsiTab(P_Wahana(P));
-    //     printf(", kesabaran: %d\n", P_Kesabaran(P));
-    // }
 }

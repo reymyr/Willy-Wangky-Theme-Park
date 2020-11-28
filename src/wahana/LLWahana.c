@@ -17,7 +17,9 @@ boolean WU_IsEmpty(ArrListWahanaUpg A)
 }
 
 
-void loadwahanahistory(char *filename, ArrListWahanaUpg * A){
+void loadwahanahistory(char *filename, ArrListWahanaUpg * A)
+/* Melakukan load data dari file wahana history, tiap wahana dan history upgradenya disimpan pada sebuah List berkait, dan tiap List dicatat pada Array of List A */
+{
     int currentid;
     Wahana W;
     List WahanaHistory;
@@ -90,6 +92,8 @@ void PrintWahanaHistory(Wahana W, ArrListWahanaUpg A)
     LL_PrintInfoNamaWahana(A.Tab[W_BaseId(W)]);
 }
 
-boolean IsWahanaRusak(Wahana W){
+boolean IsWahanaRusak(Wahana W)
+/* Mengembalikan true jika Wahana rusak dan false jika tidak*/
+{
     return W_IsBroken(W) == true;
 }

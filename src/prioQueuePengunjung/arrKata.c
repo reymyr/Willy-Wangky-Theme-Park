@@ -69,41 +69,6 @@ boolean AK_IsFull(ArrKata T)
     return (AK_NbElmt(T) == AK_MaxElement(T));
 }
 
-/* ********** BACA dan TULIS dengan INPUT/OUTPUT device ********** */
-/* *** Mendefinisikan isi tabel dari pembacaan *** */
-// void AK_BacaIsi(ArrKata *T)
-// /* I.S. T sembarang dan sudah dialokasikan sebelumnya */
-// /* F.S. Tabel T terdefinisi */
-// /* Proses : membaca banyaknya elemen T dan mengisi nilainya */
-// /* 1. Baca banyaknya elemen diakhiri enter, misalnya N */
-// /*    Pembacaan diulangi sampai didapat N yang benar yaitu 0 <= N <= AK_MaxElement(T) */
-// /*    Jika N tidak valid, tidak diberikan pesan kesalahan */
-// /* 2. Jika 0 < N <= AK_MaxElement(T); Lakukan N kali: Baca elemen mulai dari indeks
-//       IdxMin satu per satu diakhiri enter */
-// /*    Jika N = 0; hanya terbentuk T kosong */
-// {
-//     int i, N;
-    
-//     do
-//     {
-//         scanf("%d", &N);
-//     } while (N < 0 || N > AK_MaxElement(*T));
-    
-//     if (N == 0)
-//     {
-//         AK_NEff(*T) = 0;
-//     }
-//     else
-//     {
-//         for (i = IdxMin; i < N; i++)
-//         {
-//             Action x;
-//             scanf("%d", &x);
-//             AK_Elmt(*T, i) = x;
-//             AK_NEff(*T)++;
-//         }
-//     }
-// }
 void AK_TulisIsiTab(ArrKata T)
 /* Proses : Menuliskan isi tabel dengan traversal, tabel ditulis di antara kurung siku;
    antara dua elemen dipisahkan dengan separator "koma", tanpa tambahan karakter di depan,
@@ -226,6 +191,8 @@ void AK_DelLastEl(ArrKata *T, Kata *X)
 }
 
 void AK_DelKata(ArrKata *T, Kata K)
+/* I.S. Tabel tiadk kosong, K terdapat dalam tabel */
+/* F.S. Kata K dihapus dari Tabel, Neff berkurang 1 */
 {
     int idx = AK_SearchI(*T, K);
     for (size_t i = idx+1; i <= AK_GetLastIdx(*T); i++)

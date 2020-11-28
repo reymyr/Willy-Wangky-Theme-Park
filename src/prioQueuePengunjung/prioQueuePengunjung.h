@@ -83,10 +83,10 @@ void PQ_PrintQueuePengunjung (PrioQueuePengunjung Q);
 /* Mencetak isi queue Q ke layar */
 /* I.S. Q terdefinisi, mungkin kosong */
 /* F.S. Q tercetak ke layar dengan format:
-<prio-1> <elemen-1>
+Antrian[NbElmt/MaxEl] :
+(List_Wahana-1), kesabaran: kesabaran-1
 ...
-<prio-n> <elemen-n>
-#
+(List_Wahana-n), kesabaran: kesabaran-n
 */
 
 

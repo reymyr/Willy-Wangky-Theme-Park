@@ -145,12 +145,14 @@ boolean IsBiner(BinTree P)
 }
 
 void readTreeFile(BinTree *P, char* filename)
+/* Membaca tree dari file eksternal, disimpan ke P */
 {
     MK_START(filename); 
     readTree(P);
 }
 
 void readTree(BinTree *P)
+/* Membaca tree dengan mesin kata, disimpan dalam P */
 {
 
     MK_ADV();
@@ -169,6 +171,7 @@ void readTree(BinTree *P)
 }
 
 void PrintTreeLevel(BinTree P, int h, int level)
+/* Menuliskan tree pada layar */
 {
     if (!IsTreeEmpty(P))
     {
@@ -231,6 +234,7 @@ boolean SearchTree(BinTree P, BT_infotype X)
 }
 
 BinTree SearchNode(BinTree P, BT_infotype X)
+/* Mengembalikan alamat node yang akarnya X, jika X tidak ada pada P, mengembalikan BT_Nil */
 {
     if (Akar(P)==X)
     {
@@ -291,54 +295,7 @@ int NbDaun(BinTree P)
         }     
     }    
 }
-boolean IsSkewLeft(BinTree P)
-/* Mengirimkan true jika P adalah pohon condong kiri */
-/* Pohon kosong adalah pohon condong kiri */
-{
-    if (IsTreeEmpty(P))
-    {
-        return true;
-    }
-    else if (IsTreeOneElmt(P))
-    {
-        return true;
-    }    
-    else
-    {
-        if (IsUnerLeft(P))
-        {
-            return IsSkewLeft(Left(P));
-        }
-        else
-        {
-            return false;
-        }        
-    }    
-}
-boolean IsSkewRight(BinTree P)
-/* Mengirimkan true jika P adalah pohon condong kanan */
-/* Pohon kosong adalah pohon condong kanan */
-{
-    if (IsTreeEmpty(P))
-    {
-        return true;
-    }
-    else if (IsTreeOneElmt(P))
-    {
-        return true;
-    }    
-    else
-    {
-        if (IsUnerRight(P))
-        {
-            return IsSkewRight(Right(P));
-        }
-        else
-        {
-            return false;
-        }        
-    }   
-}
+
 int Level(BinTree P, BT_infotype X)
 /* Mengirimkan level dari node X yang merupakan salah satu simpul dari pohon biner P. 
    Akar(P) level-nya adalah 1. Pohon P tidak kosong. */
@@ -572,6 +529,9 @@ boolean isChild(BinTree P, BT_infotype x, BT_infotype y)
 }
 
 void getChildId(BinTree P, BT_infotype x, BT_infotype * CL, BT_infotype * CR)
+/* I.S. P terdefinisi, x ada dalam P */
+/* F.S. CL terisi Akar dari anak kiri node berinfo x, CR terisi Akar dari anak kanan node berinfo x */
+/*      Jika tidak memiliki akar kiri/kanan, CL/CR terisi -1  */
 {
     BinTree Pt = SearchNode(P, x);
     *CL = -1;

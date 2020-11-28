@@ -116,5 +116,7 @@ void AK_DelLastEl(ArrKata *T, Kata *X);
 /*      Banyaknya elemen tabel berkurang satu */
 /*      Tabel T mungkin menjadi kosong */
 void AK_DelKata(ArrKata *T, Kata K);
+/* I.S. Tabel tiadk kosong, K terdapat dalam tabel */
+/* F.S. Kata K dihapus dari Tabel, Neff berkurang 1 */
 
 #endif

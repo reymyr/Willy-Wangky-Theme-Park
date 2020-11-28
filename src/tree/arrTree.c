@@ -8,6 +8,7 @@ void AT_MakeEmpty(ArrTree *T)
 }
 
 IdxType AT_SearchI(ArrTree T, BT_infotype x)
+/* Mengembalikan index tree dalam array yang memiliki Akar(P) = x */
 {
     if (AT_Neff(T) == 0)
     {
@@ -38,6 +39,7 @@ IdxType AT_SearchI(ArrTree T, BT_infotype x)
 }
 
 BinTree AT_SearchBase(ArrTree T, BT_infotype x)
+/* Mengembalikan tree dalam array yang memiliki Akar(P) = x */
 {
     return AT_Elmt(T, AT_SearchI(T, x));
 }

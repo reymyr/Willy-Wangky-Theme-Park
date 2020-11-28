@@ -53,31 +53,5 @@ int main()
         printCurrentMap(G, P);
 
     } while (true);
-
-
-    // do
-    // {
-    //     printf("1. Input/Output\n");
-    //     printf("2. Index\n");
-    //     printf("3. Elemen\n");
-    //     printf("4. Exit\n");
-    //     printf("Pilihan: ");
-    //     scanf("%d", &input);
-
-    //     switch (input)
-    //     {
-    //     case 1:
-    //         /* code */
-    //         break;
-        
-    //     default:
-    //         break;
-    //     }
-        
-
-
-    // } while (input != 4);
-    
-    
     return 0;
 }
