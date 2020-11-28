@@ -246,8 +246,12 @@ BinTree SearchNode(BinTree P, BT_infotype X)
         {
             SearchNode(Right(P), X);
         }
+        else
+        {
+            return BT_Nil;
+        }
     }    
-    return BT_Nil;
+    
 }
 
 /* *** Fungsi-Fungsi Lain *** */
@@ -580,7 +584,7 @@ void getChildId(BinTree P, BT_infotype x, BT_infotype * CL, BT_infotype * CR)
     {
         *CR = Akar(Right(Pt));
     }
-    else
+    else if (IsBiner(Pt))
     {
         *CL = Akar(Left(Pt));
         *CR = Akar(Right(Pt));

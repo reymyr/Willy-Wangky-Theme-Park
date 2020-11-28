@@ -33,7 +33,7 @@ typedef struct{
 
 /* SELEKTOR */
 /* Misal W adalah variabel bertipe Wahana */
-#define W_BaseId(W) (W).id
+#define W_BaseId(W) (W).baseId
 #define W_WahanaId(W) (W).id
 #define W_Name(W) (W).name
 #define W_Type(W) (W).type

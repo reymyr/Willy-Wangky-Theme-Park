@@ -25,68 +25,17 @@ struct SaveData {
     Stack actionStack;
 };
 
-void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, Stack actStack)
-{
-    char* path = "../files/savedata";
+void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, Stack actStack);
+/* Prosedur menyimpan data game ke file eksternal */
 
-    FILE *savefile;
-    savefile = fopen(path, "wb");
-    struct SaveData s;
-    s.prepPhase = prep;
-    s.player = P;
-    s.builtWahana = builtW;
-    s.currentTime = currentTime;
-    s.antrian = antrian;
-    s.actionStack = actStack;
-
-    fwrite(&s, sizeof(struct SaveData), 1, savefile);
-    fclose(savefile);
-    printf("Game saved\n");
-}
-
-void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, Stack *actStack)
-{
-    char* path = "../files/savedata";
-
-    FILE *savefile;
-    savefile = fopen(path, "rb");
-    struct SaveData s;
-    fread(&s, sizeof(struct SaveData), 1, savefile);
-
-    *prep = s.prepPhase;
-    *P = s.player;
-    *builtW = s.builtWahana;
-    *currentTime = s.currentTime;
-    *antrian = s.antrian;
-    *actStack = s.actionStack;
-
-    fclose(savefile);
-
-    CreateEmptyGraph(G);
-    Gaddress P1 = AlokasiNodeGraph("../files/map1.txt");
-    Gaddress P2 = AlokasiNodeGraph("../files/map2.txt");
-    Gaddress P3 = AlokasiNodeGraph("../files/map3.txt");
-    Gaddress P4 = AlokasiNodeGraph("../files/map4.txt");
-    InsertLastGraph(G, P1);
-    InsertLastGraph(G, P2);
-    InsertLastGraph(G, P3);
-    InsertLastGraph(G, P4);
-
-    printf("tes\n");
-
-    for (size_t i = 0; i < AW_NbElmt(*builtW); i++)
-    {
-        setTile(G, W_Area(AW_Elmt(*builtW, i)), W_Location(AW_Elmt(*builtW, i)), 'W', W_WahanaId(AW_Elmt(*builtW, i)));
-    }
-
-    printf("Game loaded\n");
-}
+void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, Stack *actStack);
+/* Prosedur membaca data game dari file eksternal */
 
 int main()
 {
     srand(time(0));
     int moveStatus; /* Penanda keberhasilan gerak */
-    int counter;
+    int counter; /* Penanda waktu (seberapa lama setelah opening time) */
     boolean prepPhase; /* Penanda phase saat ini */
     ArrAction ActionDatabase; /* Seluruh aksi yang bisa dilakukan dalam game */
     ArrAction PrepActionArray; /* Aksi yang dapat dilakukan saat preparation phase */
@@ -105,10 +54,10 @@ int main()
     Pengunjung Pgj; /* Pengunjung yang sedang diproses */
     PrioQueuePengunjung Antrian; /* Antrian pengunjung */
     Stack ActionStack; /* Stack pada preparation phase */
-    Stack ExecuteStack;
-    S_infotype StackElmt;
-    Wahana WBuilt;
-    List WListUpg;
+    Stack ExecuteStack; /* Stack yang sudah di inverse sebelum di execute */
+    S_infotype StackElmt; /* Elemen stack */
+    Wahana WBuilt; /* Wahan yangakan dibangun/upgrade */
+    List WListUpg; /* List Upgrade */
     Kata KATANEW = MK_MakeKata("new", 3);
     Kata KATALOAD = MK_MakeKata("load", 4);
     Kata KATAEXIT = MK_MakeKata("exit", 4);
@@ -118,16 +67,16 @@ int main()
     initPrepActionArray(&PrepActionArray);
     initMainActionArray(&MainActionArray);
     PQ_MakeEmpty(&Antrian);
-    AM_BacaFile(&MaterialDatabase, "../files/material.txt", false);
-    // AW_BacaFile(&WahanaDatabase, "../files/wahana.txt");
+    AM_BacaFile(&MaterialDatabase, "../files/material.txt", false); /* membaca file material.txt */
     MK_EndKata = false;
-    AW_readWahanaDanTree(&UpgradeTrees, &WahanaDatabase, "../files/wahana.txt");
+    AW_readWahanaDanTree(&UpgradeTrees, &WahanaDatabase, "../files/wahana.txt"); /* membaca file wahana.txt */
     AW_MakeEmpty(&BaseWahana);
     for (size_t i = 0; i < AT_Neff(UpgradeTrees); i++)
     {
         AW_AddAsLastEl(&BaseWahana, AW_GetWahanaId(WahanaDatabase, Akar(AT_Elmt(UpgradeTrees, i))));
     }
 
+    /* Tampilan main menu */
     printf("Welcome to Willy Wangky's\n");
     printf("Commands:\n");
     printf("new - New game\n");
@@ -137,6 +86,7 @@ int main()
     MK_STARTKATAINPUT();
     while (!MK_EndKata)
     {   
+        /* Validasi input */
         while (!MK_isKataSama(MK_CKata, KATANEW) && !MK_isKataSama(MK_CKata, KATALOAD) && !MK_isKataSama(MK_CKata, KATAEXIT))
         {
             printf("Input tidak valid\n");
@@ -145,6 +95,7 @@ int main()
         
         if (!MK_isKataSama(MK_CKata, KATAEXIT))
         {
+            /* New Game */
             if (MK_isKataSama(MK_CKata, KATANEW))
             {
                 printf("Memulai permainan baru...\n");
@@ -168,8 +119,13 @@ int main()
                 InsertLastGraph(&Map, P3);
                 InsertLastGraph(&Map, P4);
 
+                /* Menempatkan player di posisi awal */
                 setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, 2, 2);
 
+                /* Material awal buat debug */
+                AM_AddCount(&Materials(P), MK_MakeKata("Wood", 4), 20, AM_GetPrice(MaterialDatabase, MK_MakeKata("Wood", 4)));
+                AM_AddCount(&Materials(P), MK_MakeKata("Stone", 5), 20, AM_GetPrice(MaterialDatabase, MK_MakeKata("Stone", 5)));
+                AM_AddCount(&Materials(P), MK_MakeKata("Steel", 5), 20, AM_GetPrice(MaterialDatabase, MK_MakeKata("Steel", 5)));
 
                 /* Inisialisasi data game lain */
                 AW_MakeEmpty(&BuiltWahana);
@@ -178,6 +134,7 @@ int main()
                 prepPhase = true;
                 CurrentTime = MakeJAM(1, 21, 0);
             }
+            /* Load Game */
             else /* (MK_isKataSama(MK_CKata, KATALOAD)) */
             {
                 printf("Load game\n");
@@ -210,6 +167,8 @@ int main()
                     printf("Masukkan perintah: \n");
 
                     MK_STARTKATAINPUT();
+
+                    /* Validasi input */
                     while (!AA_SearchB(PrepActionArray, MK_CKata))
                     {
                         printf("Input tidak valid\n");
@@ -231,39 +190,46 @@ int main()
                         printf("Ingin membangun apa?\n");
                         printf("List:\n");
 
+                        /* Menulis wahana yang dapat dibangun di awal beserta bahan dan uang yang dibutuhkan */
                         for (size_t i = 0; i < AW_NbElmt(BaseWahana); i++)
                         {
                             AW_printWahanaCost(AW_Elmt(BaseWahana, i));
                             printf("\n\n");
                         }
 
+                        /* Menulis bahan yang dimiliki pemain */
                         printf("Bahan yang anda miliki:\n");
                         AM_TulisIsiTabCount(Materials(P)); printf("\n");
+
+                        /* Meminta input nama wahana */
                         MK_ADVKATAINPUT();
                         if (AW_SearchB(BuiltWahana, MK_CKata)) /* Nanti ada bug klo bisa dua wahana yg sama jdi fix sementara ini dlu */
                         {
                             printf("Anda sudah membangun wahana tersebut\n");
                         }
-                        else if (!AW_SearchB(BaseWahana, MK_CKata))
+                        else if (!AW_SearchB(BaseWahana, MK_CKata)) /* Nama wahana bukan wahana yang dapat dibangun */
                         {
                             printf("Input tidak valid\n");
                         }
-                        else if (nearChar(P, '^') || nearChar(P, '>') || nearChar(P, 'V') || nearChar(P, '<'))
+                        else if (nearChar(P, '^') || nearChar(P, '>') || nearChar(P, 'V') || nearChar(P, '<'))  /* Pemain berada di sebelah gerbang */
                         {
                             printf("Tidak bisa membangun wahana di sebelah gerbang\n");
                         }
                         else
                         {
+                            /* Memeriksa apakah ada petak kosong di sebelah player */
                             int pushCode = 0;
                             while (T_Type(Surround(P)[pushCode]) != '-' && pushCode <= 3)
                             {
                                 pushCode++;
                             }
 
+                            /* Tidak ada petak kosong */
                             if (pushCode == 4)
                             {
                                 printf("Tidak bisa menempatkan wahana di sini\n");
                             }
+                            /* Waktu pembangunan tidak cukup */
                             else if ((JLT(DurasiJam(CurrentTime, OpeningTime), MenitToJAM(JAMToMenit(TotalTime(ActionStack))+JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 4)))))))
                             {
                                 printf("Waktu yang dibutuhkan tidak cukup\n");
@@ -272,18 +238,19 @@ int main()
                             {
                                 WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
                                 int cost = W_MoneyCost(WBuilt);
-                                if (Money(P) < cost)
+                                if (TotalMoney(ActionStack)+cost > Money(P))    /* Uang pemain tidak cukup */
                                 {
                                     printf("Uang anda tidak cukup\n");
                                 }
                                 else
                                 {
-                                    if (AM_MoreThan(Materials(P), W_MaterialCost(WBuilt)))
+                                    if (AM_MoreThan(Materials(P), W_MaterialCost(WBuilt)))  /* Memeriksa apakah pemain memiliki bahan yang cukup */
                                     {
                                         setTile(&Map, G_CurrentArea(Map), Pos(P), 'W', -1);
 
                                         StackElmt = CreateStackInfo(MK_MakeKata("build", 5), A_Duration(AA_Elmt(ActionDatabase, 4)), cost, Pos(P));
-                                        S_IdWahana(StackElmt) = AW_GetId(WahanaDatabase, MK_CKata);
+                                        S_IdWahanaFrom(StackElmt) = -1;
+                                        S_IdWahanaTo(StackElmt) = AW_GetId(WahanaDatabase, MK_CKata);
                                         Push(&ActionStack, StackElmt);
 
                                         W_Area(WBuilt) = G_CurrentArea(Map);
@@ -291,13 +258,12 @@ int main()
 
                                         LL_CreateEmpty(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)]);
                                         LL_InsVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)],WBuilt);
-                                        
                                         AW_AddAsLastEl(&BuiltWahana, WBuilt);
                                         
 
                                         move(&Map, &P, pushCode, &moveStatus);   
                                     }
-                                    else
+                                    else    /* Bahan tidak cukup */
                                     {
                                         printf("Material anda tidak cukup\n");
                                     }                                    
@@ -308,6 +274,7 @@ int main()
                     case 5: ; 
                         /* UPGRADE */
                         
+                        /* Mencari apakah ada wahana di sekitar pemain */
                         boolean foundwahana = false;
                         int WId = -1;
 
@@ -320,51 +287,60 @@ int main()
                                 break;
                             }
                         }
-
-                        if (!foundwahana)
+                        printf("ketemu dgn id: %d", WId);
+                        if (!foundwahana)   /* Tidak ada wahana di sekitar pemain */
                         {
                             printf("Tidak ada wahana di sekitar.\n");
                         }
-                        else if (WId == -1)
+                        else if (WId == -1) /* Wahana di sekitar pemain belum dibangun atau belum diupgrade (belum dilakukan execute) */
                         {
                             printf("Wahana belum dibangun, input 'execute' untuk membangun wahana\n");
                         }
+                        /* Waktu upgrade tidak cukup */
                         else if ((JLT(DurasiJam(CurrentTime, OpeningTime), MenitToJAM(JAMToMenit(TotalTime(ActionStack))+JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 5)))))))
                         {
                             printf("Waktu yang dibutuhkan tidak cukup\n");
                         }
                         else
                         {
+                            /* Mencari wahana upgrade */
                             int LId, RId;
                             int BaseId = W_BaseId(AW_GetWahanaId(BuiltWahana, WId));
                             BinTree UpTree = AT_SearchBase(UpgradeTrees, BaseId);
                             getChildId(UpTree, WId, &LId, &RId);
-                            if (LId == -1 && RId == -1)
+                            printf("habis getchild\n");
+                            if (LId == -1 && RId == -1) /* Wahana tidak dapat diupgrade lagi */
                             {
                                 printf("Wahana sudah tidak dapat diupgrade lagi\n");
                             }
                             else
                             {
                                 printf("Ingin melakukan upgrade apa?\nList:\n");
+
+                                /* Menulis nama, bahan, dan uang yang dibutuhkan */
                                 if (LId != -1)
                                 {
                                     AW_printWahanaCost(AW_GetWahanaId(WahanaDatabase, LId));
-                                    printf("\n");
-                                    printf("\n");
-                                }
+                                    printf("\n\n");
+                                 }
                                 if (RId != -1)
                                 {
                                     AW_printWahanaCost(AW_GetWahanaId(WahanaDatabase, RId));
+                                    printf("\n\n");
                                 }
-                                printf("\n");
 
+                                /* Menuliskan bahan yang dimiliki pemain */
+                                printf("Bahan yang anda miliki:\n");
+                                AM_TulisIsiTabCount(Materials(P)); printf("\n");
+
+                                /* Meminta input nama wahana */
                                 MK_ADVKATAINPUT();
                                 int IdInput = AW_GetId(WahanaDatabase, MK_CKata);
-                                if (IdInput == -1)
+                                if (IdInput == -1)  /* Nama wahana yang di-input tidak ada dalam game */
                                 {
                                     printf("Tidak ada wahana dengan nama tersebut\n");
                                 }
-                                else if (!isChild(UpTree, IdInput, WId))
+                                else if (!isChild(UpTree, IdInput, WId))    /* Wahana bukan hasil upgrade (bukan child) */
                                 {
                                     printf("Wahana ini tidak dapat di upgrade ke wahana yang di input\n");
                                 }
@@ -372,18 +348,26 @@ int main()
                                 {
                                     WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
                                     int cost = W_MoneyCost(WBuilt);
-                                    StackElmt = CreateStackInfo(MK_MakeKata("upgrade", 7), A_Duration(AA_Elmt(ActionDatabase, 5)), cost, Pos(P));
+                                    if (TotalMoney(ActionStack) + cost > Money(P))    /* Uang tidak mencukupi */
+                                    {
+                                        printf("Uang anda tidak cukup\n");
+                                    }
+                                    else if (!AM_MoreThan(Materials(P), W_MaterialCost(WBuilt))) /* Material tidak mencukupi */
+                                    {
+                                        printf("Material anda tidak cukup\n");
+                                    }
+                                    else
+                                    {
+                                    /* Penanda wahana sedang diupgrade */
+                                    setTile(&Map, G_CurrentArea(Map), W_Location(AW_GetWahanaId(BuiltWahana, WId)), 'W', -1);
+                                    setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
+                                    /* Membuat elemen stack */
+                                    StackElmt = CreateStackInfo(MK_MakeKata("upgrade", 7), A_Duration(AA_Elmt(ActionDatabase, 5)), cost, W_Location(AW_GetWahanaId(BuiltWahana, WId)));
+                                    S_IdWahanaFrom(StackElmt) = WId;
+                                    S_IdWahanaTo(StackElmt) = AW_GetId(WahanaDatabase, MK_CKata);
+                                    /* Push ke dalam stack */
                                     Push(&ActionStack, StackElmt);
-
-                                    /* BLM JADI, MASI DIPIKIRIN GMN CARANYA */
-
-                                    // W_Area(WBuilt) = G_CurrentArea(Map);
-                                    // W_Location(WBuilt) = Pos(P);
-                                    // W_WahanaId(WBuilt) = AW_GetId(WahanaDatabase, MK_CKata);
-
-                                    // LL_InsVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)],WBuilt);
-                                    
-                                    // AW_AddAsLastEl(&BuiltWahana, WBuilt);
+                                    }
                                 }
                             }
                         }                        
@@ -392,11 +376,12 @@ int main()
                         /* BUY */
                         int matCount, price;
                         Kata matName;
+                        /* Menampilkan list bahan yang dapat dibeli beserta harganya */
                         printf("Ingin membeli apa?\n");
                         printf("List:\n");
                         AM_TulisIsiTab(MaterialDatabase);
 
-                        /* Nerima input dengan format 'jumlah nama_material' */
+                        /* Menerima input dengan format 'jumlah nama_material' */
                         MK_ADV();
                         MK_ADVKATA();
                         matCount = MK_KataToInt(MK_CKata);
@@ -404,20 +389,24 @@ int main()
                         matName = MK_CKata;
                         price = matCount * AM_GetPrice(MaterialDatabase, matName);
 
+                        /* Nama material tidak ada dalam game */
                         if (!AM_SearchB(MaterialDatabase, matName))
                         {
                             printf("Input tidak valid\n");
                         }
+                        /* Uang tidak mencukupi */
                         else if (TotalMoney(ActionStack)+price > Money(P))
                         {
                             printf("Uang anda tidak cukup\n");
                         }
+                        /* Waktu tidak cukup */
                         else if (JLT(DurasiJam(CurrentTime, OpeningTime), MenitToJAM(JAMToMenit(TotalTime(ActionStack))+JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 6))))))
                         {
                             printf("Waktu yang dibutuhkan tidak cukup\n");
                         }
                         else
                         {
+                            /* Pembuatan elemen stack dan push */
                             StackElmt = CreateStackInfo(MK_MakeKata("buy", 3), A_Duration(AA_Elmt(ActionDatabase, 6)), price, MakePOINT(-1,-1));
                             S_MatName(StackElmt) = matName;
                             S_MatCount(StackElmt) = matCount;
@@ -427,15 +416,22 @@ int main()
                         break;
                     case 7:
                         /* UNDO */
-                        if (!IsEmptyStack(ActionStack))
+                        if (!IsEmptyStack(ActionStack)) /* Pengecekan stack kosong */
                         {
                             Pop(&ActionStack, &StackElmt);
-                            if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("build", 5)))
+                            if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("build", 5)))  /* Undo perintah build */
                             {
-                                setTile(&Map, G_CurrentArea(Map), S_PosWahana(StackElmt), '-', -1);
+                                setTile(&Map, W_Area(AW_GetWahanaId(BuiltWahana, S_IdWahanaTo(StackElmt))), S_PosWahana(StackElmt), '-', -1);
                                 setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
                                 AW_DelLastEl(&BuiltWahana, &WBuilt);
+                                LL_DelVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)], &WBuilt);
                             }
+                            else if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("upgrade", 7))) /* Undo perintah upgrade */
+                            {
+                                setTile(&Map, W_Area(AW_GetWahanaId(BuiltWahana, S_IdWahanaFrom(StackElmt))), S_PosWahana(StackElmt), 'W', S_IdWahanaFrom(StackElmt));
+                                setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
+                            }
+                            
                         }
                         break;
                     case 8:
@@ -446,18 +442,27 @@ int main()
                         {
                             Pop(&ExecuteStack, &StackElmt);
                             Money(P) -= S_MoneyNeeded(StackElmt);
-                            if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("buy", 3)))
+                            if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("buy", 3)))    /* Buy */
                             {
+                                /* Menambah material pemain */
                                 AM_AddCount(&Materials(P), S_MatName(StackElmt), S_MatCount(StackElmt), AM_GetPrice(MaterialDatabase, matName));
                             }
-                            else if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("upgrade", 7)))
+                            else if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("upgrade", 7)))   /* Upgrade */
                             {
-                                /* Blm tau sistem upgrade */
+                                setTile(&Map, W_Area(AW_GetWahanaId(BuiltWahana, S_IdWahanaFrom(StackElmt))), S_PosWahana(StackElmt), 'W', S_IdWahanaTo(StackElmt));
+                                setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
+                                TabMaterial matCost = W_MaterialCost(AW_GetWahanaId(WahanaDatabase, S_IdWahanaTo(StackElmt)));
+                                for (size_t i = 0; i < AM_NEff(matCost); i++)
+                                {
+                                    AM_DelCount(&Materials(P), M_Name(AM_Elmt(matCost, i)), M_Count(AM_Elmt(matCost, i)));
+                                }
+                                UpgradeWahana(&BuiltWahana, AW_GetWahanaId(BuiltWahana, S_IdWahanaFrom(StackElmt)), AW_GetWahanaId(WahanaDatabase, S_IdWahanaTo(StackElmt)), &ArrWahanaUpg);
                             }
                             else /* build */
                             {
-                                setTile(&Map, G_CurrentArea(Map), S_PosWahana(StackElmt), 'W', S_IdWahana(StackElmt));
-                                TabMaterial matCost = W_MaterialCost(AW_GetWahanaId(WahanaDatabase, S_IdWahana(StackElmt)));
+                                setTile(&Map, W_Area(AW_GetWahanaId(BuiltWahana, S_IdWahanaTo(StackElmt))), S_PosWahana(StackElmt), 'W', S_IdWahanaTo(StackElmt));
+                                setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
+                                TabMaterial matCost = W_MaterialCost(AW_GetWahanaId(WahanaDatabase, S_IdWahanaTo(StackElmt)));
                                 for (size_t i = 0; i < AM_NEff(matCost); i++)
                                 {
                                     AM_DelCount(&Materials(P), M_Name(AM_Elmt(matCost, i)), M_Count(AM_Elmt(matCost, i)));
@@ -465,9 +470,9 @@ int main()
                             }
                         }
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
-                        prepPhase = false;
-                        randomPengunjung(&Antrian, BuiltWahana);
-                        counter = 0;
+                        prepPhase = false;  /* Penanda main phase */
+                        randomPengunjung(&Antrian, BuiltWahana);    /* Merandom pengunjung yang datang pada main phase */
+                        counter = 0;    
                         break;
                     case 9:
                         /* MAIN */
@@ -479,12 +484,13 @@ int main()
                                 setTile(&Map, G_CurrentArea(Map), S_PosWahana(StackElmt), '-', -1);
                                 setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
                                 AW_DelLastEl(&BuiltWahana, &WBuilt);
+                                LL_DelVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)], &WBuilt);
                             }
                             /* Undo Upgrade kalo ada yg udh dijalanin pas commandnya */
                         }
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
-                        prepPhase = false;
-                        randomPengunjung(&Antrian, BuiltWahana);
+                        prepPhase = false;  /* Penanda main phase */
+                        randomPengunjung(&Antrian, BuiltWahana);    /* Merandom pengunjung yang datang pada main phase */
                         counter = 0;
                         break;
                     case 15:
@@ -496,6 +502,7 @@ int main()
                 }
                 else /* Main Phase */
                 {
+                    /* Pengecekan waktu sekarang untuk mengurangi kesabaran pengunjung */
                     if ((JAMToMenit(DurasiJam(OpeningTime, CurrentTime)) / 30) > counter)
                     {
                         counter++;
@@ -519,6 +526,7 @@ int main()
                     }
                     printf(":\n");
 
+                    /* Meminta input aksi */
                     MK_STARTKATAINPUT();
                     while (!AA_SearchB(MainActionArray, MK_CKata))
                     {
@@ -557,7 +565,7 @@ int main()
                             PQ_Dequeue(&Antrian, &Pgj);
                             if (!AK_SearchB(P_Wahana(Pgj), MK_CKata))
                             {
-                                printf("Pengunjung tersebut tidak ingin menaiki wahana tersebut\n");
+                                printf("Pengunjung tidak ingin menaiki wahana tersebut\n");
                                 PQ_Enqueue(&Antrian, Pgj);
                             }
                             else
@@ -567,9 +575,12 @@ int main()
                                     printf("Wahana tersebut rusak\n");
                                     PQ_Enqueue(&Antrian, Pgj);
                                 }
+                                /* CEK KAPASITAS PENUH/TIDAK */
                                 else
                                 {
                                     Money(P) += AW_GetPrice(BuiltWahana, MK_CKata);
+
+                                    /* HARUSNYA WAKTU NAMBAH SESUAI WAKTU SERVE, PENGUNJUNG DIPINDAH KE TEMPAT LAIN SELAMA DURASI WAHANA */
                                     CurrentTime = NextNMenit(CurrentTime, W_Duration(AW_GetWahana(BuiltWahana, MK_CKata)));
                                     AK_DelKata(&P_Wahana(Pgj), MK_CKata);
                                     AW_pengungjungNaik(&BuiltWahana, MK_CKata);
@@ -595,9 +606,16 @@ int main()
                             {
                                 if (W_IsBroken(AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i]))))
                                 {
-                                    Money(P) -= 50;
-                                    CurrentTime = NextNMenit(CurrentTime, JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 11))));
-                                    AW_RepairWahanaRusak(&BuiltWahana, W_Name(AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i]))));
+                                    if (Money(P) < AW_GetCost(BuiltWahana, W_Name(AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i])))) / 2)
+                                    {
+                                        printf("Uang anda tidak cukup\n");
+                                    }
+                                    else
+                                    {
+                                        Money(P) -= (AW_GetCost(BuiltWahana, W_Name(AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i])))) / 2);
+                                        CurrentTime = NextNMenit(CurrentTime, JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 11))));
+                                        AW_RepairWahanaRusak(&BuiltWahana, W_Name(AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i]))));
+                                    }
                                     break;
                                 }
                             }
@@ -609,7 +627,7 @@ int main()
                         {
                             if (T_Type(Surround(P)[i]) == 'W')
                             {
-                                AW_detailWahana(AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i])),ArrWahanaUpg);
+                                AW_detailWahana(AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i])), ArrWahanaUpg);
                                 printf("\n");
                             }
                         }
@@ -688,9 +706,13 @@ int main()
                         AW_newDay(&BuiltWahana);
                         prepPhase = true;
                         break;
+                    case 15:
+                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, ActionStack);
+                        break;
                     default:
                         break;
                     }
+                    /* Memeriksa apakah wakto sudah melebihi closing time, jika sudah langsung ke preparation phase */
                     if (!prepPhase)
                     {
                         if (JAMToMenitMinDay(ClosingTime) - JAMToMenitMinDay(CurrentTime) <= 0)
@@ -718,13 +740,14 @@ void randomPengunjung(PrioQueuePengunjung * PQ, ArrWahana AW)
 {
     PQ_MakeEmpty(PQ);
     int maxNbWahana = AW_NbElmt(AW);
-    int numPengunjung = rand() % PQ_MaxEl + 1;
+    int numPengunjung = rand() % PQ_MaxEl + 1; /* Merandom jumlah pengunjung */
     for (size_t i = 0; i < numPengunjung; i++)
     {
         Pengunjung Pgj;
         P_Kesabaran(Pgj) = 5;
-        P_Prio(Pgj) = rand() % 100 + 20;
+        P_Prio(Pgj) = rand() % 100 + 20;    /* Merandom prioritas pengunjung */
         AK_MakeEmpty(&P_Wahana(Pgj));
+        /* Merandom wahana pengunjung */
         for (size_t j = 0; j < AW_NbElmt(AW); j++)
         {
             int r = rand() % 100;
@@ -769,7 +792,7 @@ void processKesabaran(PrioQueuePengunjung * Antrian)
 }
 
 void initActionDatabase(ArrAction * AA)
-/* Menginisialisasi array action yang dapat diisi semua action */
+/* Menginisialisasi array action yang berisi semua action dalam game */
 {
     AA_MakeEmpty(AA);
     AA_AddAsLastEl(AA, createAction(0, MK_MakeKata("w", 1), MakeJAM(0,0,1)));
@@ -821,4 +844,61 @@ void initMainActionArray(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(13, MK_MakeKata("office", 6), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(14, MK_MakeKata("prepare", 7), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(15, MK_MakeKata("save", 4), MakeJAM(0,0,0)));
+}
+
+void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, Stack actStack)
+/* Prosedure menyimpan data game ke file eksternal */
+{
+    char* path = "../files/savedata";
+
+    FILE *savefile;
+    savefile = fopen(path, "wb");
+    struct SaveData s;
+    s.prepPhase = prep;
+    s.player = P;
+    s.builtWahana = builtW;
+    s.currentTime = currentTime;
+    s.antrian = antrian;
+    s.actionStack = actStack;
+
+    fwrite(&s, sizeof(struct SaveData), 1, savefile);
+    fclose(savefile);
+    printf("Game saved\n");
+}
+
+void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, Stack *actStack)
+/* Prosedur membaca data game dari file eksternal */
+{
+    char* path = "../files/savedata";
+
+    FILE *savefile;
+    savefile = fopen(path, "rb");
+    struct SaveData s;
+    fread(&s, sizeof(struct SaveData), 1, savefile);
+
+    *prep = s.prepPhase;
+    *P = s.player;
+    *builtW = s.builtWahana;
+    *currentTime = s.currentTime;
+    *antrian = s.antrian;
+    *actStack = s.actionStack;
+
+    fclose(savefile);
+
+    CreateEmptyGraph(G);
+    Gaddress P1 = AlokasiNodeGraph("../files/map1.txt");
+    Gaddress P2 = AlokasiNodeGraph("../files/map2.txt");
+    Gaddress P3 = AlokasiNodeGraph("../files/map3.txt");
+    Gaddress P4 = AlokasiNodeGraph("../files/map4.txt");
+    InsertLastGraph(G, P1);
+    InsertLastGraph(G, P2);
+    InsertLastGraph(G, P3);
+    InsertLastGraph(G, P4);
+
+    for (size_t i = 0; i < AW_NbElmt(*builtW); i++)
+    {
+        setTile(G, W_Area(AW_Elmt(*builtW, i)), W_Location(AW_Elmt(*builtW, i)), 'W', W_WahanaId(AW_Elmt(*builtW, i)));
+    }
+
+    printf("Game loaded\n");
 }

@@ -93,12 +93,3 @@ void PrintWahanaHistory(Wahana W, ArrListWahanaUpg A)
 boolean IsWahanaRusak(Wahana W){
     return W_IsBroken(W) == true;
 }
-
-void UpgradeWahana(Wahana W0, Wahana W1, ArrListWahanaUpg A)
-/* Meng-upgrade Wahana W0 menjadi Wahana W1 */
-/* I.S : Asumsi W1 sudah valid merupakan upgrade dari wahana W0*/
-{
-    W_WahanaId(W1) = W_WahanaId(W0);
-    W_Location(W1) = W_Location(W0);
-    LL_InsVLast(&WU_Info(A,W_WahanaId(W0)),W1);
-}

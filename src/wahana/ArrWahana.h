@@ -112,6 +112,9 @@ Wahana AW_GetWahanaId(ArrWahana T, int id);
 int AW_GetPrice(ArrWahana T, Kata K);
 /* Mengembalikan harga dari Wahana K */
 /* Jika tidak ada mengembalikan -1 */
+int AW_GetCost(ArrWahana T, Kata K);
+/* Mengembalikan harga bangun dari Wahana K */
+/* Jika tidak ada mengembalikan -1 */
 int AW_GetId(ArrWahana T, Kata K);
 /* Mengembalikan id dari Wahana K */
 /* Jika tidak ada mengembalikan -1 */
@@ -170,5 +173,9 @@ void AW_delElmt(ArrWahana * AW, Kata K);
 void AW_newDay(ArrWahana * AW);
 /* I.S. AW terdefinisi */
 /* F.S todayPenghasilan dan todayUseCount diset menjadi 0 untuk setiap wahana */
+
+void UpgradeWahana(ArrWahana * AW, Wahana W0, Wahana W1, ArrListWahanaUpg * A);
+/* Meng-upgrade Wahana W0 menjadi Wahana W1 */
+/* I.S : Asumsi W1 sudah valid merupakan upgrade dari wahana W0*/
 
 #endif

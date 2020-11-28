@@ -255,6 +255,21 @@ int AW_GetPrice(ArrWahana T, Kata K)
     }
 }
 
+int AW_GetCost(ArrWahana T, Kata K)
+/* Mengembalikan harga bangun dari Wahana K */
+/* Jika tidak ada mengembalikan -1 */
+{
+    int idx = AW_SearchI(T, K);
+    if (idx == IdxUndef)
+    {
+        return -1;
+    }
+    else
+    {
+        return W_MoneyCost(AW_Elmt(T, idx));
+    }
+}
+
 int AW_GetId(ArrWahana T, Kata K)
 /* Mengembalikan id dari Wahana K */
 /* Jika tidak ada mengembalikan -1 */
@@ -482,4 +497,22 @@ void AW_newDay(ArrWahana * AW)
             W_TodayUseCount(AW_Elmt(*AW, i)) = 0;
         }
     }
+}
+
+void UpgradeWahana(ArrWahana * AW, Wahana W0, Wahana W1, ArrListWahanaUpg * A)
+/* Meng-upgrade Wahana W0 menjadi Wahana W1 */
+/* I.S : Asumsi W1 sudah valid merupakan upgrade dari wahana W0*/
+{
+    int idx = AW_SearchI(*AW, W_Name(W0));
+    W_WahanaId(AW_Elmt(*AW, idx)) = W_WahanaId(W1);
+    W_Name(AW_Elmt(*AW, idx)) = W_Name(W1);
+    W_Type(AW_Elmt(*AW, idx)) = W_Type(W1);
+    W_Price(AW_Elmt(*AW, idx)) = W_Price(W1);
+    W_Desc(AW_Elmt(*AW, idx)) = W_Desc(W1);
+    W_Capacity(AW_Elmt(*AW, idx)) = W_Capacity(W1);
+    W_Duration(AW_Elmt(*AW, idx)) = W_Duration(W1);
+    W_MoneyCost(AW_Elmt(*AW, idx)) = W_MoneyCost(W1);
+    W_MaterialCost(AW_Elmt(*AW, idx)) = W_MaterialCost(W1);
+
+    LL_InsVLast(&WU_Info(*A, W_BaseId(W0)), W1);
 }

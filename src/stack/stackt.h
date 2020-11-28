@@ -21,7 +21,8 @@ typedef struct {
     JAM timeNeeded;   /* Waktu yang dibutuhkan aksi */
     int moneyNeeded;  /* Uang yang dibutuhkan aksi */
     POINT posWahana;  /* Posisi wahana jika name=build atau name=upgrade */
-    int idWahana;     /* Id wahana jika name=build atau name=upgrade */
+    int idWahanaFrom; /* Id wahana lama jika name=build atau name=upgrade */
+    int idWahanaTo;   /* Id wahana baru jika name=build atau name=upgrade */
 } S_infotype;
 typedef int S_address;   /* indeks tabel */
 
@@ -42,7 +43,8 @@ typedef struct {
 #define S_TimeNeeded(SI) (SI).timeNeeded
 #define S_MoneyNeeded(SI) (SI).moneyNeeded
 #define S_PosWahana(SI) (SI).posWahana
-#define S_IdWahana(SI) (SI).idWahana
+#define S_IdWahanaFrom(SI) (SI).idWahanaFrom
+#define S_IdWahanaTo(SI) (SI).idWahanaTo
 #define S_MatName(SI) (SI).matName
 #define S_MatCount(SI) (SI).matCount
 
