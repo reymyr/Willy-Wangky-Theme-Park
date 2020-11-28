@@ -16,11 +16,11 @@ int main()
     savewahanahistory("testwahanahist.txt",A);
 
     ArrWahana AW;
-    AW_BacaFile(&AW, "../../files/wahana.txt");
+    AW_BacaFile(&AW, "testwahana.txt");
 
     AW_ListNamaWahana(AW); printf("\n");
 
-    UpgradeWahana(Info(First(WU_Info(A,0))),AW.T[0],A);
+    // UpgradeWahana(Info(First(WU_Info(A,0))),AW.T[0],A);
 
     AW_detailWahana(Info(First(WU_Info(A,0))),A);
 
