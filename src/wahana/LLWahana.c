@@ -20,52 +20,24 @@ boolean WU_IsEmpty(ArrListWahanaUpg A)
 void loadwahanahistory(char *filename, ArrListWahanaUpg * A)
 /* Melakukan load data dari file wahana history, tiap wahana dan history upgradenya disimpan pada sebuah List berkait, dan tiap List dicatat pada Array of List A */
 {
-    int currentid;
-    Wahana W;
+    int idx = 0;
     List WahanaHistory;
+    LL_CreateEmpty(&WahanaHistory);
+    WU_CreateEmpty(A);
 
     MK_STARTKATA(filename);
+    (*A).Neff = MK_KataToInt(MK_CKata);
+    MK_ADVKATAINPUT();
     while (!MK_EndKata)
     {
-        LL_CreateEmpty(&WahanaHistory);
-        W_WahanaId(W) = MK_KataToInt(MK_CKata);
-        currentid = W_WahanaId(W);
-        printf("%d",currentid);
-        while (currentid == W_WahanaId(W))
+        LL_InsVLast(&WahanaHistory, MK_CKata);
+        if (MK_CC == MK_NEWLINE || MK_CC == MK_MARK)
         {
-            MK_ADVKATAINPUT();
-            W_Name(W) = MK_CKata;
-            MK_ADVKATAINPUT();
-            W_Type(W) = MK_CKata;
-            MK_ADVKATAINPUT();
-            W_Price(W) = MK_KataToInt(MK_CKata);
-            MK_ADVKATAINPUT();
-            W_Location(W) = MK_KataToPoint(MK_CKata);
-            MK_ADVKATAINPUT();
-            W_Desc(W) = MK_CKata;
-            MK_ADVKATAINPUT();
-            W_Capacity(W) = MK_KataToInt(MK_CKata);
-            MK_ADVKATAINPUT();
-            W_Duration(W) = MK_KataToInt(MK_CKata);
-            MK_ADVKATAINPUT();
-            W_UseCount(W) = MK_KataToInt(MK_CKata);
-            MK_ADVKATAINPUT();
-            W_Penghasilan(W) = MK_KataToInt(MK_CKata);
-            MK_ADVKATAINPUT();
-            W_IsBroken(W) = MK_isKataSama(MK_CKata,MK_MakeKata("0",1))?false : true;
-            W_TodayPenghasilan(W) = 0;
-            W_TodayUseCount(W) = 0;
-            LL_InsVLast(&WahanaHistory,W);
-            MK_ADV();
-            MK_ADVKATA();
-            if (!MK_EndKata){
-                W_WahanaId(W) = MK_KataToInt(MK_CKata);
-            } else{
-                break;
-            }
+            (*A).Tab[idx] = WahanaHistory;
+            idx++;
+            LL_CreateEmpty(&WahanaHistory);
         }
-        (*A).Tab[currentid] = WahanaHistory;
-        (*A).Neff = currentid+1;
+        MK_ADVKATAINPUT();
     }
 }
 
@@ -74,6 +46,7 @@ void savewahanahistory(char *filename, ArrListWahanaUpg A){
 /* Menyalin dan menyimpan riwayat wahana pada array A ke file eksternal*/
     FILE * f = fopen(filename,"w");
 
+    fprintf(f, "%d\n", NEff_ArrListWahanaUpg(A));
     for (int i = 0; i < NEff_ArrListWahanaUpg(A); i++){
         LL_writeList(f,WU_Info(A,i));
         if (i != NEff_ArrListWahanaUpg(A)-1)
@@ -86,14 +59,31 @@ void savewahanahistory(char *filename, ArrListWahanaUpg A){
     fclose(f);   
 }
 
-void PrintWahanaHistory(Wahana W, ArrListWahanaUpg A)
+void PrintWahanaHistory(int idx, ArrListWahanaUpg A)
 /* Menampilkan history dari wahana W*/
 {
-    LL_PrintInfoNamaWahana(A.Tab[W_BaseId(W)]);
+    LL_PrintInfoNamaWahana(A.Tab[idx]);
 }
 
 boolean IsWahanaRusak(Wahana W)
 /* Mengembalikan true jika Wahana rusak dan false jika tidak*/
 {
     return W_IsBroken(W) == true;
+}
+
+void WU_AddAsLastEl(ArrListWahanaUpg *A, List X)
+/* Proses: Menambahkan X sebagai elemen terakhir tabel */
+/* I.S. Tabel T boleh kosong, tetapi tidak penuh */
+/* F.S. X adalah elemen terakhir T yang baru */
+{
+    if (WU_IsEmpty(*A))
+    {
+        WU_Info(*A, IdxMin) = X;
+        NEff_ArrListWahanaUpg(*A) = 1;
+    }
+    else
+    {
+        WU_Info(*A, NEff_ArrListWahanaUpg(*A)) = X;
+        NEff_ArrListWahanaUpg(*A)++;
+    }    
 }

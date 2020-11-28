@@ -11,7 +11,7 @@
 
 #define LL_Nil NULL
 
-typedef Wahana infotype;
+typedef Kata infotype;
 typedef struct tElmtlist *address;
 typedef struct tElmtlist {
 	infotype info;
@@ -27,11 +27,6 @@ typedef struct {
 /* Elemen terakhir list : jika addressnya Last, maka Next(Last)=LL_Nil */
 
 #define Info(P) (P)->info
-#define InfoNamaWahana(P) ((P)->info).NamaWahana
-#define InfoDurasiWahana(P) ((P)->info).DurasiWahana
-#define InfoKapasitasWahana(P) ((P)->info).KapasitasWahana
-#define InfoDeskripsiWahana(P) ((P)->info).DeskripsiWahana
-#define InfoHargaWahana(P) ((P)->info).HargaWahana
 #define Next(P) (P)->next
 #define First(L) ((L).First)
 

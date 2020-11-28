@@ -332,10 +332,11 @@ void AW_DelLastEl(ArrWahana *T, Wahana *X)
     AW_NEff(*T)--;
 }
 
-void AW_detailWahana(Wahana W, ArrListWahanaUpg A)
+void AW_detailWahana(ArrWahana AW, Wahana W, ArrListWahanaUpg A)
 /* I.S. sembarang */
 /* F.S. detail wahana tertulis di layar */
 {
+    int idx = AW_SearchI(AW, W_Name(W));
     printf("Details:\n");
     printf("Nama        : "); MK_printKata(W_Name(W)); printf("\n");
     printf("Tipe        : "); MK_printKata(W_Type(W)); printf("\n");
@@ -343,7 +344,7 @@ void AW_detailWahana(Wahana W, ArrListWahanaUpg A)
     printf("Lokasi      : Area %d ", W_Area(W)); TulisPOINT(W_Location(W)); printf("\n");
     printf("Deskripsi   : "); MK_printKata(W_Desc(W)); printf("\n");
     printf("Kapasitas   : %d\n", W_Capacity(W));
-    printf("History     : ");PrintWahanaHistory(W,A);printf("\n");
+    printf("History     : ");PrintWahanaHistory(idx, A);printf("\n");
     printf("Durasi      : %d menit\n", W_Duration(W));
     printf("Status      : "); (W_IsBroken(W) ? printf("Rusak") : printf("Berfungsi")); printf("\n");
 }
@@ -492,5 +493,5 @@ void UpgradeWahana(ArrWahana * AW, Wahana W0, Wahana W1, ArrListWahanaUpg * A)
     W_MoneyCost(AW_Elmt(*AW, idx)) = W_MoneyCost(W1);
     W_MaterialCost(AW_Elmt(*AW, idx)) = W_MaterialCost(W1);
 
-    LL_InsVLast(&WU_Info(*A, W_BaseId(W0)), W1);
+    LL_InsVLast(&WU_Info(*A, idx), W_Name(W1));
 }

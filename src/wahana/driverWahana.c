@@ -6,35 +6,35 @@
 int main()
 {
     ArrListWahanaUpg A;
-    WU_CreateEmpty(&A);
-    loadwahanahistory("../../files/WahanaHistory.txt",&A);
-
-    for (int i=0;i<A.Neff;i++){
-        AW_detailWahana(Info(First(A.Tab[i])),A);
-    }
-
-    savewahanahistory("testwahanahist.txt",A);
-
     ArrWahana AW;
+
+    WU_CreateEmpty(&A);
+    loadwahanahistory("testwahanahistory.txt",&A);
+
+    printf("History wahana yang terbaca:\n");
+    for (size_t i = 0; i < NEff_ArrListWahanaUpg(A); i++)
+    {
+        PrintWahanaHistory(i, A); printf("\n");
+    }
+    
+    savewahanahistory("hasilsavehistory.txt",A);
+
     AW_BacaFile(&AW, "testwahana.txt");
 
+    printf("Hasil nama wahana yang terbaca: \n");
     AW_ListNamaWahana(AW); printf("\n");
 
-    // UpgradeWahana(Info(First(WU_Info(A,0))),AW.T[0],A);
+    ArrListWahanaUpg A2;
+    WU_CreateEmpty(&A2);
 
-    AW_detailWahana(Info(First(WU_Info(A,0))),A);
-
-    savewahanahistory("testwahanahist.txt",A);
-
-
-    
-    // for (size_t i = 0; i < AW_NbElmt(AW); i++)
-    // {
-    //     AW_detailWahana(AW_Elmt(AW, i));
-    //     printf("\n");
-    //     AW_reportWahana(AW_Elmt(AW, i));
-    //     printf("\n");
-    // }
+    printf("Detail dan Report:\n");
+    for (size_t i = 0; i < AW_NbElmt(AW); i++)
+    {
+        AW_detailWahana(AW, AW_Elmt(AW, i), A2);
+        printf("\n");
+        AW_reportWahana(AW_Elmt(AW, i));
+        printf("\n");
+    }
     return 0;
 }
 

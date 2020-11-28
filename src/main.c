@@ -26,10 +26,10 @@ struct SaveData {
     Stack actionStack;
 };
 
-void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, PrioQueuePengunjung inWahana, Stack actStack);
+void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, PrioQueuePengunjung inWahana, Stack actStack, ArrListWahanaUpg upList);
 /* Prosedur menyimpan data game ke file eksternal */
 
-void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, PrioQueuePengunjung *inWahana, Stack *actStack);
+void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, PrioQueuePengunjung *inWahana, Stack *actStack, ArrListWahanaUpg * upList);
 /* Prosedur membaca data game dari file eksternal */
 
 int main()
@@ -63,6 +63,7 @@ int main()
     Kata KATANEW = MK_MakeKata("new", 3);
     Kata KATALOAD = MK_MakeKata("load", 4);
     Kata KATAEXIT = MK_MakeKata("exit", 4);
+    Kata WUpName;
 
     /* Inisialisasi data-data game */
     initActionDatabase(&ActionDatabase);
@@ -147,9 +148,7 @@ int main()
                 AW_MakeEmpty(&BuiltWahana);
                 WU_CreateEmpty(&ArrWahanaUpg);
                 CreateEmptyStack(&ActionStack);
-                load(&prepPhase, &P, &BuiltWahana, &CurrentTime, &Map, &Antrian, &DalamWahana, &ActionStack);
-                /* Load Wahana History */
-                loadwahanahistory("../../WahanaHistory.txt",&ArrWahanaUpg);
+                load(&prepPhase, &P, &BuiltWahana, &CurrentTime, &Map, &Antrian, &DalamWahana, &ActionStack, &ArrWahanaUpg);
             }
 
             do
@@ -259,8 +258,9 @@ int main()
                                         W_Area(WBuilt) = G_CurrentArea(Map);
                                         W_Location(WBuilt) = Pos(P);
 
-                                        LL_CreateEmpty(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)]);
-                                        LL_InsVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)],WBuilt);
+                                        LL_CreateEmpty(&WListUpg);
+                                        LL_InsVLast(&WListUpg, W_Name(WBuilt));
+                                        WU_AddAsLastEl(&ArrWahanaUpg, WListUpg);
                                         AW_AddAsLastEl(&BuiltWahana, WBuilt);
                                         
 
@@ -348,6 +348,10 @@ int main()
                                 {
                                     printf("Wahana ini tidak dapat di upgrade ke wahana yang di input\n");
                                 }
+                                else if (AW_SearchB(BuiltWahana, MK_CKata)) /* Nanti ada bug klo bisa dua wahana yg sama jdi fix sementara ini dlu */
+                                {
+                                    printf("Anda sudah membangun wahana tersebut\n");
+                                }
                                 else
                                 {
                                     WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
@@ -428,7 +432,7 @@ int main()
                                 setTile(&Map, W_Area(AW_GetWahanaId(BuiltWahana, S_IdWahanaTo(StackElmt))), S_PosWahana(StackElmt), '-', -1);
                                 setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
                                 AW_DelLastEl(&BuiltWahana, &WBuilt);
-                                LL_DelVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)], &WBuilt);
+                                LL_DelVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)], &WUpName);
                             }
                             else if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("upgrade", 7))) /* Undo perintah upgrade */
                             {
@@ -488,7 +492,7 @@ int main()
                                 setTile(&Map, G_CurrentArea(Map), S_PosWahana(StackElmt), '-', -1);
                                 setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
                                 AW_DelLastEl(&BuiltWahana, &WBuilt);
-                                LL_DelVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)], &WBuilt);
+                                LL_DelVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)], &WUpName);
                             }
                             /* Undo Upgrade kalo ada yg udh dijalanin pas commandnya */
                         }
@@ -498,7 +502,7 @@ int main()
                         counter = 0;
                         break;
                     case 15:
-                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, DalamWahana, ActionStack);
+                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, DalamWahana, ActionStack, ArrWahanaUpg);
                         break;
                     default:
                         break;
@@ -634,7 +638,7 @@ int main()
                         {
                             if (T_Type(Surround(P)[i]) == 'W')
                             {
-                                AW_detailWahana(AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i])), ArrWahanaUpg);
+                                AW_detailWahana(BuiltWahana, AW_GetWahanaId(BuiltWahana, T_ID(Surround(P)[i])), ArrWahanaUpg);
                                 printf("\n");
                             }
                         }
@@ -680,7 +684,7 @@ int main()
                                     else
                                     {
                                         printf("\n");
-                                        AW_detailWahana(AW_GetWahana(BuiltWahana, MK_CKata),ArrWahanaUpg);
+                                        AW_detailWahana(BuiltWahana, AW_GetWahana(BuiltWahana, MK_CKata),ArrWahanaUpg);
                                     }
                                     printf("Masukkan perintah (Details / Report / Exit):\n");
                                     MK_ADVKATAINPUT();                              
@@ -715,7 +719,7 @@ int main()
                         prepPhase = true;
                         break;
                     case 15:
-                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, DalamWahana, ActionStack);
+                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, DalamWahana, ActionStack, ArrWahanaUpg);
                         break;
                     default:
                         break;
@@ -887,7 +891,7 @@ void initMainActionArray(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(15, MK_MakeKata("save", 4), MakeJAM(0,0,0)));
 }
 
-void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, PrioQueuePengunjung inWahana, Stack actStack)
+void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, PrioQueuePengunjung inWahana, Stack actStack, ArrListWahanaUpg upList)
 /* Prosedure menyimpan data game ke file eksternal */
 {
     char* path = "../files/savedata";
@@ -905,10 +909,13 @@ void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePe
 
     fwrite(&s, sizeof(struct SaveData), 1, savefile);
     fclose(savefile);
+
+    savewahanahistory("../files/savedwahanahistory", upList);
+
     printf("Game saved\n");
 }
 
-void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, PrioQueuePengunjung *inWahana, Stack *actStack)
+void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, PrioQueuePengunjung *inWahana, Stack *actStack, ArrListWahanaUpg *upList)
 /* Prosedur membaca data game dari file eksternal */
 {
     char* path = "../files/savedata";
@@ -942,6 +949,8 @@ void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *
     {
         setTile(G, W_Area(AW_Elmt(*builtW, i)), W_Location(AW_Elmt(*builtW, i)), 'W', W_WahanaId(AW_Elmt(*builtW, i)));
     }
+
+    loadwahanahistory("../files/savedwahanahistory", upList);
 
     printf("Game loaded\n");
 }

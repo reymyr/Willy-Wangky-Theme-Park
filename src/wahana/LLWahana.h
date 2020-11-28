@@ -27,10 +27,15 @@ void loadwahanahistory(char *filename, ArrListWahanaUpg * A);
 void savewahanahistory(char *filename, ArrListWahanaUpg A);
 /* Menyalin dan menyimpan riwayat wahana pada array A ke file eksternal*/
 
-void PrintWahanaHistory(Wahana W, ArrListWahanaUpg A);
+void PrintWahanaHistory(int idx, ArrListWahanaUpg A);
 /* Menampilkan History Upgrade Wahana W */
 
 boolean IsWahanaRusak(Wahana W);
 /* Mengembalikan true jika Wahana rusak dan false jika tidak*/
+
+void WU_AddAsLastEl(ArrListWahanaUpg *A, List X);
+/* Proses: Menambahkan X sebagai elemen terakhir tabel */
+/* I.S. Tabel T boleh kosong, tetapi tidak penuh */
+/* F.S. X adalah elemen terakhir T yang baru */
 
 #endif

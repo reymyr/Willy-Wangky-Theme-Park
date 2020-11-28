@@ -141,7 +141,7 @@ void AW_DelLastEl(ArrWahana *T, Wahana *X);
 /*      Banyaknya elemen tabel berkurang satu */
 /*      Tabel T mungkin menjadi kosong */
 
-void AW_detailWahana(Wahana W, ArrListWahanaUpg A);
+void AW_detailWahana(ArrWahana AW, Wahana W, ArrListWahanaUpg A);
 /* I.S. sembarang */
 /* F.S. detail wahana tertulis di layar */
 
