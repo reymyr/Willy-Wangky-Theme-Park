@@ -7,7 +7,7 @@ int main() {
     JAM J1, J2;
 
     BacaJAM(&J1);
-    J2 = MakeJAM(1,13,35,27);
+    J2 = MakeJAM(1,13,35);
     printf("J1: "); TulisJamMenit(J1); printf("\n");
     printf("J2: "); TulisJamMenit(J2); printf("\n");
 
