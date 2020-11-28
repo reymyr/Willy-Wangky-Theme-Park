@@ -1,7 +1,7 @@
 # Willy Wangky's World
 Tugas Besar IF2110 Algoritma dan Struktur Data 2020/2021
 
-## Table of contents
+## Anggota
 | No  | NIM  | Nama  |
 |---|---|---|
 | 1  |  13519039 |  Rayhan Alghifari Fauzta |
