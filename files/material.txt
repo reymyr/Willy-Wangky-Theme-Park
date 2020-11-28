@@ -2,4 +2,4 @@ Wood 1 5 Stone 1 7 Steel 1 10.
 
 
 <FORMAT FILE>
-nama jumlah harga
+nama jumlah harga.

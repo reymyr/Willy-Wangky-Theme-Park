@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "../boolean.h"
+#include "../jam/jam.h"
 #include "prioQueuePengunjung.h"
 
 /* ********* Prototype ********* */
@@ -68,6 +69,32 @@ void PQ_Enqueue (PrioQueuePengunjung * Q, Pengunjung X)
         PQ_Elmt(*Q, (i+1) % PQ_MaxEl) = X;
     }
 }
+
+void PQ_EnqueueTimeLeft(PrioQueuePengunjung * Q, Pengunjung X)
+/* Proses: Menambahkan X pada Q dengan aturan priority queue, terurut mengecil berdasarkan timeLeft */
+/* I.S. Q mungkin kosong, tabel penampung elemen Q TIDAK penuh */
+/* F.S. X disisipkan pada posisi yang tepat sesuai dengan timeLeft,
+        TAIL "maju" dengan mekanisme circular buffer; */
+{
+    if (PQ_IsEmpty(*Q))
+    {
+        PQ_Head(*Q) = 0;
+        PQ_Tail(*Q) = 0;
+        PQ_InfoTail(*Q) = X;
+    }
+    else
+    {
+        int i = PQ_Tail(*Q);
+        PQ_Tail(*Q) = (PQ_Tail(*Q) + 1) % PQ_MaxEl;
+        while (P_TimeLeft(PQ_Elmt(*Q, i)) > P_TimeLeft(X) && i != (PQ_Head(*Q)-1+PQ_MaxEl) % PQ_MaxEl)
+        {
+            PQ_Elmt(*Q, (i+1) % PQ_MaxEl) = PQ_Elmt(*Q, i);
+            i = (i-1+PQ_MaxEl) % PQ_MaxEl;
+        }
+        PQ_Elmt(*Q, (i+1) % PQ_MaxEl) = X;
+    }
+}
+
 void PQ_Dequeue (PrioQueuePengunjung * Q, Pengunjung * X)
 /* Proses: Menghapus X pada Q dengan aturan FIFO */
 /* I.S. Q tidak mungkin kosong */
@@ -104,5 +131,64 @@ Antrian[NbElmt/MaxEl] :
         PQ_Dequeue(&Q, &P);
         AK_TulisIsiTab(P_Wahana(P));
         printf(", kesabaran: %d\n", P_Kesabaran(P));
+    }
+}
+
+void PQ_decTimeLeft(PrioQueuePengunjung * Q, JAM curTime)
+/* I.S. Q terdefinisi */
+/* F.S. timeLeft Semua pengunjung dalam Q berkurang sesuai startTime dan curTime  */
+{
+    for (int i = 0; i < PQ_NBElmt(*Q); i++)
+    {
+        int currentIdx = (PQ_Head(*Q) + i) % PQ_MaxEl;
+        Pengunjung P = PQ_Elmt(*Q, currentIdx);
+        int timePassed = Durasi(P_StartTime(P), curTime);
+        P_StartTime(PQ_Elmt(*Q, currentIdx)) = curTime;
+        P_TimeLeft(PQ_Elmt(*Q, currentIdx)) -= timePassed;
+    }
+}
+
+int PQ_getWahanaCount(PrioQueuePengunjung Q, Kata K)
+/* Mengembalikan banyak pengunjung dalam Q yang sedang menaiki wahana bernama K */
+{
+    int count = 0;
+    for (int i = 0; i < PQ_NBElmt(Q); i++)
+    {
+        int currentIdx = (PQ_Head(Q) + i) % PQ_MaxEl;
+        Pengunjung P = PQ_Elmt(Q, currentIdx);
+        if (MK_isKataSama(K, P_CurrentWahana(P)))
+        {
+            count++;
+        }        
+    }
+    return count;
+}
+
+void PQ_WahanaRusak(PrioQueuePengunjung * Q, PrioQueuePengunjung * QW, Kata K)
+/* Mengeluarkan semua pengunjung yang sedang menaiki wahana K dari QW ke Q saat wahana rusak */
+{
+    PrioQueuePengunjung PQTemp;
+    Pengunjung PTemp;
+    PQ_MakeEmpty(&PQTemp);
+    int count = PQ_getWahanaCount(*QW, K);
+    while (count > 0)
+    {
+        PQ_Dequeue(QW, &PTemp);
+        if (MK_isKataSama(P_CurrentWahana(PTemp), K))
+        {
+            count--;
+            P_Prio(PTemp)--;
+            AK_AddAsLastEl(&P_Wahana(PTemp), K);
+            PQ_Enqueue(Q, PTemp);
+        }
+        else
+        {
+            PQ_EnqueueTimeLeft(&PQTemp, PTemp);
+        }
+    }
+    while (!PQ_IsEmpty(PQTemp))
+    {
+        PQ_Dequeue(&PQTemp, &PTemp);
+        PQ_EnqueueTimeLeft(QW, PTemp);
     }
 }

@@ -1,12 +1,16 @@
-2
+3
 (0(1(3()())())(2()()))
 (4(5()())())
-0_0_wahana satu_tipe 1_500_3_15_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_tes deskripsi
-0_1_wahana dua_tipe 2_300_2_10_Wood 3 0 Stone 5 0 Steel 3 0 _ 200_ini wahana 2
-0_2_rollercoaster_roller_250_5_20_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_roller coaster asik
+(6(7(8()())())())
+0_0_wahana satu_tipe 1_50_3_15_Wood 3 0 Stone 2 0 Steel 1 0 _ 100_tes deskripsi
+0_1_wahana dua_tipe 2_150_2_10_Wood 3 0 Stone 3 0 Steel 3 0 _ 200_ini wahana 2
+0_2_rollercoaster_roller_200_5_20_Wood 2 0 Stone 4 0 Steel 5 0 _ 200_roller coaster asik
 0_3_jungkat jungkit_wahana anak_100_2_15_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_naik turun
 4_4_halilintar_tipe_100_5_20_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_tes
-4_5_nama wahana_tipe wahana_200_3_30_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_keren.
+4_5_nama wahana_tipe wahana_200_3_30_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_keren
+6_6_Pengkom_matkul_100_1_20_Wood 3 0 Stone 1 0 Steel 2 0 _ 300_keos
+6_7_Daspro_matkul_150_2_25_Wood 3 0 Stone 2 0 Steel 2 0 _ 350_tambah keos
+6_8_Alstrukdat_matkul_200_3_30_Wood 4 0 Stone 3 0 Steel 3 0 _ 400_lebih keos.
 
 
 <FORMAT FILE>
@@ -15,7 +19,7 @@ tree1
 tree2
 ...
 treeN
-baseId_id_nama_tipe_harga_kapasitas_durasi_materialCost _ moneyCost_deskripsi
+baseId_id_nama_tipe_harga_kapasitas_durasi_materialCost _ moneyCost_deskripsi.
                                             /   |    \
                                         nama  jumlah harga(0)
 

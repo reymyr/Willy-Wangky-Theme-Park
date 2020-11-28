@@ -22,13 +22,14 @@ struct SaveData {
     ArrWahana builtWahana;
     JAM currentTime;
     PrioQueuePengunjung antrian;
+    PrioQueuePengunjung inWahana;
     Stack actionStack;
 };
 
-void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, Stack actStack);
+void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, PrioQueuePengunjung inWahana, Stack actStack);
 /* Prosedur menyimpan data game ke file eksternal */
 
-void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, Stack *actStack);
+void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, PrioQueuePengunjung *inWahana, Stack *actStack);
 /* Prosedur membaca data game dari file eksternal */
 
 int main()
@@ -53,6 +54,7 @@ int main()
     Player P; /* Player */
     Pengunjung Pgj; /* Pengunjung yang sedang diproses */
     PrioQueuePengunjung Antrian; /* Antrian pengunjung */
+    PrioQueuePengunjung DalamWahana;
     Stack ActionStack; /* Stack pada preparation phase */
     Stack ExecuteStack; /* Stack yang sudah di inverse sebelum di execute */
     S_infotype StackElmt; /* Elemen stack */
@@ -61,12 +63,12 @@ int main()
     Kata KATANEW = MK_MakeKata("new", 3);
     Kata KATALOAD = MK_MakeKata("load", 4);
     Kata KATAEXIT = MK_MakeKata("exit", 4);
+    Kata WahanaRusak;
 
     /* Inisialisasi data-data game */
     initActionDatabase(&ActionDatabase);
     initPrepActionArray(&PrepActionArray);
     initMainActionArray(&MainActionArray);
-    PQ_MakeEmpty(&Antrian);
     AM_BacaFile(&MaterialDatabase, "../files/material.txt", false); /* membaca file material.txt */
     MK_EndKata = false;
     AW_readWahanaDanTree(&UpgradeTrees, &WahanaDatabase, "../files/wahana.txt"); /* membaca file wahana.txt */
@@ -131,6 +133,8 @@ int main()
                 AW_MakeEmpty(&BuiltWahana);
                 WU_CreateEmpty(&ArrWahanaUpg);
                 CreateEmptyStack(&ActionStack);
+                PQ_MakeEmpty(&Antrian);
+                PQ_MakeEmpty(&DalamWahana);
                 prepPhase = true;
                 CurrentTime = MakeJAM(1, 21, 0);
             }
@@ -144,7 +148,7 @@ int main()
                 AW_MakeEmpty(&BuiltWahana);
                 WU_CreateEmpty(&ArrWahanaUpg);
                 CreateEmptyStack(&ActionStack);
-                load(&prepPhase, &P, &BuiltWahana, &CurrentTime, &Map, &Antrian, &ActionStack);
+                load(&prepPhase, &P, &BuiltWahana, &CurrentTime, &Map, &Antrian, &DalamWahana, &ActionStack);
                 /* Load Wahana History */
                 loadwahanahistory("../../WahanaHistory.txt",&ArrWahanaUpg);
             }
@@ -495,7 +499,7 @@ int main()
                         counter = 0;
                         break;
                     case 15:
-                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, ActionStack);
+                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, DalamWahana, ActionStack);
                         break;
                     default:
                         break;
@@ -503,13 +507,6 @@ int main()
                 }
                 else /* Main Phase */
                 {
-                    /* Pengecekan waktu sekarang untuk mengurangi kesabaran pengunjung */
-                    while ((JAMToMenit(DurasiJam(OpeningTime, CurrentTime)) / 30) > counter)
-                    {
-                        counter++;
-                        processKesabaran(&Antrian);     
-                    }                  
-
                     printf("Main Phase Day %d\n", Day(CurrentTime)); 
                     printCurrentMap(Map, P);
                     printf("Name: "); MK_printKata(Nama(P)); printf("\n");
@@ -576,25 +573,36 @@ int main()
                                     printf("Wahana tersebut rusak\n");
                                     PQ_Enqueue(&Antrian, Pgj);
                                 }
-                                /* CEK KAPASITAS PENUH/TIDAK */
+                                else if (W_Capacity(AW_GetWahana(BuiltWahana, MK_CKata)) <= PQ_getWahanaCount(DalamWahana, MK_CKata))
+                                {
+                                    printf("Wahana tersebut sudah penuh\n");
+                                    PQ_Enqueue(&Antrian, Pgj);
+                                }                                
                                 else
                                 {
-                                    Money(P) += AW_GetPrice(BuiltWahana, MK_CKata);
-
+                                    
                                     /* HARUSNYA WAKTU NAMBAH SESUAI WAKTU SERVE, PENGUNJUNG DIPINDAH KE TEMPAT LAIN SELAMA DURASI WAHANA */
-                                    CurrentTime = NextNMenit(CurrentTime, W_Duration(AW_GetWahana(BuiltWahana, MK_CKata)));
-                                    AK_DelKata(&P_Wahana(Pgj), MK_CKata);
-                                    AW_pengungjungNaik(&BuiltWahana, MK_CKata);
-                                    if (AK_NbElmt(P_Wahana(Pgj)) > 0)
-                                    {
-                                        P_Prio(Pgj)--;
-                                        PQ_Enqueue(&Antrian, Pgj);
-                                    }
+                                    CurrentTime = NextNMenit(CurrentTime, JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, ActionID))));
+                                    
                                     int r = rand() % 100;
                                     if (r < 40)
                                     {
                                         AW_setRusak(&BuiltWahana, MK_CKata);
-                                    }             
+                                        WahanaRusak = P_CurrentWahana(Pgj);
+                                        PQ_Enqueue(&Antrian, Pgj);
+                                        PQ_WahanaRusak(&Antrian, &DalamWahana, MK_CKata);
+                                    }
+                                    else
+                                    {
+                                        P_CurrentWahana(Pgj) = MK_CKata;
+                                        P_StartTime(Pgj) =  PrevNMenit(CurrentTime, JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, ActionID))));
+                                        P_TimeLeft(Pgj) = W_Duration(AW_GetWahana(BuiltWahana, MK_CKata)) + JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, ActionID)));
+                                        Money(P) += AW_GetPrice(BuiltWahana, MK_CKata);
+                                        AK_DelKata(&P_Wahana(Pgj), MK_CKata); 
+                                        PQ_EnqueueTimeLeft(&DalamWahana, Pgj);
+                                        AW_pengungjungNaik(&BuiltWahana, MK_CKata);   
+                                    }
+                                    
                                 }                                
                             }
                         }   
@@ -703,26 +711,58 @@ int main()
                     case 14:
                         /* PREPARE */
                         PQ_MakeEmpty(&Antrian);
+                        PQ_MakeEmpty(&DalamWahana);
                         CurrentTime = MakeJAM(Day(CurrentTime)+1, 21, 0);
                         AW_newDay(&BuiltWahana);
                         prepPhase = true;
                         break;
                     case 15:
-                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, ActionStack);
+                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, DalamWahana, ActionStack);
                         break;
                     default:
                         break;
                     }
-                    /* Memeriksa apakah wakto sudah melebihi closing time, jika sudah langsung ke preparation phase */
+                    /* Memeriksa apakah waktu sudah melebihi closing time, jika sudah langsung ke preparation phase */
                     if (!prepPhase)
                     {
                         if (JAMToMenitMinDay(ClosingTime) - JAMToMenitMinDay(CurrentTime) <= 0)
                         {
+                            PQ_MakeEmpty(&Antrian);
+                            PQ_MakeEmpty(&DalamWahana);
                             CurrentTime = MakeJAM(Day(CurrentTime)+1, 21, 0);
                             AW_newDay(&BuiltWahana);
                             prepPhase = true;
                         }
-                    }                    
+                        else
+                        {
+                            /* Pengecekan waktu sekarang untuk mengurangi kesabaran pengunjung */
+                            while ((JAMToMenit(DurasiJam(OpeningTime, CurrentTime)) / 30) > counter)
+                            {
+                                counter++;
+                                processKesabaran(&Antrian);     
+                            }
+                            
+                            if (!PQ_IsEmpty(DalamWahana))
+                            {
+            
+                                PQ_decTimeLeft(&DalamWahana, CurrentTime);
+                                
+                                /* Mengeluarkan pengunjung dari wahana jika sudah melebihi batas waktu */
+                                while (P_TimeLeft(PQ_Elmt(DalamWahana, PQ_Head(DalamWahana))) <= 0 && !PQ_IsEmpty(DalamWahana))
+                                {
+                                    PQ_Dequeue(&DalamWahana, &Pgj);
+                                    
+                                    if (AK_NbElmt(P_Wahana(Pgj)) > 0)
+                                    {
+                                        P_Prio(Pgj)--;
+                                        PQ_Enqueue(&Antrian, Pgj);
+                                    }
+                                }
+                            }
+                            
+                            
+                        }
+                    }                                   
                 }
             } while (!MK_EndKata);
         }        
@@ -746,6 +786,7 @@ void randomPengunjung(PrioQueuePengunjung * PQ, ArrWahana AW)
     {
         Pengunjung Pgj;
         P_Kesabaran(Pgj) = 5;
+        P_CurrentWahana(Pgj) = MK_MakeKata("", 0);
         P_Prio(Pgj) = rand() % 100 + 20;    /* Merandom prioritas pengunjung */
         AK_MakeEmpty(&P_Wahana(Pgj));
         /* Merandom wahana pengunjung */
@@ -848,7 +889,7 @@ void initMainActionArray(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(15, MK_MakeKata("save", 4), MakeJAM(0,0,0)));
 }
 
-void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, Stack actStack)
+void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, PrioQueuePengunjung inWahana, Stack actStack)
 /* Prosedure menyimpan data game ke file eksternal */
 {
     char* path = "../files/savedata";
@@ -861,6 +902,7 @@ void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePe
     s.builtWahana = builtW;
     s.currentTime = currentTime;
     s.antrian = antrian;
+    s.inWahana = inWahana;
     s.actionStack = actStack;
 
     fwrite(&s, sizeof(struct SaveData), 1, savefile);
@@ -868,7 +910,7 @@ void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePe
     printf("Game saved\n");
 }
 
-void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, Stack *actStack)
+void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, PrioQueuePengunjung *inWahana, Stack *actStack)
 /* Prosedur membaca data game dari file eksternal */
 {
     char* path = "../files/savedata";
@@ -883,6 +925,7 @@ void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *
     *builtW = s.builtWahana;
     *currentTime = s.currentTime;
     *antrian = s.antrian;
+    *inWahana = s.inWahana;
     *actStack = s.actionStack;
 
     fclose(savefile);

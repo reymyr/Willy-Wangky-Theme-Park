@@ -8,6 +8,7 @@
 
 #include "arrKata.h"
 #include "../boolean.h"
+#include "../jam/jam.h"
 #include "../string_production/mesinkata.h"
 
 #define PQ_Nil -1
@@ -20,6 +21,9 @@
 typedef struct {
     int prio;  /* (1 adalah prioritas tertinggi) */
     ArrKata wahana;  /* nama dari wahana yang ingin dinaiki pengunjung */
+    Kata currentWahana;
+    JAM startTime;
+    int timeLeft;
     int kesabaran; /* 10-0 (kesabaran 0 berarti sudah habis) */
 } Pengunjung; 
 
@@ -35,9 +39,12 @@ typedef struct {
 
 /* ********* AKSES (Selektor) ********* */
 /* Jika P adalah Pengunjung dan Q adalah PrioQueuePengunjung, maka akses elemen : */
-#define P_Prio(P)      (P).prio
-#define P_Wahana(P)    (P).wahana
-#define P_Kesabaran(P) (P).kesabaran
+#define P_Prio(P)          (P).prio
+#define P_Wahana(P)        (P).wahana
+#define P_CurrentWahana(P) (P).currentWahana
+#define P_StartTime(P)     (P).startTime
+#define P_TimeLeft(P)      (P).timeLeft
+#define P_Kesabaran(P)     (P).kesabaran
 
 #define PQ_Head(Q)     (Q).HEAD
 #define PQ_Tail(Q)     (Q).TAIL
@@ -72,6 +79,11 @@ void PQ_Enqueue (PrioQueuePengunjung * Q, Pengunjung X);
 /* I.S. Q mungkin kosong, tabel penampung elemen Q TIDAK penuh */
 /* F.S. X disisipkan pada posisi yang tepat sesuai dengan prioritas,
         TAIL "maju" dengan mekanisme circular buffer; */
+void PQ_EnqueueTimeLeft(PrioQueuePengunjung * Q, Pengunjung X);
+/* Proses: Menambahkan X pada Q dengan aturan priority queue, terurut mengecil berdasarkan timeLeft */
+/* I.S. Q mungkin kosong, tabel penampung elemen Q TIDAK penuh */
+/* F.S. X disisipkan pada posisi yang tepat sesuai dengan timeLeft,
+        TAIL "maju" dengan mekanisme circular buffer; */
 void PQ_Dequeue (PrioQueuePengunjung * Q, Pengunjung * X);
 /* Proses: Menghapus X pada Q dengan aturan FIFO */
 /* I.S. Q tidak mungkin kosong */
@@ -89,5 +101,14 @@ Antrian[NbElmt/MaxEl] :
 (List_Wahana-n), kesabaran: kesabaran-n
 */
 
+void PQ_decTimeLeft(PrioQueuePengunjung * Q, JAM curTime);
+/* I.S. Q terdefinisi */
+/* F.S. timeLeft Semua pengunjung dalam Q berkurang sesuai startTime dan curTime  */
+
+int PQ_getWahanaCount(PrioQueuePengunjung Q, Kata K);
+/* Mengembalikan banyak pengunjung dalam Q yang sedang menaiki wahana bernama K */
+
+void PQ_WahanaRusak(PrioQueuePengunjung * Q, PrioQueuePengunjung * QW, Kata K);
+/* Mengeluarkan semua pengunjung yang sedang menaiki wahana K dari QW ke Q saat wahana rusak */
 
 #endif
