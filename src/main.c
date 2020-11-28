@@ -63,7 +63,6 @@ int main()
     Kata KATANEW = MK_MakeKata("new", 3);
     Kata KATALOAD = MK_MakeKata("load", 4);
     Kata KATAEXIT = MK_MakeKata("exit", 4);
-    Kata WahanaRusak;
 
     /* Inisialisasi data-data game */
     initActionDatabase(&ActionDatabase);
@@ -588,7 +587,6 @@ int main()
                                     if (r < 40)
                                     {
                                         AW_setRusak(&BuiltWahana, MK_CKata);
-                                        WahanaRusak = P_CurrentWahana(Pgj);
                                         PQ_Enqueue(&Antrian, Pgj);
                                         PQ_WahanaRusak(&Antrian, &DalamWahana, MK_CKata);
                                     }
