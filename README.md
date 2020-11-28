@@ -17,7 +17,17 @@ Program ini mensimulasikan sebuah taman bermain yang terdiri atas empat petak la
 Program dibuat dalam bahasa C
 
 ## Setup
-Describe how to install / setup your local environment / add link to demo version.
+### Windows
+```bash
+compile_win.bat
+willywangky.exe
+```
+### Linux
+```bash
+chmod +x compile_linux.sh
+./compile_linux.sh
+./willywangky 
+```
 
 ## To-Do
 * Driver List

@@ -1,0 +1,1 @@
+gcc main.c string_production/mesinkar.c string_production/mesinkata.c wahana/ArrWahana.c wahana/LLWahana.c jam/jam.c graph/graph.c listlinier/listlinier.c point/point.c arrMaterial/arrMaterial.c arrAction/arrAction.c matriks/matriks.c prioQueuePengunjung/prioQueuePengunjung.c prioQueuePengunjung/arrKata.c stack/stackt.c tree/bintree.c tree/arrTree.c -o willywangky -lm
