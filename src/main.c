@@ -612,7 +612,7 @@ int main()
                                     CurrentTime = NextNMenit(CurrentTime, JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, ActionID))));
                                     
                                     int r = rand() % 100;
-                                    if (r < 40)
+                                    if (r < 30)
                                     {
                                         AW_setRusak(&BuiltWahana, MK_CKata);
                                         PQ_Enqueue(&Antrian, Pgj);
