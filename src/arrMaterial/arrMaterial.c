@@ -146,9 +146,9 @@ void AM_TulisIsiTabCount(TabMaterial T)
     IdxType i;
     for (i = AM_GetFirstIdx(T); i <= AM_GetLastIdx(T); i++)
     {
-        printf(" - ");
+        printf("   - ");
         MK_printKata(M_Name(AM_T(T)[i]));
-        printf(": %d\n", M_Count(AM_T(T)[i]));
+        printf(", Total : %d\n", M_Count(AM_T(T)[i]));
     }
 }
 
