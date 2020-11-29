@@ -3,6 +3,8 @@
 #include "ArrWahana.h"
 #include "LLWahana.h"
 
+/* gcc driverWahana.c ArrWahana.c LLWahana.c ../listlinier/listlinier.c ../string_production/mesinkata.c ../string_production/mesinkar.c ../point/point.c ../arrMaterial/arrMaterial.c ../tree/arrTree.c ../tree/bintree.c -o driverW -lm */
+
 int main()
 {
     ArrListWahanaUpg A;

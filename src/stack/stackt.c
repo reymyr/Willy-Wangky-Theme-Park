@@ -137,7 +137,10 @@ TabMaterial TotalMaterial(Stack S)
     while (!IsEmptyStack(S))
     {
         Pop(&S, &SI);
-        total = AM_AddTabMaterial(total, S_MaterialNeeded(SI));
+		if (!MK_isKataSama(S_Name(SI), MK_MakeKata("buy", 3)))
+		{
+        	total = AM_AddTabMaterial(total, S_MaterialNeeded(SI));			
+		}		
     }
     return total;
 }

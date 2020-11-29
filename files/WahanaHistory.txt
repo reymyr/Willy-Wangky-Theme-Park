@@ -1,9 +1,0 @@
-0 Wangky's Universe_tipe 1_500_1,1_ini Wangky's Universe_10_15_3_1500_0
-0 Wangky's Galaxy_tipe 2_700_1,1_ini Wangky's Galaxy_15_15_2_700_0
-1 Halolintar_tipe 1_400_2,5_ini Halolintar_15_20_3_1200_1
-1 Halilintar_tipe 2_500_2,5_ini Halilintar_20_20_1_500_0
-1 Halalintar_tipe 3_600_2,5_ini Halalintar_25_20_1_600_0.
-
-
-Format :
-id_Nama Wahana_Type_Harga_Lokasi_Desc_Kapasitas_Durasi_UseCount_totalPenghasilan_isBroken

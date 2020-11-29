@@ -202,95 +202,102 @@ int main()
                         break;
                     case 4:
                         /* BUILD */
-                        printf("Ingin membangun apa?\n\n");
-                        printf("-------------------------------\n");
-                        printf("          List Wahana\n");
-                        printf("-------------------------------\n");
-
-                        /* Menulis wahana yang dapat dibangun di awal beserta bahan dan uang yang dibutuhkan */
-                        for (size_t i = 0; i < AW_NbElmt(BaseWahana); i++)
+                        if (T_Type(Elmt(GetMap(Map, G_CurrentArea(Map)), Baris(Pos(P)), Kolom(Pos(P)))) == 'O')
                         {
-                            AW_printWahanaCost(AW_Elmt(BaseWahana, i));
-                            printf("\n\n");
-                        }
-
-                        /* Menulis bahan dan uang yang dimiliki pemain */
-                        printf("-------------------------------\n");
-                        printf("    Bahan yang anda miliki\n");
-                        printf("-------------------------------\n");
-                        AM_TulisIsiTabCount(Materials(P));
-                        printf("Money : %d\n\n", Money(P));
-
-
-                        /* Meminta input nama wahana */
-                        printf("Masukkan nama wahana yang ingin dibangun.\n");
-                        printf("> ");
-                        MK_ADVKATAINPUT();
-                        if (AW_SearchB(BuiltWahana, MK_CKata)) /* Tidak bisa membangun dua wahana yang sama */
-                        {
-                            printf("Anda sudah membangun wahana tersebut\n");
-                        }
-                        else if (!AW_SearchB(BaseWahana, MK_CKata)) /* Nama wahana bukan wahana yang dapat dibangun */
-                        {
-                            printf("Input tidak valid\n");
-                        }
-                        else if (nearChar(P, '^') || nearChar(P, '>') || nearChar(P, 'V') || nearChar(P, '<'))  /* Pemain berada di sebelah gerbang */
-                        {
-                            printf("Tidak bisa membangun wahana di sebelah gerbang\n");
+                            printf("Tidak bisa membangun wahana di office\n");
                         }
                         else
-                        {
-                            /* Memeriksa apakah ada petak kosong di sebelah player */
-                            int pushCode = 0;
-                            while (T_Type(Surround(P)[pushCode]) != '-' && pushCode <= 3)
+                        {                        
+                            printf("Ingin membangun apa?\n\n");
+                            printf("-------------------------------\n");
+                            printf("          List Wahana\n");
+                            printf("-------------------------------\n");
+
+                            /* Menulis wahana yang dapat dibangun di awal beserta bahan dan uang yang dibutuhkan */
+                            for (size_t i = 0; i < AW_NbElmt(BaseWahana); i++)
                             {
-                                pushCode++;
+                                AW_printWahanaCost(AW_Elmt(BaseWahana, i));
+                                printf("\n\n");
                             }
 
-                            /* Tidak ada petak kosong */
-                            if (pushCode == 4)
+                            /* Menulis bahan dan uang yang dimiliki pemain */
+                            printf("-------------------------------\n");
+                            printf("    Bahan yang anda miliki\n");
+                            printf("-------------------------------\n");
+                            AM_TulisIsiTabCount(Materials(P));
+                            printf("Money : %d\n\n", Money(P));
+
+
+                            /* Meminta input nama wahana */
+                            printf("Masukkan nama wahana yang ingin dibangun.\n");
+                            printf("> ");
+                            MK_ADVKATAINPUT();
+                            if (AW_SearchB(BuiltWahana, MK_CKata)) /* Tidak bisa membangun dua wahana yang sama */
                             {
-                                printf("Tidak bisa menempatkan wahana di sini\n");
+                                printf("Anda sudah membangun wahana tersebut\n");
                             }
-                            /* Waktu pembangunan tidak cukup */
-                            else if ((JLT(DurasiJam(CurrentTime, OpeningTime), MenitToJAM(JAMToMenit(TotalTime(ActionStack))+JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 4)))))))
+                            else if (!AW_SearchB(BaseWahana, MK_CKata)) /* Nama wahana bukan wahana yang dapat dibangun */
                             {
-                                printf("Waktu yang dibutuhkan tidak cukup\n");
+                                printf("Input tidak valid\n");
+                            }
+                            else if (nearChar(P, '^') || nearChar(P, '>') || nearChar(P, 'V') || nearChar(P, '<'))  /* Pemain berada di sebelah gerbang */
+                            {
+                                printf("Tidak bisa membangun wahana di sebelah gerbang\n");
                             }
                             else
                             {
-                                WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
-                                int cost = W_MoneyCost(WBuilt);
-                                if (TotalMoney(ActionStack)+cost > Money(P))    /* Uang pemain tidak cukup */
+                                /* Memeriksa apakah ada petak kosong di sebelah player */
+                                int pushCode = 0;
+                                while (T_Type(Surround(P)[pushCode]) != '-' && pushCode <= 3)
                                 {
-                                    printf("Uang anda tidak cukup\n");
+                                    pushCode++;
+                                }
+
+                                /* Tidak ada petak kosong */
+                                if (pushCode == 4)
+                                {
+                                    printf("Tidak bisa menempatkan wahana di sini\n");
+                                }
+                                /* Waktu pembangunan tidak cukup */
+                                else if ((JLT(DurasiJam(CurrentTime, OpeningTime), MenitToJAM(JAMToMenit(TotalTime(ActionStack))+JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, 4)))))))
+                                {
+                                    printf("Waktu yang dibutuhkan tidak cukup\n");
                                 }
                                 else
                                 {
-                                    if (AM_MoreThan(Materials(P), AM_AddTabMaterial(TotalMaterial(ActionStack), W_MaterialCost(WBuilt))))  /* Memeriksa apakah pemain memiliki bahan yang cukup */
+                                    WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
+                                    int cost = W_MoneyCost(WBuilt);
+                                    if (TotalMoney(ActionStack)+cost > Money(P))    /* Uang pemain tidak cukup */
                                     {
-                                        setTile(&Map, G_CurrentArea(Map), Pos(P), 'W', -1);
-
-                                        StackElmt = CreateStackInfo(MK_MakeKata("build", 5), A_Duration(AA_Elmt(ActionDatabase, 4)), cost, Pos(P));
-                                        S_MaterialNeeded(StackElmt) = W_MaterialCost(WBuilt);
-                                        S_IdWahanaFrom(StackElmt) = -1;
-                                        S_IdWahanaTo(StackElmt) = AW_GetId(WahanaDatabase, MK_CKata);
-                                        Push(&ActionStack, StackElmt);
-
-                                        W_Area(WBuilt) = G_CurrentArea(Map);
-                                        W_Location(WBuilt) = Pos(P);
-
-                                        WU_Build(&ArrWahanaUpg,WBuilt);
-                                        AW_AddAsLastEl(&BuiltWahana, WBuilt);
-                                        
-
-                                        move(&Map, &P, pushCode, &moveStatus);   
+                                        printf("Uang anda tidak cukup\n");
                                     }
-                                    else    /* Bahan tidak cukup */
+                                    else
                                     {
-                                        printf("Material anda tidak cukup\n");
-                                    }                                    
-                                }                              
+                                        if (AM_MoreThan(Materials(P), AM_AddTabMaterial(TotalMaterial(ActionStack), W_MaterialCost(WBuilt))))  /* Memeriksa apakah pemain memiliki bahan yang cukup */
+                                        {
+                                            setTile(&Map, G_CurrentArea(Map), Pos(P), 'W', -1);
+
+                                            StackElmt = CreateStackInfo(MK_MakeKata("build", 5), A_Duration(AA_Elmt(ActionDatabase, 4)), cost, Pos(P));
+                                            S_MaterialNeeded(StackElmt) = W_MaterialCost(WBuilt);
+                                            S_IdWahanaFrom(StackElmt) = -1;
+                                            S_IdWahanaTo(StackElmt) = AW_GetId(WahanaDatabase, MK_CKata);
+                                            Push(&ActionStack, StackElmt);
+
+                                            W_Area(WBuilt) = G_CurrentArea(Map);
+                                            W_Location(WBuilt) = Pos(P);
+
+                                            WU_Build(&ArrWahanaUpg,WBuilt);
+                                            AW_AddAsLastEl(&BuiltWahana, WBuilt);
+                                            
+
+                                            move(&Map, &P, pushCode, &moveStatus);   
+                                        }
+                                        else    /* Bahan tidak cukup */
+                                        {
+                                            printf("Material anda tidak cukup\n");
+                                        }                                    
+                                    }                              
+                                }
                             }
                         }
                         break;
