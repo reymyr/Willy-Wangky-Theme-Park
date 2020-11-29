@@ -916,6 +916,7 @@ void initMainActionArray(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(13, MK_MakeKata("office", 6), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(14, MK_MakeKata("prepare", 7), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(15, MK_MakeKata("save", 4), MakeJAM(0,0,0)));
+    AA_AddAsLastEl(AA, createAction(16, MK_MakeKata("help", 4), MakeJAM(0,0,0)));
 }
 
 void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, PrioQueuePengunjung inWahana, Stack actStack)
@@ -979,7 +980,6 @@ void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *
 
 void help()
 {
-    /* HELP */
     printf("======\nHELP\n======\n");
     printf("Gunakan input w (atas),s (bawah),a (kiri),d (kanan) untuk menggerakan player.\n\n");
     printf("Berikut command yang tersedia pada masing-masing phase. \n");
