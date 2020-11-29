@@ -158,7 +158,7 @@ void AW_printWahanaCost(Wahana W)
 /* I.S. W terdefinisi */
 /* F.S. Jumlah material dan uang yang dibutuhkan untuk membangun W tertulis di layar */
 {
-    printf(" - "); MK_printKata(W_Name(W)); printf("\n");
+    printf(" * "); MK_printKata(W_Name(W)); printf("\n");
     printf("   Bahan:\n");
     AM_TulisIsiTabCount(W_MaterialCost(W));
     printf("   Harga : %d", W_MoneyCost(W));
@@ -353,10 +353,10 @@ void AW_reportWahana(Wahana W)
 /* F.S. laporan wahana tertulis di layar */
 {
     printf("Laporan wahana "); MK_printKata(W_Name(W)); printf("\n");
-    printf("Total wahana dinaiki : %d kali\n", W_UseCount(W));
-    printf("Total penghasilan : %d\n", W_Penghasilan(W));
-    printf("Total wahana dinaiki hari ini : %d kali\n", W_TodayUseCount(W));
-    printf("Penghasilan hari ini : %d\n", W_TodayPenghasilan(W));
+    printf("Total wahana dinaiki            : %d kali\n", W_UseCount(W));
+    printf("Total penghasilan               : %d\n", W_Penghasilan(W));
+    printf("Total wahana dinaiki hari ini   : %d kali\n", W_TodayUseCount(W));
+    printf("Penghasilan hari ini            : %d\n", W_TodayPenghasilan(W));
 }
 
 void AW_printBroken(ArrWahana AW)
@@ -364,14 +364,21 @@ void AW_printBroken(ArrWahana AW)
 /* F.S. Nama wahana yang rusak tertulis di layar */
 {
     IdxType i;
-    printf("Broken:\n");
+    int sum = 0;
+    printf("Daftar Wahana Rusak : ");
     for (i = AW_GetFirstIdx(AW); i <= AW_GetLastIdx(AW); i++)
     {
         if (W_IsBroken(AW_Elmt(AW, i)))
         {
-            printf(" - "); MK_printKata(W_Name(AW_Elmt(AW,i))); printf("\n");
+            sum++;
+            printf("\n - "); MK_printKata(W_Name(AW_Elmt(AW,i)));
         }
     }
+    if (sum == 0)
+    {
+        printf("-");
+    }
+    printf("\n");
 }
 
 void AW_setRusak(ArrWahana * AW, Kata K)
