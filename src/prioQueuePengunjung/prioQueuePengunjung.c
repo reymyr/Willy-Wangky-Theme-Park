@@ -125,7 +125,7 @@ Antrian[NbElmt/MaxEl] :
 */
 {
     Pengunjung P;
-    printf("Antrian [%d/%d] :\n", PQ_NBElmt(Q), PQ_MaxEl);
+    printf(" --- Antrian [%d/%d] ------------------------\n", PQ_NBElmt(Q), PQ_MaxEl);
     while (!PQ_IsEmpty(Q))
     {
         PQ_Dequeue(&Q, &P);

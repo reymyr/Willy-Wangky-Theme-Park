@@ -20,11 +20,11 @@
 /* Definisi elemen dan address */
 typedef struct {
     int prio;  /* (1 adalah prioritas tertinggi) */
-    ArrKata wahana;  /* Daftar nama dari wahana yang ingin dinaiki pengunjung */
-    Kata currentWahana; /* Wahana yang sedang dinaiki pengunjung */
+    ArrKata wahana;  /* nama dari wahana yang ingin dinaiki pengunjung */
+    Kata currentWahana;
     JAM startTime;
-    int timeLeft;  /* Waktu yang tersisa saat menaiki wahana */
-    int kesabaran; /* 5-0 (kesabaran 0 berarti sudah habis) */
+    int timeLeft;
+    int kesabaran; /* 10-0 (kesabaran 0 berarti sudah habis) */
 } Pengunjung; 
 
 typedef int PQaddress;   /* indeks tabel */

@@ -79,7 +79,7 @@ void AK_TulisIsiTab(ArrKata T)
 /* Jika tabel kosong : menulis [] */
 {
     IdxType i;
-    printf("(");
+    printf("|  (");
     for (i = AK_GetFirstIdx(T); i <= AK_GetLastIdx(T); i++)
     {
         MK_printKata(AK_Elmt(T, i));
