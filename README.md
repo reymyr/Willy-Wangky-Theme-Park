@@ -31,6 +31,7 @@ chmod +x compile_linux.sh
 ./compile_linux.sh
 ./willywangky 
 ```
-
 ## Status
 Finished
+## Known Bugs
+Save game yang sudah ada mungkin tidak kompatibel dengan environment anda. Jika ingin mengetes save & load game disarankan memulai new game dan save game baru.
