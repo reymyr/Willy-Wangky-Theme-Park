@@ -339,3 +339,14 @@ boolean AM_MoreThan(TabMaterial T1, TabMaterial T2)
     }
     return more;
 }
+
+TabMaterial AM_AddTabMaterial(TabMaterial T1, TabMaterial T2)
+/* Mengembalikan TabMaterial hasil penjumlahan dua TabMaterial */
+{
+    TabMaterial TSum = T1;
+    for (size_t i = AM_GetFirstIdx(T2); i <= AM_GetLastIdx(T2); i++)
+    {
+        AM_AddCount(&TSum, M_Name(AM_Elmt(T2, i)), M_Count(AM_Elmt(T2, i)), M_Price(AM_Elmt(T2, i)));
+    }
+    return TSum;
+}

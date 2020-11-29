@@ -111,7 +111,7 @@ int main()
                 MK_ADVKATAINPUT();
                 /* Insialisasi player dgn nama MK_CKata */
                 Nama(P) = MK_CKata;
-                Money(P) = 10000;
+                Money(P) = 2000;
                 AM_MakeEmpty(&Materials(P));
                 printf("\nSelamat bermain, ");
                 MK_printKata(Nama(P));printf("!\n");
@@ -131,9 +131,9 @@ int main()
                 setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, 2, 2);
 
                 /* Material awal buat debug */
-                AM_AddCount(&Materials(P), MK_MakeKata("Wood", 4), 20, AM_GetPrice(MaterialDatabase, MK_MakeKata("Wood", 4)));
-                AM_AddCount(&Materials(P), MK_MakeKata("Stone", 5), 20, AM_GetPrice(MaterialDatabase, MK_MakeKata("Stone", 5)));
-                AM_AddCount(&Materials(P), MK_MakeKata("Steel", 5), 20, AM_GetPrice(MaterialDatabase, MK_MakeKata("Steel", 5)));
+                // AM_AddCount(&Materials(P), MK_MakeKata("Wood", 4), 5, AM_GetPrice(MaterialDatabase, MK_MakeKata("Wood", 4)));
+                // AM_AddCount(&Materials(P), MK_MakeKata("Stone", 5), 20, AM_GetPrice(MaterialDatabase, MK_MakeKata("Stone", 5)));
+                // AM_AddCount(&Materials(P), MK_MakeKata("Steel", 5), 20, AM_GetPrice(MaterialDatabase, MK_MakeKata("Steel", 5)));
 
                 /* Inisialisasi data game lain */
                 AW_MakeEmpty(&BuiltWahana);
@@ -267,11 +267,12 @@ int main()
                                 }
                                 else
                                 {
-                                    if (AM_MoreThan(Materials(P), W_MaterialCost(WBuilt)))  /* Memeriksa apakah pemain memiliki bahan yang cukup */
+                                    if (AM_MoreThan(Materials(P), AM_AddTabMaterial(TotalMaterial(ActionStack), W_MaterialCost(WBuilt))))  /* Memeriksa apakah pemain memiliki bahan yang cukup */
                                     {
                                         setTile(&Map, G_CurrentArea(Map), Pos(P), 'W', -1);
 
                                         StackElmt = CreateStackInfo(MK_MakeKata("build", 5), A_Duration(AA_Elmt(ActionDatabase, 4)), cost, Pos(P));
+                                        S_MaterialNeeded(StackElmt) = W_MaterialCost(WBuilt);
                                         S_IdWahanaFrom(StackElmt) = -1;
                                         S_IdWahanaTo(StackElmt) = AW_GetId(WahanaDatabase, MK_CKata);
                                         Push(&ActionStack, StackElmt);
@@ -384,7 +385,7 @@ int main()
                                     {
                                         printf("Uang anda tidak cukup\n");
                                     }
-                                    else if (!AM_MoreThan(Materials(P), W_MaterialCost(WBuilt))) /* Material tidak mencukupi */
+                                    else if (!AM_MoreThan(Materials(P), AM_AddTabMaterial(TotalMaterial(ActionStack), W_MaterialCost(WBuilt)))) /* Material tidak mencukupi */
                                     {
                                         printf("Material anda tidak cukup\n");
                                     }
@@ -395,6 +396,7 @@ int main()
                                     setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
                                     /* Membuat elemen stack */
                                     StackElmt = CreateStackInfo(MK_MakeKata("upgrade", 7), A_Duration(AA_Elmt(ActionDatabase, 5)), cost, W_Location(AW_GetWahanaId(BuiltWahana, WId)));
+                                    S_MaterialNeeded(StackElmt) = W_MaterialCost(AW_GetWahana(WahanaDatabase, MK_CKata));
                                     S_IdWahanaFrom(StackElmt) = WId;
                                     S_IdWahanaTo(StackElmt) = AW_GetId(WahanaDatabase, MK_CKata);
                                     /* Push ke dalam stack */

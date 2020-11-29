@@ -9,20 +9,22 @@
 #include "../jam/jam.h"
 #include "../point/point.h"
 #include "../string_production/mesinkata.h"
+#include "../arrMaterial/arrMaterial.h"
 
 #define Nil -1
 #define S_MaxEl 50
 /* Nil adalah stack dengan elemen kosong . */
 
 typedef struct {
-    Kata name;        /* Nama aksi */
-    Kata matName;     /* Nama material jika name=buy */
-    int matCount;     /* Jumlah material juka name=buy */
-    JAM timeNeeded;   /* Waktu yang dibutuhkan aksi */
-    int moneyNeeded;  /* Uang yang dibutuhkan aksi */
-    POINT posWahana;  /* Posisi wahana jika name=build atau name=upgrade */
-    int idWahanaFrom; /* Id wahana lama jika name=build atau name=upgrade */
-    int idWahanaTo;   /* Id wahana baru jika name=build atau name=upgrade */
+    Kata name;             /* Nama aksi */
+    Kata matName;          /* Nama material jika name=buy */
+    int matCount;          /* Jumlah material juka name=buy */
+    JAM timeNeeded;        /* Waktu yang dibutuhkan aksi */
+    int moneyNeeded;       /* Uang yang dibutuhkan aksi */
+    TabMaterial matNeeded; /* Material yang dibutuhkan  */
+    POINT posWahana;       /* Posisi wahana jika name=build atau name=upgrade */
+    int idWahanaFrom;      /* Id wahana lama jika name=build atau name=upgrade */
+    int idWahanaTo;        /* Id wahana baru jika name=build atau name=upgrade */
 } S_infotype;
 typedef int S_address;   /* indeks tabel */
 
@@ -42,6 +44,7 @@ typedef struct {
 #define S_Name(SI) (SI).name
 #define S_TimeNeeded(SI) (SI).timeNeeded
 #define S_MoneyNeeded(SI) (SI).moneyNeeded
+#define S_MaterialNeeded(SI) (SI).matNeeded
 #define S_PosWahana(SI) (SI).posWahana
 #define S_IdWahanaFrom(SI) (SI).idWahanaFrom
 #define S_IdWahanaTo(SI) (SI).idWahanaTo
@@ -95,5 +98,8 @@ int TotalMoney(Stack S);
 
 JAM TotalTime(Stack S);
 /* Mengembalikan total waktu yang dibutuhkan dari semua elemen Stack */
+
+TabMaterial TotalMaterial(Stack S);
+/* Mengembalikan total bahan bangunan yang dibutuhkan dari semua elemen Stack */
 
 #endif

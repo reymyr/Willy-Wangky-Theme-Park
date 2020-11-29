@@ -156,4 +156,7 @@ void AM_DelCount(TabMaterial *T, Kata MatName, int count);
 boolean AM_MoreThan(TabMaterial T1, TabMaterial T2);
 /* Mengembalikan apakah semua material pada T1 memiliki jumlah >= di T2 */
 
+TabMaterial AM_AddTabMaterial(TabMaterial T1, TabMaterial T2);
+/* Mengembalikan TabMaterial hasil penjumlahan dua TabMaterial */
+
 #endif

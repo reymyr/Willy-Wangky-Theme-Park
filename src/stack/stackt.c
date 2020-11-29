@@ -1,6 +1,7 @@
 
 #include "../boolean.h"
 #include "stackt.h"
+#include "../arrMaterial/arrMaterial.h"
 
 S_infotype CreateStackInfo(Kata name, JAM time, int money, POINT pos)
 /* Membentuk elemen Stack dari data inputan */
@@ -123,6 +124,20 @@ JAM TotalTime(Stack S)
     {
         Pop(&S, &SI);
         total = MenitToJAM(JAMToMenit(total)+JAMToMenit(S_TimeNeeded(SI)));
+    }
+    return total;
+}
+
+TabMaterial TotalMaterial(Stack S)
+/* Mengembalikan total bahan bangunan yang dibutuhkan dari semua elemen Stack */
+{
+	S_infotype SI;
+    TabMaterial total;
+	AM_MakeEmpty(&total);
+    while (!IsEmptyStack(S))
+    {
+        Pop(&S, &SI);
+        total = AM_AddTabMaterial(total, S_MaterialNeeded(SI));
     }
     return total;
 }
