@@ -171,6 +171,7 @@ int main()
                     printf("Total waktu yang dibutuhkan: "); (JAMToMenit(TotalTime(ActionStack)) == 0 ? printf("0") : TulisJamMenit(TotalTime(ActionStack))); printf("\n");
                     printf("Total uang yang dibutuhkan: %d\n\n", TotalMoney(ActionStack));
                     printf("Masukkan perintah 'help' untuk melihat daftar perintah yang tersedia.\n");
+                    printf("Masukkan perintah 'exit' untuk keluar dari permainan.\n\n");
 
                     printf("Masukkan perintah: \n");
                     printf("> ");
@@ -520,11 +521,17 @@ int main()
                         counter = 0;
                         break;
                     case 15:
+                        /* SAVE */
                         save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, DalamWahana, ActionStack);
                         break;
                     case 16:
+                        /* HELP */
                         help();
                         break;
+                    case 17:
+                        /* EXIT */
+                        MK_EndKata = true;
+                        printf("Thank you for playing!!!\n");
                     default:
                         break;
                     }
@@ -542,7 +549,8 @@ int main()
                     PQ_PrintQueuePengunjung(Antrian); printf("\n");
                     AW_printBroken(BuiltWahana); printf("\n");
 
-                    printf("Masukkan perintah 'help' untuk melihat daftar perintah yang tersedia.\n\n");
+                    printf("Masukkan perintah 'help' untuk melihat daftar perintah yang tersedia.\n");
+                    printf("Masukkan perintah 'exit' untuk keluar dari permainan.\n\n");
                     printf("Masukkan perintah ");
                     if (T_Type(Elmt(GetMap(Map, G_CurrentArea(Map)), Baris(Pos(P)), Kolom(Pos(P)))) == 'O')
                     {
@@ -743,10 +751,18 @@ int main()
                         prepPhase = true;
                         break;
                     case 15:
+                        /* SAVE */
                         save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, DalamWahana, ActionStack);
                         break;
                     case 16:
+                        /* HELP */
                         help();
+                        break;
+                    case 17:
+                        /* EXIT */
+                        MK_EndKata = true;
+                        printf("Thank you for playing!!!\n");
+                        break;
                     default:
                         break;
                     }
@@ -882,6 +898,8 @@ void initActionDatabase(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(13, MK_MakeKata("office", 6), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(14, MK_MakeKata("prepare", 7), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(15, MK_MakeKata("save", 4), MakeJAM(0,0,0)));
+    AA_AddAsLastEl(AA, createAction(16, MK_MakeKata("help", 4), MakeJAM(0,0,0)));
+    AA_AddAsLastEl(AA, createAction(17, MK_MakeKata("exit", 4), MakeJAM(0,0,0)));
 }
 
 void initPrepActionArray(ArrAction * AA)
@@ -900,6 +918,7 @@ void initPrepActionArray(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(9, MK_MakeKata("main", 4), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(15, MK_MakeKata("save", 4), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(16, MK_MakeKata("help", 4), MakeJAM(0,0,0)));
+    AA_AddAsLastEl(AA, createAction(17, MK_MakeKata("exit", 4), MakeJAM(0,0,0)));
 }
 
 void initMainActionArray(ArrAction * AA)
@@ -917,6 +936,7 @@ void initMainActionArray(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(14, MK_MakeKata("prepare", 7), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(15, MK_MakeKata("save", 4), MakeJAM(0,0,0)));
     AA_AddAsLastEl(AA, createAction(16, MK_MakeKata("help", 4), MakeJAM(0,0,0)));
+    AA_AddAsLastEl(AA, createAction(17, MK_MakeKata("exit", 4), MakeJAM(0,0,0)));
 }
 
 void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, PrioQueuePengunjung inWahana, Stack actStack)
