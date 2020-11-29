@@ -167,14 +167,14 @@ int main()
                     printf("                                      Preparation Phase Day %d\n", Day(CurrentTime)); 
                     printf("===================================================================================================\n\n");
                     printCurrentMap(Map, P);
-                    printf("Name: "); MK_printKata(Nama(P)); printf("\n");
-                    printf("Money: %d\n", Money(P));
-                    printf("Current Time: "); TulisJAM(CurrentTime); printf("\n");
-                    printf("Opening Time: "); TulisJAM(OpeningTime); printf("\n");
-                    printf("Time Remaining: "); TulisJamMenit(DurasiJam(CurrentTime, OpeningTime)); printf("\n");
-                    printf("Total aksi yang akan dilakukan: %d\n", NbElmtStack(ActionStack));
-                    printf("Total waktu yang dibutuhkan: "); (JAMToMenit(TotalTime(ActionStack)) == 0 ? printf("0") : TulisJamMenit(TotalTime(ActionStack))); printf("\n");
-                    printf("Total uang yang dibutuhkan: %d\n\n", TotalMoney(ActionStack));
+                    printf("Name                            : "); MK_printKata(Nama(P)); printf("\n");
+                    printf("Money                           : %d\n", Money(P));
+                    printf("Current Time                    : "); TulisJAM(CurrentTime); printf("\n");
+                    printf("Opening Time                    : "); TulisJAM(OpeningTime); printf("\n");
+                    printf("Time Remaining                  : "); TulisJamMenit(DurasiJam(CurrentTime, OpeningTime)); printf("\n");
+                    printf("Total aksi yang akan dilakukan  : %d\n", NbElmtStack(ActionStack));
+                    printf("Total waktu yang dibutuhkan     : "); (JAMToMenit(TotalTime(ActionStack)) == 0 ? printf("0") : TulisJamMenit(TotalTime(ActionStack))); printf("\n");
+                    printf("Total uang yang dibutuhkan      : %d\n\n", TotalMoney(ActionStack));
                     printf("Masukkan perintah 'help' untuk melihat daftar perintah yang tersedia.\n");
 
                     printf("Masukkan perintah: \n");
@@ -570,11 +570,11 @@ int main()
                     printCurrentMap(Map, P);
                     PQ_PrintQueuePengunjung(Antrian); printf("\n");
 
-                    printf("Name: "); MK_printKata(Nama(P)); printf("\n");
-                    printf("Money: %d\n", Money(P));
-                    printf("Current Time: "); TulisJAM(CurrentTime); printf("\n");
-                    printf("Closing Time: "); TulisJAM(ClosingTime); printf("\n");
-                    printf("Time Remaining: "); TulisJamMenit(DurasiJam(CurrentTime, ClosingTime)); printf("\n");
+                    printf("Name            : "); MK_printKata(Nama(P)); printf("\n");
+                    printf("Money           : %d\n", Money(P));
+                    printf("Current Time    : "); TulisJAM(CurrentTime); printf("\n");
+                    printf("Closing Time    : "); TulisJAM(ClosingTime); printf("\n");
+                    printf("Time Remaining  : "); TulisJamMenit(DurasiJam(CurrentTime, ClosingTime)); printf("\n");
                     AW_printBroken(BuiltWahana); printf("\n\n");
 
                     printf("Masukkan perintah 'help' untuk melihat daftar perintah yang tersedia.\n");
