@@ -32,11 +32,5 @@ chmod +x compile_linux.sh
 ./willywangky 
 ```
 
-## To-Do
-* Driver Point
-* Driver Stack
-* [Laporan](https://itbdsti-my.sharepoint.com/:w:/r/personal/13519039_mahasiswa_itb_ac_id/_layouts/15/Doc.aspx?sourcedoc=%7B3f334624-ffab-4844-9afd-c504810e09de%7D&action=default&cid=f6f70466-f3e5-4c9e-8436-918e2d913471)
-* Form Penilaian
-
 ## Status
-Work in Progress (?)
+Finished
