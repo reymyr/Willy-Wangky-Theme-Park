@@ -84,6 +84,7 @@ void PrintMATRIKS (MATRIKS M, Player P)
     indeks i, j;
     for (i = GetFirstIdxBrs(M); i <= GetLastIdxBrs(M); i++)
     {
+        printf("                                     ");
         for (j = GetFirstIdxKol(M); j <= GetLastIdxKol(M); j++)
         {
             if (i == Baris(Pos(P)) && j == Kolom(Pos(P)))
