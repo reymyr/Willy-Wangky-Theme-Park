@@ -2,12 +2,12 @@
 (0(1(3()())())(2()()))
 (4(5()())())
 (6(7(8()())())())
-0_0_wahana satu_tipe 1_50_3_15_Wood 3 0 Stone 2 0 Steel 1 0 _ 100_tes deskripsi
-0_1_wahana dua_tipe 2_150_2_10_Wood 3 0 Stone 3 0 Steel 3 0 _ 200_ini wahana 2
-0_2_rollercoaster_roller_200_5_20_Wood 2 0 Stone 4 0 Steel 5 0 _ 200_roller coaster asik
-0_3_jungkat jungkit_wahana anak_100_2_15_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_naik turun
-4_4_halilintar_tipe_100_5_20_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_tes
-4_5_nama wahana_tipe wahana_200_3_30_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_keren
+0_0_Mr Bones Wild Ride_lol_50_3_15_Wood 3 0 Stone 2 0 Steel 1 0 _ 100_i wanna get off
+0_1_Celestia_gacha_150_2_10_Wood 3 0 Stone 3 0 Steel 3 0 _ 200_pls give zhongli
+0_2_Rollercoaster_roller_200_5_20_Wood 2 0 Stone 4 0 Steel 5 0 _ 200_roller coaster asik
+0_3_Jungkat Jungkit_fbi_100_2_15_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_naik turun
+4_4_Halilintar_dufan_100_5_20_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_mantul
+4_5_Labtek V_itebe_200_3_30_Wood 5 0 Stone 5 0 Steel 5 0 _ 200_keren
 6_6_Pengkom_matkul_100_1_20_Wood 3 0 Stone 1 0 Steel 2 0 _ 300_keos
 6_7_Daspro_matkul_150_2_25_Wood 3 0 Stone 2 0 Steel 2 0 _ 350_tambah keos
 6_8_Alstrukdat_matkul_200_3_30_Wood 4 0 Stone 3 0 Steel 3 0 _ 400_lebih keos.
