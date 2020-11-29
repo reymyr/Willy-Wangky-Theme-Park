@@ -82,7 +82,7 @@ int main()
 
     /* Tampilan main menu */
     printf("===================================================================================================\n");
-    printf("                                     Welcome to Willy Wangky's!\n");
+    printf("                                Welcome to Willy Wangky's World!\n");
     printf("===================================================================================================\n\n");
 
     printf("Commands:\n");

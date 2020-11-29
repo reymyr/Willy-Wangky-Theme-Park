@@ -1,3 +1,2 @@
-0 0_wahana satu_tipe 1_0_5,7
-4 4_halilintar_tipe_0_4,5
-6 6_Pengkom_matkul_1_5,2.
+6 6_Pengkom_matkul_0_4,3
+0 0_wahana satu_tipe 1_0_3,6.
