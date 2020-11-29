@@ -20,52 +20,42 @@ boolean WU_IsEmpty(ArrListWahanaUpg A)
 void loadwahanahistory(char *filename, ArrListWahanaUpg * A)
 /* Melakukan load data dari file wahana history, tiap wahana dan history upgradenya disimpan pada sebuah List berkait, dan tiap List dicatat pada Array of List A */
 {
-    int currentid;
+    int currentbaseid,idx=0;
     Wahana W;
     List WahanaHistory;
+
+    WU_CreateEmpty(A);
 
     MK_STARTKATA(filename);
     while (!MK_EndKata)
     {
         LL_CreateEmpty(&WahanaHistory);
-        W_WahanaId(W) = MK_KataToInt(MK_CKata);
-        currentid = W_WahanaId(W);
-        printf("%d",currentid);
-        while (currentid == W_WahanaId(W))
+        W_BaseId(W) = MK_KataToInt(MK_CKata);
+        currentbaseid = W_BaseId(W);
+        while (currentbaseid == W_BaseId(W))
         {
+            MK_ADVKATAINPUT();
+            W_WahanaId(W) = MK_KataToInt(MK_CKata);
             MK_ADVKATAINPUT();
             W_Name(W) = MK_CKata;
             MK_ADVKATAINPUT();
             W_Type(W) = MK_CKata;
             MK_ADVKATAINPUT();
-            W_Price(W) = MK_KataToInt(MK_CKata);
+            W_Area(W) = MK_KataToInt(MK_CKata);
             MK_ADVKATAINPUT();
             W_Location(W) = MK_KataToPoint(MK_CKata);
-            MK_ADVKATAINPUT();
-            W_Desc(W) = MK_CKata;
-            MK_ADVKATAINPUT();
-            W_Capacity(W) = MK_KataToInt(MK_CKata);
-            MK_ADVKATAINPUT();
-            W_Duration(W) = MK_KataToInt(MK_CKata);
-            MK_ADVKATAINPUT();
-            W_UseCount(W) = MK_KataToInt(MK_CKata);
-            MK_ADVKATAINPUT();
-            W_Penghasilan(W) = MK_KataToInt(MK_CKata);
-            MK_ADVKATAINPUT();
-            W_IsBroken(W) = MK_isKataSama(MK_CKata,MK_MakeKata("0",1))?false : true;
-            W_TodayPenghasilan(W) = 0;
-            W_TodayUseCount(W) = 0;
             LL_InsVLast(&WahanaHistory,W);
             MK_ADV();
             MK_ADVKATA();
             if (!MK_EndKata){
-                W_WahanaId(W) = MK_KataToInt(MK_CKata);
+                W_BaseId(W) = MK_KataToInt(MK_CKata);
             } else{
                 break;
             }
         }
-        (*A).Tab[currentid] = WahanaHistory;
-        (*A).Neff = currentid+1;
+        (*A).Tab[idx] = WahanaHistory;
+        NEff_ArrListWahanaUpg(*A)++;
+        idx++;
     }
 }
 

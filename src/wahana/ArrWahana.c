@@ -158,10 +158,10 @@ void AW_printWahanaCost(Wahana W)
 /* I.S. W terdefinisi */
 /* F.S. Jumlah material dan uang yang dibutuhkan untuk membangun W tertulis di layar */
 {
-    printf(" * "); MK_printKata(W_Name(W)); printf("\n");
-    printf("   Bahan:\n");
+    printf(" ");MK_printKata(W_Name(W)); printf("\n");
+    printf("    Bahan :\n");
     AM_TulisIsiTabCount(W_MaterialCost(W));
-    printf("   Harga : %d", W_MoneyCost(W));
+    printf("    Harga : %d", W_MoneyCost(W));
 }
 
 /* ********** SEARCHING ********** */
@@ -498,6 +498,9 @@ void UpgradeWahana(ArrWahana * AW, Wahana W0, Wahana W1, ArrListWahanaUpg A)
     W_Duration(AW_Elmt(*AW, idx)) = W_Duration(W1);
     W_MoneyCost(AW_Elmt(*AW, idx)) = W_MoneyCost(W1);
     W_MaterialCost(AW_Elmt(*AW, idx)) = W_MaterialCost(W1);
+
+    W_Area(W1) = W_Area(W0);
+    W_Location(W1) = W_Location(W0);
 
     // Cari wahana pada W_Area dan W_Location
     int id = SearchIdxByLoc(W_Area(W0),W_Location(W0),A);
