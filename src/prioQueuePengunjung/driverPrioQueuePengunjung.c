@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "prioQueuePengunjung.h"
 
-/* gcc .\drivePrioQueuePengunjung.c .\prioQueuePengunjung.c .\arrKata.c ..\string_production\mesinkata.c ..\string_production\mesinkar.c ..\point\point.c -o driveQ -lm */
+/* gcc driverPrioQueuePengunjung.c prioQueuePengunjung.c ./arrKata.c ../string_production/mesinkata.c ../string_production/mesinkar.c ../point/point.c ../jam/jam.c -o driveQ -lm */
 
 int main()
 {
@@ -36,7 +36,7 @@ int main()
             scanf("%d", &nWahana);
 
             
-            for (size_t i = 0; i < nWahana; i++)
+            for (int i = 0; i < nWahana; i++)
             {
                 printf("Nama wahana ke-%d: ", i+1);
                 MK_STARTKATAINPUT();

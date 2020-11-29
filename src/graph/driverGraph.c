@@ -3,6 +3,8 @@
 #include "graph.h"
 #include "player.h"
 
+/* gcc driverGraph.c graph.c ../point/point.c ../matriks/matriks.c ../string_production/mesinkata.c ../string_production/mesinkar.c -o driverG -lm */
+
 int main()
 {
     Graph G;

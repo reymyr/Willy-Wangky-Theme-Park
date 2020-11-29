@@ -54,4 +54,4 @@ int main(){
     return 0;
 }
 
-// gcc -o driverlist driverlist.c listlinier.c ../string_production/mesinkar.c ../string_production/mesinkata.c ../point/point.c
+// gcc -o driverlist driverlist.c listlinier.c ../string_production/mesinkar.c ../string_production/mesinkata.c ../point/point.c -lm

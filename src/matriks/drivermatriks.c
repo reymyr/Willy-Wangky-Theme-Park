@@ -43,4 +43,4 @@ int main(){
     return 0;
 }
 
-// gcc -o matriks matriks.c drivermatriks.c ../string_production/mesinkar.c ../string_production/mesinkata.c ../point/point.c
+// gcc -o matriks matriks.c drivermatriks.c ../string_production/mesinkar.c ../string_production/mesinkata.c ../point/point.c -lm

@@ -3,7 +3,7 @@
 #include "arrMaterial.h"
 #include "../string_production/mesinkata.h"
 
-/* gcc .\driverArrMaterial.c .\arrMaterial.c ..\string_production\mesinkar.c ..\string_production\mesinkata.c ..\point\point.c -o am -lm */
+/* gcc driverArrMaterial.c arrMaterial.c ../string_production/mesinkar.c ../string_production/mesinkata.c ../point/point.c -o driveAM -lm */
 
 int main()
 {
@@ -96,7 +96,7 @@ int main()
 
             break;
         case 6:
-            AM_BacaFile(&T, "../../files/material.txt");
+            AM_BacaFile(&T, "../../files/material.txt", false);
             break;
         default:
             printf("Input tidak valid\n");

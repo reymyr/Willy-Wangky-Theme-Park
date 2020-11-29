@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include "jam.h"
 
+/* gcc driverJam.c jam.c -o driverJ */
+
 int main() {
     JAM J1, J2;
 

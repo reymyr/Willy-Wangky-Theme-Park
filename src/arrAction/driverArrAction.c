@@ -41,7 +41,7 @@ int main()
             MK_STARTKATAINPUT();
 
             printf("Durasi Action (menit): ");
-            scanf("%d", &menit);
+            scanf("%ld", &menit);
 
             AA_AddAsLastEl(&T, createAction(id, MK_CKata, MenitToJAM(menit)));
 

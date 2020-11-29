@@ -1,6 +1,6 @@
 #include "stackt.h"
 
-/* gcc driverStack.c stackt.c ../string_production/mesinkata.c ../string_production/mesinkar.c ../jam/jam.c ../point/point.c -o driverStack -lm */
+/* gcc driverstackt.c stackt.c ../string_production/mesinkata.c ../string_production/mesinkar.c ../jam/jam.c ../point/point.c ../arrMaterial/arrMaterial.c -o driverStack -lm */
 
 int main()
 {

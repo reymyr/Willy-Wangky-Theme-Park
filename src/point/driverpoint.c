@@ -2,6 +2,8 @@
 #include<math.h>
 #include "point.h"
 
+/* gcc driverpoint.c point.c -o driverP -lm */
+
 int main(){
 	int x,y,a,b;
 	printf("Absis1: ");

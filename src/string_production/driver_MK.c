@@ -63,7 +63,7 @@ int main(){
             }
             else if(input==3){
                 if(flag_start){
-                    MK_printKata(MK_CKata);
+                    MK_printKata(MK_CKata); printf("\n");
                 }
                 else{
                     printf("Mesin Kata is not started yet.\n");

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "bintree.h"
 
-/* gcc .\driverTree.c .\bintree.c ..\string_production\mesinkata.c ..\string_production\mesinkar.c ..\point\point.c */
+/* gcc driverTree.c bintree.c ../string_production/mesinkata.c ../string_production/mesinkar.c ../point/point.c -o driverTree -lm */
 
 int main()
 {
