@@ -19,11 +19,13 @@ Program dibuat dalam bahasa C
 ## Setup
 ### Windows
 ```bash
+cd src
 compile_win.bat
 willywangky.exe
 ```
 ### Linux
 ```bash
+cd src
 chmod +x compile_linux.sh
 ./compile_linux.sh
 ./willywangky 
