@@ -39,8 +39,4 @@ chmod +x compile_linux.sh
 * Form Penilaian
 
 ## Status
-Work in Progress
-
-## Known Bugs
-* savewahanahistory gabisa
-* Kalo bangun dua bangunan dengan base yang sama historynya ketimpa
+Work in Progress (?)
