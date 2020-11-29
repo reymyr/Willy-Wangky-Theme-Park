@@ -10,8 +10,6 @@
 #include "../boolean.h"
 #include "bintree.h"
 #include "../string_production/mesinkata.h"
-#include "../wahana/ArrWahana.h"
-#include "../wahana/wahana.h"
 
 /* *** Konstruktor *** */
 BinTree Tree(BT_infotype Akar, BinTree L, BinTree R)
