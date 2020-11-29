@@ -149,7 +149,7 @@ int main()
                 CreateEmptyStack(&ActionStack);
                 load(&prepPhase, &P, &BuiltWahana, &CurrentTime, &Map, &Antrian, &DalamWahana, &ActionStack);
                 /* Load Wahana History */
-                loadwahanahistory("../../WahanaHistory.txt",&ArrWahanaUpg);
+                // loadwahanahistory("../../WahanaHistory.txt",&ArrWahanaUpg);
             }
 
             do
@@ -206,7 +206,7 @@ int main()
 
                         /* Meminta input nama wahana */
                         MK_ADVKATAINPUT();
-                        if (AW_SearchB(BuiltWahana, MK_CKata)) /* Nanti ada bug klo bisa dua wahana yg sama jdi fix sementara ini dlu */
+                        if (AW_SearchB(BuiltWahana, MK_CKata)) /* Tidak bisa membangun dua wahana yang sama */
                         {
                             printf("Anda sudah membangun wahana tersebut\n");
                         }
@@ -347,6 +347,10 @@ int main()
                                 {
                                     printf("Wahana ini tidak dapat di upgrade ke wahana yang di input\n");
                                 }
+                                else if (AW_SearchB(BuiltWahana, MK_CKata)) /* Tidak bisa membangun dua wahana yang sama */
+                                {
+                                    printf("Anda sudah membangun wahana tersebut\n");
+                                }
                                 else
                                 {
                                     WBuilt = AW_GetWahana(WahanaDatabase, MK_CKata);
@@ -361,15 +365,15 @@ int main()
                                     }
                                     else
                                     {
-                                    /* Penanda wahana sedang diupgrade */
-                                    setTile(&Map, G_CurrentArea(Map), W_Location(AW_GetWahanaId(BuiltWahana, WId)), 'W', -1);
-                                    setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
-                                    /* Membuat elemen stack */
-                                    StackElmt = CreateStackInfo(MK_MakeKata("upgrade", 7), A_Duration(AA_Elmt(ActionDatabase, 5)), cost, W_Location(AW_GetWahanaId(BuiltWahana, WId)));
-                                    S_IdWahanaFrom(StackElmt) = WId;
-                                    S_IdWahanaTo(StackElmt) = AW_GetId(WahanaDatabase, MK_CKata);
-                                    /* Push ke dalam stack */
-                                    Push(&ActionStack, StackElmt);
+                                        /* Penanda wahana sedang diupgrade */
+                                        setTile(&Map, G_CurrentArea(Map), W_Location(AW_GetWahanaId(BuiltWahana, WId)), 'W', -1);
+                                        setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
+                                        /* Membuat elemen stack */
+                                        StackElmt = CreateStackInfo(MK_MakeKata("upgrade", 7), A_Duration(AA_Elmt(ActionDatabase, 5)), cost, W_Location(AW_GetWahanaId(BuiltWahana, WId)));
+                                        S_IdWahanaFrom(StackElmt) = WId;
+                                        S_IdWahanaTo(StackElmt) = AW_GetId(WahanaDatabase, MK_CKata);
+                                        /* Push ke dalam stack */
+                                        Push(&ActionStack, StackElmt);
                                     }
                                 }
                             }
@@ -489,7 +493,11 @@ int main()
                                 AW_DelLastEl(&BuiltWahana, &WBuilt);
                                 LL_DelVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)], &WBuilt);
                             }
-                            /* Undo Upgrade kalo ada yg udh dijalanin pas commandnya */
+                            else if (MK_isKataSama(S_Name(StackElmt), MK_MakeKata("upgrade", 7))) /* Undo perintah upgrade */
+                            {
+                                setTile(&Map, W_Area(AW_GetWahanaId(BuiltWahana, S_IdWahanaFrom(StackElmt))), S_PosWahana(StackElmt), 'W', S_IdWahanaFrom(StackElmt));
+                                setPlayer(GetMap(Map, G_CurrentArea(Map)), &P, Baris(Pos(P)), Kolom(Pos(P)));
+                            }
                         }
                         CurrentTime = MakeJAM(Day(CurrentTime), 9, 0);
                         prepPhase = false;  /* Penanda main phase */
@@ -578,8 +586,6 @@ int main()
                                 }                                
                                 else
                                 {
-                                    
-                                    /* HARUSNYA WAKTU NAMBAH SESUAI WAKTU SERVE, PENGUNJUNG DIPINDAH KE TEMPAT LAIN SELAMA DURASI WAHANA */
                                     CurrentTime = NextNMenit(CurrentTime, JAMToMenit(A_Duration(AA_Elmt(ActionDatabase, ActionID))));
                                     
                                     int r = rand() % 100;
