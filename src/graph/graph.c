@@ -189,14 +189,15 @@ void printCurrentMap(Graph G, Player P)
 /* I.S. Graph terdefinisi */
 /* F.S. Map di area sekarang tertulis di layar */
 {
-    printf("Map : \n\n");
+    printf("                               =============== MAP ===============\n\n");
     PrintMATRIKS(GetMap(G, G_CurrentArea(G)), P);
-    printf("\n --- Legend --------------------------------\n");
-    printf("| A            : Antrian\n");
-    printf("| P            : Player\n");
-    printf("| W            : Wahana\n");
-    printf("| O            : Office\n");
-    printf("| <, ^, >, V   : Gerbang\n\n");
+    printf("\n                                 ============ Legend ============\n");
+    printf("                                        A           : Antrian\n");
+    printf("                                        P           : Player\n");
+    printf("                                        W           : Wahana\n");
+    printf("                                        O           : Office\n");
+    printf("                                        <, ^, >, V  : Gerbang\n");
+    printf("                                 ================================\n\n");
 }
 
 void setTile(Graph * G, int area, POINT pos, char type, int id)
