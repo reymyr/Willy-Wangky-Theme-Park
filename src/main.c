@@ -20,6 +20,7 @@ void help();
 /* Savenya gabisa ngeload pointer (Graph, list linear, tree) */
 struct SaveData {
     boolean prepPhase;
+    int curArea;
     Player player;
     ArrWahana builtWahana;
     JAM currentTime;
@@ -28,7 +29,7 @@ struct SaveData {
     Stack actionStack;
 };
 
-void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, PrioQueuePengunjung inWahana, Stack actStack);
+void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, Graph G, PrioQueuePengunjung antrian, PrioQueuePengunjung inWahana, Stack actStack);
 /* Prosedur menyimpan data game ke file eksternal */
 
 void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *G, PrioQueuePengunjung *antrian, PrioQueuePengunjung *inWahana, Stack *actStack);
@@ -533,14 +534,17 @@ int main()
                         counter = 0;
                         break;
                     case 15:
-                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, DalamWahana, ActionStack);
+                        /* SAVE */
+                        save(prepPhase, P, BuiltWahana, CurrentTime, Map, Antrian, DalamWahana, ActionStack);
                         savewahanahistory("../files/wahanahistory.txt",ArrWahanaUpg);
                         break;
                     case 16:
+                        /* HELP */
                         help();
                         break;
                     case 17:
-                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, DalamWahana, ActionStack);
+                        /* EXIT */
+                        save(prepPhase, P, BuiltWahana, CurrentTime, Map, Antrian, DalamWahana, ActionStack);
                         savewahanahistory("../files/wahanahistory.txt",ArrWahanaUpg);
                         printf("\nThank you for playing!!!\n");
                         printf("===================================================================================================\n");
@@ -769,14 +773,17 @@ int main()
                         prepPhase = true;
                         break;
                     case 15:
-                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, DalamWahana, ActionStack);
+                        /* SAVE */
+                        save(prepPhase, P, BuiltWahana, CurrentTime, Map, Antrian, DalamWahana, ActionStack);
                         savewahanahistory("../files/wahanahistory.txt",ArrWahanaUpg);
                         break;
                     case 16:
+                        /* HELP */
                         help();
                         break;
                     case 17:
-                        save(prepPhase, P, BuiltWahana, CurrentTime, Antrian, DalamWahana, ActionStack);
+                        /* EXIT */
+                        save(prepPhase, P, BuiltWahana, CurrentTime, Map, Antrian, DalamWahana, ActionStack);
                         savewahanahistory("../files/wahanahistory.txt",ArrWahanaUpg);
                         printf("\nThank you for playing!!!\n");
                         printf("===================================================================================================\n");
@@ -958,7 +965,7 @@ void initMainActionArray(ArrAction * AA)
     AA_AddAsLastEl(AA, createAction(17, MK_MakeKata("exit", 4), MakeJAM(0,0,0)));
 }
 
-void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePengunjung antrian, PrioQueuePengunjung inWahana, Stack actStack)
+void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, Graph G, PrioQueuePengunjung antrian, PrioQueuePengunjung inWahana, Stack actStack)
 /* Prosedure menyimpan data game ke file eksternal */
 {
     char* path = "../files/savedata";
@@ -967,6 +974,7 @@ void save(boolean prep, Player P, ArrWahana builtW, JAM currentTime, PrioQueuePe
     savefile = fopen(path, "wb");
     struct SaveData s;
     s.prepPhase = prep;
+    s.curArea = G_CurrentArea(G);
     s.player = P;
     s.builtWahana = builtW;
     s.currentTime = currentTime;
@@ -1008,6 +1016,8 @@ void load(boolean *prep, Player *P, ArrWahana *builtW, JAM *currentTime, Graph *
     InsertLastGraph(G, P2);
     InsertLastGraph(G, P3);
     InsertLastGraph(G, P4);
+
+    G_CurrentArea(*G) = s.curArea;
 
     for (size_t i = 0; i < AW_NbElmt(*builtW); i++)
     {
