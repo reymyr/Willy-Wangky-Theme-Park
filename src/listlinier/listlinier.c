@@ -290,7 +290,7 @@ void LL_PrintInfoNamaWahana (List L)
     
     if (!LL_IsEmpty(L))
     {
-        MK_printKata(W_Name(Info(P)));
+        MK_printKata(W_Name(Info(P)));printf(" (Base Wahana)");
         P = Next(P);
         while (P!=LL_Nil){
             printf(" -> ");
@@ -328,17 +328,12 @@ void LL_writeList(FILE * f, List L){
     address P = First(L);
     while (P != LL_Nil)
     {
-        fprintf(f, "%d ", W_WahanaId(Info(P)));
+        fprintf(f, "%d ", W_BaseId(Info(P)));
+        fprintf(f, "%d_", W_WahanaId(Info(P)));
         MK_WriteKata(f,W_Name(Info(P)));fprintf(f,"_");
         MK_WriteKata(f,W_Type(Info(P)));fprintf(f,"_");
-        fprintf(f,"%d_",W_Price(Info(P)));
-        MK_WritePoint(f,W_Location(Info(P)));fprintf(f,"_");
-        MK_WriteKata(f,W_Desc(Info(P)));fprintf(f,"_");
-        fprintf(f,"%d_",W_Capacity(Info(P)));
-        fprintf(f,"%d_",W_Duration(Info(P)));
-        fprintf(f,"%d_",W_UseCount(Info(P)));
-        fprintf(f,"%d_",W_Penghasilan(Info(P)));
-        fprintf(f,"%d",W_IsBroken(Info(P)));
+        fprintf(f,"%d",W_Area(Info(P)));fprintf(f,"_");
+        MK_WritePoint(f,W_Location(Info(P)));
         if (Next(P)!= LL_Nil)
         {
             fprintf(f,"%c",MK_NEWLINE);
