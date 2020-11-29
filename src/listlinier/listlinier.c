@@ -59,7 +59,7 @@ address LL_Search (List L, infotype X)
     {
         while (!found && P!=LL_Nil)
         {
-            if (MK_isKataSama(X, Info(P))){
+            if (W_WahanaId(X)==W_WahanaId(Info(P))){
                 found = true;
             } else
             {
@@ -103,7 +103,7 @@ address LL_SearchPrec (List L, infotype X)
     
     while (!found && P!=LL_Nil)
     {
-        if (MK_isKataSama(X, Info(P))){
+        if (W_WahanaId(X)==W_WahanaId(Info(P))){
             found = true;
         } else
         {
@@ -290,11 +290,11 @@ void LL_PrintInfoNamaWahana (List L)
     
     if (!LL_IsEmpty(L))
     {
-        MK_printKata(Info(P));
+        MK_printKata(W_Name(Info(P)));printf(" (Base Wahana)");
         P = Next(P);
         while (P!=LL_Nil){
             printf(" -> ");
-            MK_printKata(Info(P));
+            MK_printKata(W_Name(Info(P)));
             P=Next(P);
         }
     }
@@ -328,11 +328,15 @@ void LL_writeList(FILE * f, List L){
     address P = First(L);
     while (P != LL_Nil)
     {
-        MK_WriteKata(f, Info(P)); 
-
+        fprintf(f, "%d ", W_BaseId(Info(P)));
+        fprintf(f, "%d_", W_WahanaId(Info(P)));
+        MK_WriteKata(f,W_Name(Info(P)));fprintf(f,"_");
+        MK_WriteKata(f,W_Type(Info(P)));fprintf(f,"_");
+        fprintf(f,"%d",W_Area(Info(P)));fprintf(f,"_");
+        MK_WritePoint(f,W_Location(Info(P)));
         if (Next(P)!= LL_Nil)
         {
-            fprintf(f, "_");
+            fprintf(f,"%c",MK_NEWLINE);
         }
         P = Next(P);
     }
