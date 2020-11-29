@@ -27,8 +27,14 @@ void loadwahanahistory(char *filename, ArrListWahanaUpg * A);
 void savewahanahistory(char *filename, ArrListWahanaUpg A);
 /* Menyalin dan menyimpan riwayat wahana pada array A ke file eksternal*/
 
-void PrintWahanaHistory(Wahana W, ArrListWahanaUpg A);
+void PrintWahanaHistory(int W_Area, POINT W_Location, ArrListWahanaUpg A);
 /* Menampilkan History Upgrade Wahana W */
+
+void WU_Build(ArrListWahanaUpg * A, Wahana W);
+/* Menambahkan elemen list baru pada array A yang berisi wahana W yaitu wahana yang akan dibangun*/
+
+int SearchIdxByLoc(int W_Area, POINT W_Location, ArrListWahanaUpg A);
+/* Mengembalikan indeks dari list yg menyimpan history wahana pada area W_Area , W_Locatio  pada array A*/
 
 boolean IsWahanaRusak(Wahana W);
 /* Mengembalikan true jika Wahana rusak dan false jika tidak*/

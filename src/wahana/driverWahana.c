@@ -13,7 +13,6 @@ int main()
         AW_detailWahana(Info(First(A.Tab[i])),A);
     }
 
-    savewahanahistory("testwahanahist.txt",A);
 
     ArrWahana AW;
     AW_BacaFile(&AW, "testwahana.txt");

@@ -175,7 +175,7 @@ void AW_newDay(ArrWahana * AW);
 /* I.S. AW terdefinisi */
 /* F.S todayPenghasilan dan todayUseCount diset menjadi 0 untuk setiap wahana */
 
-void UpgradeWahana(ArrWahana * AW, Wahana W0, Wahana W1, ArrListWahanaUpg * A);
+void UpgradeWahana(ArrWahana * AW, Wahana W0, Wahana W1, ArrListWahanaUpg A);
 /* Meng-upgrade Wahana W0 menjadi Wahana W1 */
 /* I.S : Asumsi W1 sudah valid merupakan upgrade dari wahana W0*/
 

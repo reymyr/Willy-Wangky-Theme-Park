@@ -343,7 +343,7 @@ void AW_detailWahana(Wahana W, ArrListWahanaUpg A)
     printf("Lokasi      : Area %d ", W_Area(W)); TulisPOINT(W_Location(W)); printf("\n");
     printf("Deskripsi   : "); MK_printKata(W_Desc(W)); printf("\n");
     printf("Kapasitas   : %d\n", W_Capacity(W));
-    printf("History     : ");PrintWahanaHistory(W,A);printf("\n");
+    printf("History     : ");PrintWahanaHistory(W_Area(W),W_Location(W),A);printf("\n");
     printf("Durasi      : %d menit\n", W_Duration(W));
     printf("Status      : "); (W_IsBroken(W) ? printf("Rusak") : printf("Berfungsi")); printf("\n");
 }
@@ -477,7 +477,7 @@ void AW_newDay(ArrWahana * AW)
     }
 }
 
-void UpgradeWahana(ArrWahana * AW, Wahana W0, Wahana W1, ArrListWahanaUpg * A)
+void UpgradeWahana(ArrWahana * AW, Wahana W0, Wahana W1, ArrListWahanaUpg A)
 /* Meng-upgrade Wahana W0 menjadi Wahana W1 */
 /* I.S : Asumsi W1 sudah valid merupakan upgrade dari wahana W0*/
 {
@@ -492,5 +492,10 @@ void UpgradeWahana(ArrWahana * AW, Wahana W0, Wahana W1, ArrListWahanaUpg * A)
     W_MoneyCost(AW_Elmt(*AW, idx)) = W_MoneyCost(W1);
     W_MaterialCost(AW_Elmt(*AW, idx)) = W_MaterialCost(W1);
 
-    LL_InsVLast(&WU_Info(*A, W_BaseId(W0)), W1);
+    // Cari wahana pada W_Area dan W_Location
+    int id = SearchIdxByLoc(W_Area(W0),W_Location(W0),A);
+    // Menambahkan W1 sebagai elemen terakhir list wahana history
+    if (id != -1){
+        LL_InsVLast(&WU_Info(A, id), W1);
+    } 
 }

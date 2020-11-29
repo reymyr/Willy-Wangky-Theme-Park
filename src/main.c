@@ -259,8 +259,7 @@ int main()
                                         W_Area(WBuilt) = G_CurrentArea(Map);
                                         W_Location(WBuilt) = Pos(P);
 
-                                        LL_CreateEmpty(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)]);
-                                        LL_InsVLast(&ArrWahanaUpg.Tab[W_BaseId(WBuilt)],WBuilt);
+                                        WU_Build(&ArrWahanaUpg,WBuilt);
                                         AW_AddAsLastEl(&BuiltWahana, WBuilt);
                                         
 
@@ -460,7 +459,7 @@ int main()
                                 {
                                     AM_DelCount(&Materials(P), M_Name(AM_Elmt(matCost, i)), M_Count(AM_Elmt(matCost, i)));
                                 }
-                                UpgradeWahana(&BuiltWahana, AW_GetWahanaId(BuiltWahana, S_IdWahanaFrom(StackElmt)), AW_GetWahanaId(WahanaDatabase, S_IdWahanaTo(StackElmt)), &ArrWahanaUpg);
+                                UpgradeWahana(&BuiltWahana, AW_GetWahanaId(BuiltWahana, S_IdWahanaFrom(StackElmt)), AW_GetWahanaId(WahanaDatabase, S_IdWahanaTo(StackElmt)), ArrWahanaUpg);
                             }
                             else /* build */
                             {

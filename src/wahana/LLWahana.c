@@ -86,10 +86,43 @@ void savewahanahistory(char *filename, ArrListWahanaUpg A){
     fclose(f);   
 }
 
-void PrintWahanaHistory(Wahana W, ArrListWahanaUpg A)
+int SearchIdxByLoc(int W_Area, POINT W_Location, ArrListWahanaUpg A){
+/* Mengembalikan indeks dari list yg menyimpan history wahana pada area W_Area , W_Locatio  pada array A*/
+    boolean found = false;
+    int id = 0;
+    while (!found && id< NEff_ArrListWahanaUpg(A)){
+        if (W_Area(Info(First(WU_Info(A,id))))== W_Area && PointEQ(W_Location , W_Location(Info(First(WU_Info(A,id)))))){
+            found = true;
+        } else{
+            id++;
+        }
+    }
+    if (found){
+        return id;
+    } else
+    {
+        return -1;
+    }
+}
+
+void PrintWahanaHistory(int W_Area, POINT W_Location , ArrListWahanaUpg A)
 /* Menampilkan history dari wahana W*/
 {
-    LL_PrintInfoNamaWahana(A.Tab[W_BaseId(W)]);
+    // Cari wahana pada W_Area dan W_Location
+    int id = SearchIdxByLoc(W_Area,W_Location,A);
+    if (id != -1){
+        LL_PrintInfoNamaWahana(WU_Info(A,id));
+    } else
+    {
+        printf("Wahana tidak ditemukan.");
+    }
+}
+
+void WU_Build(ArrListWahanaUpg * A, Wahana W){
+/* Menambahkan elemen list baru pada array A yang berisi wahana W yaitu wahana yang akan dibangun*/
+    LL_CreateEmpty(&WU_Info(*A,NEff_ArrListWahanaUpg(*A)));
+    LL_InsVLast(&WU_Info(*A,NEff_ArrListWahanaUpg(*A)),W);
+    NEff_ArrListWahanaUpg(*A)++;
 }
 
 boolean IsWahanaRusak(Wahana W)
